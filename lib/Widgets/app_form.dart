@@ -50,7 +50,10 @@ class _AppFormState extends State<AppForm> {
         ),
       ),
       validator: (value){
-        return 'Error missing value';
+        if (value == null || value.isEmpty){
+          return 'Enter $widget.hintText';
+        }
+        return null;
       },
     );
   }
