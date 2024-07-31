@@ -2,13 +2,13 @@ import 'package:edventure/constants/Colors/colors.dart';
 import 'package:flutter/material.dart';
 
 class AppForm extends StatefulWidget {
-  // final TextEditingController controller;
+  final TextEditingController controller;
   final String hintText;
   final IconData? icon;
 
   const AppForm({
     super.key,
-    // required this.controller,
+    required this.controller,
     required this.hintText,
     this.icon,
   });

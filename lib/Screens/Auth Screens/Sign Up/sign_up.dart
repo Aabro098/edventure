@@ -13,6 +13,19 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final _signUpFormKey= GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();  
+
+  @override
+  void dispose(){
+    super.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,54 +69,60 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Center(
               child: SizedBox(
                 width: 350,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Create your account",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
+                child: Form(
+                  key : _signUpFormKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Create your account",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    const AppForm(hintText: "Username"),
-                    const SizedBox(height: 20),
-                    const AppForm(hintText: "Email"),
-                    const SizedBox(height: 20),
-                    const AppForm(
-                      hintText: "Password" , 
-                      icon: Icons.visibility
-                    ),
-                    const SizedBox(height: 20),
-                    const AppForm(
-                      hintText: "Confirm Password" , 
-                      icon: Icons.visibility
-                    ),
-                    const SizedBox(height: 10.0,),
-                    const SizedBox(height: 10),
-                    AppElevatedButton(
-                      text: "Sign Up",
-                      onTap: () {},
-                      color: TAppColor.backgroundColor,
-                    ),
-                    const SizedBox(height: 30.0,),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.pushReplacementNamed(context, SignInScreen.routeName);
-                      },
-                      child: const Text("Already have an account?" , 
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w700
-                        )
+                      const SizedBox(height: 20),
+                      AppForm(
+                        controller : _nameController,
+                        hintText: "Username"
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      AppForm(
+                        controller: _emailController,
+                        hintText: "Email"
+                      ),
+                      const SizedBox(height: 20),
+                      AppForm(
+                        controller: _passwordController,
+                        hintText: "Password" , 
+                        icon: Icons.visibility
+                      ),
+                      const SizedBox(height: 20),
+                      const SizedBox(height: 10.0,),
+                      const SizedBox(height: 10),
+                      AppElevatedButton(
+                        text: "Sign Up",
+                        onTap: () {},
+                        color: TAppColor.backgroundColor,
+                      ),
+                      const SizedBox(height: 30.0,),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.pushReplacementNamed(context, SignInScreen.routeName);
+                        },
+                        child: const Text("Already have an account?" , 
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w700
+                          )
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
