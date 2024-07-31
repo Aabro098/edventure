@@ -22,7 +22,7 @@ class _AppFormState extends State<AppForm> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      // controller: widget.controller,
+      controller: widget.controller,
       obscureText: widget.icon != null ? _obscureText : false,
       decoration: InputDecoration(
         hintText: widget.hintText,
@@ -51,7 +51,7 @@ class _AppFormState extends State<AppForm> {
       ),
       validator: (value){
         if (value == null || value.isEmpty){
-          return 'Enter $widget.hintText';
+          return 'Enter ${widget.hintText}';
         }
         return null;
       },

@@ -1,17 +1,19 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const http = require("http");
+const cors = require('cors');
 
 const DB = "mongodb+srv://arbinstha71:Aabro098@cluster0.m51ocmp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 const authRouter = require("./routes/auth");
 
 const PORT = 3000;
+const HOST = 'localhost';
 
 const app = express();
 
 app.use(express.json());
 app.use(authRouter);
+app.use(cors());
 
 mongoose
     .connect(DB)
@@ -21,6 +23,6 @@ mongoose
         console.log(e);
     })
 
-app.listen(PORT, () => {
-    console.log(`Connected to the port ${PORT}`);
+app.listen(PORT,HOST,() => {
+    console.log(`Server is running on http://${HOST}:${PORT}/`);
 });
