@@ -1,5 +1,7 @@
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Screens/Auth%20Screens/Sign%20In/sign_in.dart';
+import 'package:edventure/Screens/Home%20Screen/home_screen.dart';
+import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/constants/Colors/colors.dart';
 import 'package:edventure/routes.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +16,22 @@ void main() {
   child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final AuthService authService = AuthService();
+
+  @override
+  void initState(){
+    super.initState();
+    authService.getUserData(context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,7 +43,10 @@ class MyApp extends StatelessWidget {
         )
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: const SignInScreen(),
+      home: Provider.of<UserProvider>(context).
+        user.token.isNotEmpty 
+          ? const HomeScreen() 
+          : const SignInScreen()
     );
   }
 }
