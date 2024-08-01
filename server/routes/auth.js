@@ -12,7 +12,9 @@ authRouter.post('/api/signup' , async (req,res) =>{
         const existingUser = await User.findOne({email});
 
         if(existingUser){
-            return res.status(400).json({msg : "User with same email already exist"});
+            return res
+            .status(400)
+            .json({msg : "User with same email already exist"});
         }
 
         const hashedPassword = await bcryptjs.hash(password , 8);
@@ -36,7 +38,7 @@ authRouter.post('/api/signin' , async (req,res) =>{
 
         if(!user){
             return res
-            .statusCode(400)
+            .status(400)
             .json({msg : "User does not exist"});
         }
 
@@ -44,7 +46,7 @@ authRouter.post('/api/signin' , async (req,res) =>{
 
         if(!isMatch){
             return res
-            .statusCode(400)
+            .status(400)
             .json({msg : "Incorrect password"});
         }
 

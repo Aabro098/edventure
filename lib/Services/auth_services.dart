@@ -76,7 +76,7 @@ class AuthService {
         response: res,
         context: context,
         onSuccess: () {
-          print(res.body);
+          
         },
       );
     } catch (e) {
