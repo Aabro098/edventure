@@ -1,3 +1,4 @@
+import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Widgets/app_form.dart';
 import 'package:edventure/constants/Colors/colors.dart';
 import 'package:edventure/utils/elevated_button.dart';
@@ -14,7 +15,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final _signInFormKey = GlobalKey<FormState>();
+    final _signInFormKey = GlobalKey<FormState>();
+  final AuthService authService = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController  _passwordController = TextEditingController();
 
@@ -23,6 +25,14 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+  }
+
+    void signInUser(){
+    authService.signInUser(
+      context: context, 
+      email: _emailController.text, 
+      password: _passwordController.text
+    );
   }
   
   @override
@@ -111,7 +121,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(height: 10),
                       AppElevatedButton(
                         text: "Login",
-                        onTap: () {},
+                        onTap: () {
+                          if(_signInFormKey.currentState!.validate()){
+                            signInUser();
+                          }
+                        },
                         color: TAppColor.backgroundColor,
                       ),
                       const SizedBox(height: 30.0,),

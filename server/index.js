@@ -11,9 +11,10 @@ const HOST = 'localhost';
 
 const app = express();
 
+
+app.use(cors());
 app.use(express.json());
 app.use(authRouter);
-app.use(cors());
 
 mongoose
     .connect(DB)
@@ -24,5 +25,5 @@ mongoose
     })
 
 app.listen(PORT,HOST,() => {
-    console.log(`Server is running on http://${HOST}:${PORT}/`);
+    console.log(`Server is running on http://${HOST}:${PORT}`);
 });
