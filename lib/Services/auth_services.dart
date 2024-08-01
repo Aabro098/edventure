@@ -1,12 +1,16 @@
 
 import 'dart:convert';
 
+import 'package:edventure/Providers/user_provider.dart';
+import 'package:edventure/Screens/Home%20Screen/home_screen.dart';
 import 'package:edventure/constants/error_handling.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:edventure/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   void signUpUser({
@@ -75,8 +79,15 @@ class AuthService {
       httpErrorHandle(
         response: res,
         context: context,
-        onSuccess: () {
-          
+        onSuccess: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          Provider.of<UserProvider>(context , listen : false).setUser(res.body);
+          await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
+          Navigator.pushNamedAndRemoveUntil(
+            context, 
+            HomeScreen.routeName, 
+            (route) => false
+          );
         },
       );
     } catch (e) {

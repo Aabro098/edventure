@@ -1,10 +1,17 @@
+import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Screens/Auth%20Screens/Sign%20In/sign_in.dart';
 import 'package:edventure/constants/Colors/colors.dart';
 import 'package:edventure/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (context) =>UserProvider()
+    )
+  ],
+  child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

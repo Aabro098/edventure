@@ -1,4 +1,5 @@
 
+import 'package:edventure/Screens/Home%20Screen/home_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'Screens/Auth Screens/Sign In/sign_in.dart';
@@ -15,6 +16,11 @@ Route<dynamic>generateRoute(RouteSettings routeSettings){
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => const SignUpScreen()
+      );
+      case HomeScreen.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const HomeScreen()
       );
     default:
       return MaterialPageRoute(
