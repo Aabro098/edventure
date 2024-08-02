@@ -1,6 +1,7 @@
 import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/Widgets/tab_bar.dart';
 import 'package:flutter/material.dart';
+import '../Screens/Home Screen/home_screen.dart';
 import '../Screens/Profile Screen/profile_screen.dart';
 import 'responsive.dart';
 
@@ -14,7 +15,7 @@ class NavScreen extends StatefulWidget {
 
 class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
-    const Scaffold(),
+    const HomeScreen(),
     const Scaffold(),
     const ProfileScreen(),
     const Scaffold(),
