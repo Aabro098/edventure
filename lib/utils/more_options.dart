@@ -1,15 +1,16 @@
+import 'package:edventure/Screens/Auth%20Screens/Sign%20In/sign_in.dart';
 import 'package:edventure/Widgets/user_card.dart';
 import 'package:edventure/utils/options.dart';
 import 'package:flutter/material.dart';
 
 class MoreOptionList extends StatefulWidget {
   final List<List> moreOptionList = const [
-    [Icons.group_add_outlined , Colors.cyan, 'Freinds'],
-    [Icons.messenger_outline , Colors.blue, 'Messenger'],
-    [Icons.flag , Colors.orange, 'Pages'],
-    [Icons.store , Colors.blue, 'Marketplace'],
+    [Icons.group , Colors.purple, 'Contacts'],
+    [Icons.message , Colors.blue, 'Messenger'],
+    [Icons.school , Colors.black, 'Institution'],
     [Icons.video_call_outlined , Colors.blue, 'Watch'],
-    [Icons.calendar_month_outlined , Colors.red, 'Events'],
+    [Icons.calendar_month_outlined , Colors.orange, 'Events'],
+    [Icons.logout , Colors.red, 'Log Out'],
   ];
 
   const MoreOptionList({
@@ -38,6 +39,15 @@ class _MoreOptionListState extends State<MoreOptionList> {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Options(
+              onTap: (){
+                if (option[2] == 'Log Out') {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    SignInScreen.routeName,
+                    (route) => false,
+                  );
+                }
+              },
               icon : option[0],
               color : option[1],
               label : option[2]

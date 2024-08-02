@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class Options extends StatelessWidget {
+  final VoidCallback? onTap;
   final IconData icon;
   final Color color;
   final String label;
   
   const Options({
     super.key,
+    this.onTap,
     required this.icon,
     required this.color,
     required this.label,
@@ -15,7 +17,7 @@ class Options extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){},
+      onTap: onTap,
       child: Row(
         children: [
           Icon(icon , size: 38 , color: color,),

@@ -66,12 +66,6 @@ class CustomAppBar extends StatelessWidget {
                 iconSize: 30.0,
                 onPressed: (){}
               ),
-              const SizedBox(width: 12.0),
-              TIconButton(
-                iconData: Icons.message_outlined,
-                iconSize: 30.0,
-                onPressed: (){}
-              ),
             ],
           )
         ],
