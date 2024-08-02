@@ -1,10 +1,10 @@
 
-import 'package:edventure/Screens/Home%20Screen/home_screen.dart';
 import 'package:edventure/Widgets/nav_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'Screens/Auth Screens/Sign In/sign_in.dart';
 import 'Screens/Auth Screens/Sign Up/sign_up.dart';
+import 'Screens/Profile Screen/profile_screen.dart';
 
 Route<dynamic>generateRoute(RouteSettings routeSettings){
   switch(routeSettings.name){
@@ -18,10 +18,10 @@ Route<dynamic>generateRoute(RouteSettings routeSettings){
         settings: routeSettings,
         builder: (_) => const SignUpScreen()
       );
-      case HomeScreen.routeName:
+      case ProfileScreen.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => const HomeScreen()
+        builder: (_) => const ProfileScreen()
       );
       case NavScreen.routeName:
       return MaterialPageRoute(

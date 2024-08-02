@@ -2,8 +2,6 @@
 import 'package:edventure/utils/post_stats.dart';
 import 'package:edventure/utils/profile_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import '../constants/images.dart';
 
 class PostContainer extends StatelessWidget {
@@ -39,11 +37,12 @@ class PostContainer extends StatelessWidget {
                     height: 10.0,
                   ),
                   Container(
-                    height: 100,
+                    height: 400,
+                    width: 600,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(AppImages.profile),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
