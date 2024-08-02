@@ -20,7 +20,7 @@ class CreatePostContainer extends StatelessWidget {
             Row(
               children: [
                 const ProfileAvatar(
-                  image: AppImages.profile, // Pass the path as a String
+                  image: AppImages.profile, 
                 ),
                 const SizedBox(width: 10),
                 const Expanded(

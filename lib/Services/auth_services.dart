@@ -1,8 +1,7 @@
 
 import 'dart:convert';
-
 import 'package:edventure/Providers/user_provider.dart';
-import 'package:edventure/Screens/Home%20Screen/home_screen.dart';
+import 'package:edventure/Widgets/nav_screen.dart';
 import 'package:edventure/constants/error_handling.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
@@ -85,7 +84,7 @@ class AuthService {
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
           Navigator.pushNamedAndRemoveUntil(
             context, 
-            HomeScreen.routeName, 
+            NavScreen.routeName, 
             (route) => false
           );
         },

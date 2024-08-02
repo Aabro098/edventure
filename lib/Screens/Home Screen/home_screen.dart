@@ -1,6 +1,8 @@
+
 import 'package:edventure/Widgets/details.dart';
 import 'package:edventure/utils/create_post.dart';
 import 'package:edventure/utils/elevated_button.dart';
+import 'package:edventure/utils/post_container.dart';
 import 'package:flutter/material.dart';
 import 'package:edventure/constants/images.dart';
 import '../../Widgets/stars.dart';
@@ -17,9 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
       body: Row(
         children: [
           Expanded(
@@ -139,6 +138,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 5.0,),
                   const CreatePostContainer(),
+                  const SizedBox(height: 5.0,),
+                  const PostContainer(),
                 ],
               ),
             ),
