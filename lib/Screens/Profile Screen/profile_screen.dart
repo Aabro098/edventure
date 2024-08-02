@@ -3,6 +3,7 @@ import 'package:edventure/Widgets/details.dart';
 import 'package:edventure/utils/create_post.dart';
 import 'package:edventure/utils/elevated_button.dart';
 import 'package:edventure/utils/post_container.dart';
+import 'package:edventure/utils/text_button_second.dart';
 import 'package:flutter/material.dart';
 import 'package:edventure/constants/images.dart';
 import '../../Widgets/stars.dart';
@@ -61,12 +62,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: 5.0,),
+                        SizedBox(width: 8.0,),
                         Text(
                           '(aabro_098)',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        SizedBox(width: 5.0,),
+                        Center(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 12,
+                                backgroundColor: Colors.blue, 
+                              ),
+                              Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -113,7 +131,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 5.0,),
-                    AppElevatedButton(text: 'Edit Details', onTap: (){}, color: Colors.lightBlue.shade400),
+                    AppElevatedButton(
+                      text: 'Edit Details', 
+                      onTap: (){}, 
+                      color: Colors.cyan
+                    ),
                   ],
                 ),
               ),
@@ -139,7 +161,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 5.0,),
                     const CreatePostContainer(),
-                    const SizedBox(height: 5.0,),
+                    const SizedBox(height: 10.0,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Container(
+                        color: Colors.grey.shade100,
+                        child: const Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              TextButtonSecond(label: 'Posts',icon: Icons.post_add,),
+                              SizedBox(width: 20.0,),
+                              TextButtonSecond(label: 'Reviews',icon: Icons.reviews),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10,),
                     const PostContainer(),
                     const SizedBox(height: 5.0,),
                     const PostContainer(),
