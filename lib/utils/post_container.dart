@@ -2,6 +2,7 @@
 import 'package:edventure/utils/post_stats.dart';
 import 'package:edventure/utils/profile_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../constants/images.dart';
 
@@ -17,25 +18,39 @@ class PostContainer extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         color: Colors.white,
-        child: const Column(
+        child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  PostHeader(),
-                  SizedBox(
+                  const PostHeader(),
+                  const SizedBox(
                     height: 7.0,
                   ),
-                  Text('Hello this is Arbin shrestha' , style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16
-                  ),),
-                  SizedBox(
+                  const Text('Hello this is Arbin shrestha' , 
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16
+                    ),
+                  ),
+                  const SizedBox(
                     height: 10.0,
                   ),
-                  PostStats(),
+                  Container(
+                    height: 100,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(AppImages.profile),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  const PostStats(),
                 ],
               ),
             ),

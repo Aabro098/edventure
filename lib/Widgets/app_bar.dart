@@ -21,12 +21,12 @@ class CustomAppBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       height: 65.0,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
-            offset: Offset(0,2),
+            color: Colors.grey.shade100,
+            offset: const Offset(0,2),
             blurRadius: 4
           )
         ]
@@ -35,7 +35,7 @@ class CustomAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Expanded(
-            child: Text("EdVenture",style: TextStyle(
+            child: Text("EdVenture", style: TextStyle(
               letterSpacing: 1.2,
               fontWeight: FontWeight.bold,
               fontSize: 24,
@@ -44,7 +44,8 @@ class CustomAppBar extends StatelessWidget {
                     ),
           ),
           const Spacer(),
-          SizedBox(
+          Container(
+            color: Colors.white,
             height: double.infinity,
             width: 600.0,
             child: CustomTabBar(
