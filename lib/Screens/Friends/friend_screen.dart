@@ -38,6 +38,47 @@ class _FriendScreenState extends State<FriendScreen> {
               child: CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
+                    child: Text('Contacts',               
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child : SizedBox(
+                      height: 20.0,
+                    )
+                  ),
+                  SliverToBoxAdapter(
+                    child: FriendCard(),
+                  ),
+                  SliverToBoxAdapter(
+                    child : SizedBox(
+                      height: 20.0,
+                    )
+                  ),
+                  SliverToBoxAdapter(
+                    child : SizedBox(
+                      height: 20.0,
+                    )
+                  ),
+                  SliverToBoxAdapter(
+                    child: Text('People You May Know',               
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child : SizedBox(
+                      height: 20.0,
+                    )
+                  ),
+                  SliverToBoxAdapter(
                     child: FriendCard(),
                   ),
                 ],
