@@ -80,7 +80,7 @@ class FriendCard extends StatelessWidget {
                 width: 50.0,
                 height: 50.0,
                 child: const Icon(
-                  Icons.message,
+                  Icons.person_add,
                   size: 24.0,
                 )
               ),

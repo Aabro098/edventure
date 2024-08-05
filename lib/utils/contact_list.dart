@@ -1,41 +1,48 @@
-
+import 'package:edventure/Widgets/user_card.dart';
 import 'package:flutter/material.dart';
 
 class ContactList extends StatelessWidget {
-
-  const ContactList({
-    super.key,
-  });
+  const ContactList({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxWidth : 280),
-      child :  Column(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             children: [
-              const Expanded(
-                child: Text(
-                  'People Near You', 
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey
-                  ),
+              const Text(
+                'People Near You',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey,
                 ),
               ),
+              const Spacer(),
               Icon(
-                Icons.search , 
-                size: 24, 
-                color: Colors.grey[600],
-              ),
-              Icon(
-                Icons.more_horiz , 
-                size: 24, 
+                Icons.search,
+                size: 24,
                 color: Colors.grey[600],
               ),
             ],
+          ),
+          const SizedBox(height: 20.0),
+          const Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  UserCard(),
+                  SizedBox(height: 10.0),
+                  UserCard(),
+                  SizedBox(height: 10.0),
+                  UserCard(), 
+                ],
+              ),
+            ),
           ),
         ],
       ),
