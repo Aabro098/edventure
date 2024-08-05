@@ -1,7 +1,7 @@
 
 import 'dart:convert';
 import 'package:edventure/Providers/user_provider.dart';
-import 'package:edventure/Widgets/nav_screen.dart';
+import 'package:edventure/Navigation/nav_screen.dart';
 import 'package:edventure/constants/error_handling.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';

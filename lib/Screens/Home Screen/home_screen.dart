@@ -17,45 +17,51 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Flexible(
-          flex: 2,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: EdgeInsets.all(12.0),
-              child: MoreOptionList(),
-            ),
-          )
-        ),
-        Spacer(),
-        SizedBox(height: 15,),
-        SizedBox(
-          width: 550,
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: CreatePostContainer(),
+    return const Padding(
+      padding: EdgeInsets.fromLTRB(0,16,0,0),
+      child: Row(
+        children: [
+          Flexible(
+            flex: 2,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: MoreOptionList(),
               ),
-              SliverToBoxAdapter(
-                child: PostContainer()
-              ),
-            ],
+            )
           ),
-        ),
-        Spacer(),
-        Flexible(
-          flex: 2,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: EdgeInsets.all(12.0),
-              child: ContactList(),
+          Spacer(),
+          SizedBox(height: 15,),
+          SizedBox(
+            width: 550,
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: CreatePostContainer(),
+                ),
+                SliverToBoxAdapter(
+                  child: PostContainer()
+                ),
+                SliverToBoxAdapter(
+                  child: PostContainer()
+                ),
+              ],
             ),
-          )
-        ),
-      ],
+          ),
+          Spacer(),
+          Flexible(
+            flex: 2,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: ContactList(),
+              ),
+            )
+          ),
+        ],
+      ),
     );
   }
 }

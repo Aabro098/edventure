@@ -1,5 +1,5 @@
 
-import 'package:edventure/Widgets/nav_screen.dart';
+import 'package:edventure/Navigation/nav_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'Screens/Auth Screens/Sign In/sign_in.dart';

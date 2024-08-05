@@ -13,17 +13,17 @@ class ProfileAvatar extends StatelessWidget {
     return Stack(
       children: [
         CircleAvatar(
-          radius: 20.0,
+          radius: 24.0,
           backgroundColor: Colors.grey.shade100,
           child: CircleAvatar(
-            radius: 17,
+            radius: 24,
             backgroundColor: Colors.grey[200],
             child: ClipOval(
               child: Image.asset(
                 image,
                 fit: BoxFit.cover,
-                width: 34.0,
-                height: 34.0,
+                width: 42.0,
+                height: 42.0,
               ),
             ),
           ),

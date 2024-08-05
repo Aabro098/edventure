@@ -1,9 +1,10 @@
+import 'package:edventure/Screens/Notifications/notification_screen.dart';
 import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/Widgets/tab_bar.dart';
 import 'package:flutter/material.dart';
 import '../Screens/Home Screen/home_screen.dart';
 import '../Screens/Profile Screen/profile_screen.dart';
-import 'responsive.dart';
+import '../Widgets/responsive.dart';
 
 class NavScreen extends StatefulWidget {
   static const  String routeName = 'nav-screen';
@@ -19,7 +20,7 @@ class _NavScreenState extends State<NavScreen> {
     const Scaffold(),
     const ProfileScreen(),
     const Scaffold(),
-    const Scaffold(),
+    const NotificationScreen(),
   ];
 
   final List<IconData> _icons = [

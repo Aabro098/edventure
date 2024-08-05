@@ -20,7 +20,7 @@ class Options extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Icon(icon , size: 38 , color: color,),
+          Icon(icon , size: 30 , color: color,),
           const SizedBox(
             width : 6.0,
           ),
