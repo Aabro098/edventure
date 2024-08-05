@@ -60,8 +60,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               padding: EdgeInsets.all(8.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Hello this is the Notification model.This is where i have been testing the flutter application.',
+                                  Text('Hello this is the Notification model.\nThis is where i have been testing the flutter application.',
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
                                       fontSize: 14.0,
@@ -73,7 +74,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   ),
                                   Text('5h ago',
                                     style: TextStyle(
-                                      fontSize: 8,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.normal
                                     ),
                                   )

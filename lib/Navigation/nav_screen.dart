@@ -1,3 +1,4 @@
+import 'package:edventure/Screens/Friends/friend_screen.dart';
 import 'package:edventure/Screens/Notifications/notification_screen.dart';
 import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/Widgets/tab_bar.dart';
@@ -7,7 +8,7 @@ import '../Screens/Profile Screen/profile_screen.dart';
 import '../Widgets/responsive.dart';
 
 class NavScreen extends StatefulWidget {
-  static const  String routeName = 'nav-screen';
+  static const String routeName = 'nav-screen';
   const NavScreen({super.key});
 
   @override
@@ -17,9 +18,9 @@ class NavScreen extends StatefulWidget {
 class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
-    const Scaffold(),
+    const Scaffold(), // Placeholder for second screen
     const ProfileScreen(),
-    const Scaffold(),
+    const FriendScreen(),
     const NotificationScreen(),
   ];
 
@@ -29,8 +30,7 @@ class _NavScreenState extends State<NavScreen> {
     Icons.account_circle_outlined,
     Icons.group_outlined,
     Icons.notifications,
-    Icons.menu
-
+    Icons.menu,
   ];
 
   int selectedIndex = 0;
@@ -41,31 +41,31 @@ class _NavScreenState extends State<NavScreen> {
     return DefaultTabController(
       length: _icons.length,
       child: Scaffold(
-        appBar: Responsive.isDesktop(context) 
-        ? PreferredSize(
-          preferredSize: Size
-          (
-            screenSize.width, 100.0
-          ),
-          child: CustomAppBar(
-            icons : _icons,
-            selectedIndex : selectedIndex,
-            onTap : (index) => setState(() => selectedIndex = index)
-          )
-        ): null,
-        body : IndexedStack(
+        appBar: Responsive.isDesktop(context)
+            ? PreferredSize(
+                preferredSize: Size(screenSize.width, 100.0),
+                child: CustomAppBar(
+                  icons: _icons,
+                  selectedIndex: selectedIndex,
+                  onTap: (index) => setState(() => selectedIndex = index),
+                ),
+              )
+            : null,
+        body: IndexedStack(
           index: selectedIndex,
-          children: _screens
+          children: _screens,
         ),
-        bottomNavigationBar: !Responsive.isDesktop(context) ? Container (
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: CustomTabBar(
-            icons : _icons,
-            selectedIndex : selectedIndex,
-            onTap : (index) => setState(() => selectedIndex = index)
-          ),
-        ) : const SizedBox.shrink(),
-      )
+        bottomNavigationBar: !Responsive.isDesktop(context)
+            ? Container(
+                padding: const EdgeInsets.only(bottom: 6.0),
+                child: CustomTabBar(
+                  icons: _icons,
+                  selectedIndex: selectedIndex,
+                  onTap: (index) => setState(() => selectedIndex = index),
+                ),
+              )
+            : const SizedBox.shrink(),
+      ),
     );
   }
 }

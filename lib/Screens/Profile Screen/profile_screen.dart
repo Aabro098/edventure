@@ -165,7 +165,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Container(
-                        color: Colors.grey.shade100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade100,
+                              blurRadius: 7.0,
+                              offset: const Offset(0, 2)
+                            )
+                          ]
+                        ),
                         child: const Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
