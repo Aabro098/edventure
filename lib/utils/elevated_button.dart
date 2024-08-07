@@ -18,9 +18,9 @@ class AppElevatedButton extends StatelessWidget {
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5)
+          borderRadius: BorderRadius.circular(10)
         ),
-        minimumSize: const Size(double.infinity, 34),
+        minimumSize: const Size(double.infinity, 30),
         backgroundColor: color,
         foregroundColor: Colors.white,
       ), 
@@ -28,7 +28,7 @@ class AppElevatedButton extends StatelessWidget {
         style: const TextStyle(
           color: Colors.white , 
           fontWeight: FontWeight.normal, 
-          fontSize: 24
+          fontSize: 20
         )
       ),
     );

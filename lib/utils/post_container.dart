@@ -14,8 +14,18 @@ class PostContainer extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        color: Colors.white,
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.0),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            )
+          ]
+        ),
         child: Column(
           children: [
             Padding(
@@ -68,7 +78,7 @@ class PostHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
+      children: [     
         const ProfileAvatar(
           image: AppImages.profile, 
         ),

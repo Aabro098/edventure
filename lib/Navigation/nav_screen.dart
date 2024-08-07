@@ -18,10 +18,11 @@ class NavScreen extends StatefulWidget {
 class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
-    const Scaffold(), // Placeholder for second screen
+    const Scaffold(), 
     const ProfileScreen(),
     const FriendScreen(),
     const NotificationScreen(),
+    const Scaffold(),
   ];
 
   final List<IconData> _icons = [

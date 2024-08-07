@@ -39,7 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: CreatePostContainer(),
                   ),
                   SliverToBoxAdapter(
-                    child: PostContainer(),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: PostContainer(),
+                    ),
                   ),
                   SliverToBoxAdapter(
                     child: PostContainer(),

@@ -123,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SizedBox(width: 2.0,),
                             Star(),
                             SizedBox(width: 8.0,),
-                            Text('4.0', style: TextStyle(fontSize: 30.0),),
+                            Text('4.0', style: TextStyle(fontSize: 34.0),),
                           ],
                         ),
                         SizedBox(height: 5.0,),
@@ -134,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     AppElevatedButton(
                       text: 'Edit Details', 
                       onTap: (){}, 
-                      color: Colors.cyan
+                      color: Colors.cyan.shade600
                     ),
                   ],
                 ),

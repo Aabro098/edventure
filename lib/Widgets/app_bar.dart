@@ -34,12 +34,12 @@ class CustomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Expanded(
+          Expanded(
             child: Text("EdVenture", style: TextStyle(
               letterSpacing: 1.2,
               fontWeight: FontWeight.bold,
               fontSize: 24,
-              color: Colors.blue
+              color: Colors.cyan.shade600
             ),
                     ),
           ),
