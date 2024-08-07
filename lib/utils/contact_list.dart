@@ -1,16 +1,15 @@
-import 'package:edventure/Widgets/user_card.dart';
 import 'package:flutter/material.dart';
+import 'package:edventure/Widgets/user_card.dart';
 
 class ContactList extends StatelessWidget {
   const ContactList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             children: [
@@ -39,7 +38,7 @@ class ContactList extends StatelessWidget {
                   SizedBox(height: 10.0),
                   UserCard(),
                   SizedBox(height: 10.0),
-                  UserCard(), 
+                  UserCard(),
                 ],
               ),
             ),

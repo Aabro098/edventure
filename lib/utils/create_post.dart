@@ -11,10 +11,10 @@ class CreatePostContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-      child: Container(
-        padding: const EdgeInsets.all(10),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 5.0),
         child: Column(
           children: [
             Row(

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import 'package:edventure/constants/images.dart';
-
 import '../utils/profile_avatar.dart';
 
 class FriendCard extends StatelessWidget {
@@ -19,9 +17,9 @@ class FriendCard extends StatelessWidget {
             color: Colors.grey.withOpacity(0.08),
             spreadRadius: 3,
             blurRadius: 7,
-            offset: const Offset(0, 2)
-          )
-        ]
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -29,10 +27,10 @@ class FriendCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
-              onTap: (){},
+              onTap: () {},
               child: const ProfileAvatar(
-                image: AppImages.profile
-              )
+                image: AppImages.profile,
+              ),
             ),
           ),
           const SizedBox(width: 6.0),
@@ -44,19 +42,17 @@ class FriendCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: (){},
+                    onTap: () {},
                     child: const Text(
                       'Arbin Shrestha',
                       style: TextStyle(
                         fontSize: 18.0,
-                        fontWeight: FontWeight.bold
+                        fontWeight: FontWeight.bold,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
+                  const SizedBox(height: 10.0),
                   const Text(
                     'Those who do not know pain will never understand true peace.',
                     style: TextStyle(
@@ -70,19 +66,15 @@ class FriendCard extends StatelessWidget {
               ),
             ),
           ),
-          InkWell(
-            onTap: (){},
-            child: Positioned(
-              right: 0.0,
-              bottom: 0.0,
-              child: Container(
-                padding: const EdgeInsets.all(12.0),
-                width: 50.0,
-                height: 50.0,
-                child: const Icon(
-                  Icons.message,
-                  size: 24.0,
-                )
+          Container(
+            padding: const EdgeInsets.all(12.0),
+            width: 50.0,
+            height: 50.0,
+            child: InkWell(
+              onTap: () {},
+              child: const Icon(
+                Icons.message,
+                size: 24.0,
               ),
             ),
           ),

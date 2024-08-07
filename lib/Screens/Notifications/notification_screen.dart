@@ -32,30 +32,39 @@ class _NotificationScreenState extends State<NotificationScreen> {
             flex: 3,
             child: CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child: const Center(
-                            child: UserCard(
-                              notification: true
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: const NotificationCard(),
-                          ),
-                        ),
-                      ],
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('Notifications',               
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Center(
+                          child: UserCard(
+                            notification: true
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: const NotificationCard(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
