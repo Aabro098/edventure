@@ -1,31 +1,31 @@
 const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema({
-    name : {
-        type : String,
-        required : true,
-        trim : true,
+    name: {
+        type: String,
+        required: true,
+        trim: true,
     },
-    email : {
-        required : true,
-        type : String,
-        trim : true,
-        validate : {
-            validator : (value)=>{
+    email: {
+        required: true,
+        type: String,
+        trim: true,
+        validate: {
+            validator: (value) => {
                 const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
                 return value.match(re);
             },
-            message : 'Enter a valid email address',
+            message: 'Enter a valid email address',
         }
     },
-    password : {
-        type : String,
-        requried : true,
-        validate : {
-            validator : (value)=>{
-                return value.length > 6 ;
+    password: {
+        type: String,
+        requried: true,
+        validate: {
+            validator: (value) => {
+                return value.length > 6;
             },
-            message : 'Password cannot be less than 8 characters',
+            message: 'Password cannot be less than 8 characters',
         }
     },
     phone: {
@@ -38,50 +38,58 @@ const userSchema = mongoose.Schema({
             message: 'Enter a valid phone number starting with 9 and having 10 digits',
         }
     },
-    profileImage : {
-        required : false,
-        type : String
+    profileImage: {
+        required: false,
+        type: String
     },
-    coverImage : {
-        required : false,
-        type : String
+    coverImage: {
+        required: false,
+        type: String
     },
-    address : {
-        type : String,
-        default : ''
+    address: {
+        type: String,
+        default: ''
     },
-    bio : {
-        type : String,
-        default : ''
+    bio: {
+        type: String,
+        default: ''
     },
-    rating : {
-        type : Number ,
-        default : 0.0
+    rating: {
+        type: Number,
+        default: 0.0
     },
-    education : {
-        type : String,
-        default : ''
+    education: {
+        type: String,
+        default: ''
     },
-    status : {
-        type : String,
-        default : ''
+    status: {
+        type: String,
+        default: ''
     },
-    type : {
-        type : String,
-        default : "user",
+    type: {
+        type: String,
+        default: "user",
     },
     username: {
         type: String,
         unique: true,
         required: true,
         trim: true,
-        default: function() {
+        default: function () {
             return this.name ? this.name.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
         }
-    }
+    },
+    isVerified : {
+        type : Boolean,
+        default : false
+    },
+    posts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }]
 });
 
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
     if (this.isModified('name') || this.isNew) {
         let baseUsername = this.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
         let newUsername = baseUsername;
@@ -96,5 +104,5 @@ userSchema.pre('save', async function(next) {
     next();
 });
 
-const User = mongoose.model('User',userSchema);
+const User = mongoose.model('User', userSchema);
 module.exports = User;

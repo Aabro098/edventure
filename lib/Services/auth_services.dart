@@ -35,6 +35,8 @@ class AuthService {
         type: '',
         username: '',
         token: '',
+        isVerified: false, 
+        posts: [],
       );
 
       http.Response res = await http.post(

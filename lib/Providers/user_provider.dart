@@ -17,7 +17,9 @@ class UserProvider extends ChangeNotifier{
     status: '', 
     type: '', 
     username: '', 
-    token: ''
+    token: '',
+    isVerified : false, 
+    posts: [],
   );
 
   User get user => _user;

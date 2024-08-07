@@ -15,6 +15,8 @@ class User {
   final String status;
   final String type;
   final String username;
+  final bool isVerified;
+  final List<String> posts;
   final String token;
 
   User({
@@ -32,6 +34,8 @@ class User {
     required this.status,
     required this.type,
     required this.username,
+    required this.isVerified,
+    required this.posts,
     required this.token,
   });
 
@@ -52,6 +56,8 @@ class User {
     result.addAll({'status': status});
     result.addAll({'type': type});
     result.addAll({'username': username});
+    result.addAll({'isVerified': isVerified});
+    result.addAll({'posts': posts});
     result.addAll({'token': token});
   
     return result;
@@ -73,6 +79,8 @@ class User {
       status: map['status'] ?? '',
       type: map['type'] ?? '',
       username: map['username'] ?? '',
+      isVerified: map['isVerified'] ?? false,
+      posts: List<String>.from(map['posts']),
       token: map['token'] ?? '',
     );
   }
