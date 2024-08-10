@@ -19,6 +19,7 @@ class AppForm extends StatefulWidget {
 
 class _AppFormState extends State<AppForm> {
   bool _obscureText = true;
+  
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -38,19 +39,25 @@ class _AppFormState extends State<AppForm> {
         ) : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(
-            color: TAppColor.backgroundColor
+          borderSide: BorderSide(
+            color: TAppColor.backgroundColor,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(
-            color: TAppColor.secondaryColor
+          borderSide: BorderSide(
+            color: TAppColor.secondaryColor,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(
+            color: Colors.blue.shade300, 
           ),
         ),
       ),
-      validator: (value){
-        if (value == null || value.isEmpty){
+      validator: (value) {
+        if (value == null || value.isEmpty) {
           return 'Enter ${widget.hintText}';
         }
         return null;

@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
-        colorScheme: const ColorScheme.light(
+        colorScheme: ColorScheme.light(
           primary: TAppColor.secondaryColor
         )
       ),

@@ -57,7 +57,9 @@ class AuthService {
         },
       );
     } catch (e) {
-      showSnackBar(context, e.toString());
+      Future.delayed(Duration.zero, () {
+        showSnackBar(context, e.toString());
+      });
     }
   }
 
@@ -92,7 +94,9 @@ class AuthService {
         },
       );
     } catch (e) {
-      showSnackBar(context, e.toString());
+      Future.delayed(Duration.zero, () {
+        showSnackBar(context, e.toString());
+      });
     }
   }
 
@@ -128,7 +132,10 @@ class AuthService {
         userProvider.setUser(userRes.body);
       }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      Future.delayed(Duration.zero, () {
+        showSnackBar(context, e.toString());
+      });
+
     }
   }
 
