@@ -1,9 +1,10 @@
-import 'package:edventure/Screens/Auth%20Screens/Sign%20In/sign_in.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Widgets/app_form.dart';
 import 'package:edventure/constants/Colors/colors.dart';
 import 'package:edventure/utils/elevated_button.dart';
 import 'package:flutter/material.dart';
+
+import '../Sign In/sign_in.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const String routeName = 'sign-up';
@@ -36,47 +37,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
       password: _passwordController.text
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
         children: [
           Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Container(
-                color: Colors.black,
-                padding: const EdgeInsets.all(20.0),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "EdVenture",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 34,
-                      ),
-                    ),
-                    SizedBox(height: 18),
-                    Text(
-                      "Learn and share technically",
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
+            flex: 2,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(20) , 
+                  bottomRight: Radius.circular(20)
                 ),
+                color: TAppColor.backgroundColor
+              ),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "EdVenture",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 34,
+                    ),
+                  ),
+                  SizedBox(height: 18),
+                  Text(
+                    "Learn and share technically",
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Center(
               child: SizedBox(
                 width: 350,
@@ -85,34 +87,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Align(
+                      Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Create your account",
+                          "EdVenture",
                           style: TextStyle(
                             fontSize: 24,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                            color: TAppColor.secondaryColor
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       AppForm(
                         controller : _nameController,
-                        hintText: "Username"
+                        hintText: "User Name" ,
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       AppForm(
                         controller: _emailController,
                         hintText: "Email"
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       AppForm(
-                        controller: _passwordController,
+                        controller : _passwordController,
                         hintText: "Password" , 
                         icon: Icons.visibility
                       ),
-                      const SizedBox(height: 20),
-                      const SizedBox(height: 10.0,),
                       const SizedBox(height: 10),
                       AppElevatedButton(
                         text: "Sign Up",
@@ -123,12 +125,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         color: TAppColor.backgroundColor,
                       ),
-                      const SizedBox(height: 30.0,),
+                      const SizedBox(height: 20.0,),
+                      const Text("Already have an account?" , 
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500
+                        )
+                      ),
+                      const SizedBox(height: 5.0,),
                       GestureDetector(
-                        onTap: (){
+                        onTap : (){
                           Navigator.pushReplacementNamed(context, SignInScreen.routeName);
                         },
-                        child: const Text("Already have an account?" , 
+                        child: const Text("Login" , 
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.blue,
