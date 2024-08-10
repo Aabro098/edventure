@@ -2,22 +2,21 @@
 import 'package:edventure/Navigation/nav_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'Screens/Auth Screens/Sign In/sign_in.dart';
-import 'Screens/Auth Screens/Sign Up/sign_up.dart';
+import 'Screens/Auth Screens/Sign In/auth_screen.dart';
 import 'Screens/Profile Screen/profile_screen.dart';
 
 Route<dynamic>generateRoute(RouteSettings routeSettings){
   switch(routeSettings.name){
-    case SignInScreen.routeName:
+    case AuthScreen.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => const SignInScreen()
+        builder: (_) => const AuthScreen()
       );
-      case SignUpScreen.routeName:
-      return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (_) => const SignUpScreen()
-      );
+      // case SignUpScreen.routeName:
+      // return MaterialPageRoute(
+      //   settings: routeSettings,
+      //   builder: (_) => const SignUpScreen()
+      // );
       case ProfileScreen.routeName:
       return MaterialPageRoute(
         settings: routeSettings,

@@ -1,5 +1,5 @@
 import 'package:edventure/Providers/user_provider.dart';
-import 'package:edventure/Screens/Auth%20Screens/Sign%20In/sign_in.dart';
+import 'package:edventure/Screens/Auth%20Screens/Sign%20In/auth_screen.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Navigation/nav_screen.dart';
 import 'package:edventure/constants/Colors/colors.dart';
@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
       home: Provider.of<UserProvider>(context).
         user.token.isNotEmpty 
           ? const NavScreen() 
-          : const SignInScreen()
+          : const AuthScreen()
     );
   }
 }

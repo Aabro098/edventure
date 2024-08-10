@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  void signUpUser({
+  Future signUpUser({
     required BuildContext context,
     required String email,
     required String name,
@@ -63,7 +63,7 @@ class AuthService {
     }
   }
 
-  void signInUser({
+  Future signInUser({
     required BuildContext context,
     required String email,
     required String password,
