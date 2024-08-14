@@ -21,7 +21,9 @@ class TTextButton extends StatelessWidget {
         icon: Icon(iconData,
         color:color
       ),
-      label: Text(labelText),
+      label: Text(labelText , style: const TextStyle(
+        color: Colors.black
+      ),),
     );
   }
 }

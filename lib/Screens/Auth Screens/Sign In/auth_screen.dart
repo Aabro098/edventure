@@ -71,7 +71,7 @@ class _AuthScreenState extends State<AuthScreen> {
       body: Stack(
         children: [
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 600),
             curve: Curves.easeInOut,
             left: _isSignUp ? MediaQuery.of(context).size.width / 2 : 0,
             right: _isSignUp ? 0 : MediaQuery.of(context).size.width / 2,

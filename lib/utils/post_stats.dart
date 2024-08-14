@@ -1,3 +1,4 @@
+import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
 
 class PostStats extends StatelessWidget {
@@ -12,23 +13,17 @@ class PostStats extends StatelessWidget {
         Row(
           children: [
             const Icon(
-              Icons.thumb_up , 
+              Icons.remove_red_eye_outlined , 
               size: 16.0, 
-              color: Colors.blue,               
+              color: Colors.grey,               
             ),
             const SizedBox(
               width: 7.0,
             ),
             Expanded(
-              child: Text('5.0' , style: TextStyle(
+              child: Text('5 Views' , style: TextStyle(
                 color: Colors.grey[600]
               ),),
-            ),
-            Text('5 Comments', style: TextStyle(
-              color: Colors.grey[600]
-            ),),
-            const SizedBox(
-              width: 4.0,
             ),
             Text('5 Shares' , style: TextStyle(
               color: Colors.grey[600]
@@ -41,80 +36,31 @@ class PostStats extends StatelessWidget {
         SizedBox(
           height: 24,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _PostButton(
-                icon:Icon(
-                  Icons.thumb_up , 
-                  color : Colors.grey[600], 
-                  size : 20.0
-                ), 
-                label : 'Like',
-                onTap : (){}
+              TTextButton(
+                iconData: Icons.message_outlined, 
+                onPressed: (){}, 
+                labelText: 'Message', 
+                color: Colors.green.shade500
               ),
-              _PostButton(
-                icon:Icon(
-                  Icons.comment , 
-                  color : Colors.grey[600], 
-                  size : 20.0
-                ), 
-                label : 'Comments',
-                onTap : (){}
+              TTextButton(
+                iconData: Icons.save_outlined, 
+                onPressed: (){}, 
+                labelText: 'Save', 
+                color: Colors.grey.shade500
               ), 
-              _PostButton(
-                icon:Icon(
-                  Icons.share , 
-                  color : Colors.grey[600], 
-                  size : 25.0
-                ), 
-                label : 'Share',
-                onTap : (){}
+              TTextButton(
+                iconData: Icons.share_outlined, 
+                onPressed: (){}, 
+                labelText: 'Share', 
+                color: Colors.blue.shade500
               ),
             ],
           ),
         ),
         const SizedBox(height: 10,)
       ],
-    );
-  }
-}
-
-class _PostButton extends StatelessWidget {
-  final Icon icon;
-  final String label;
-  final VoidCallback onTap;
-
-
-  const _PostButton({
-    required this.icon, 
-    required this.label, 
-    required this.onTap
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal : 12.0),
-            child: SizedBox(
-              height: 25.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  icon,
-                  const SizedBox(
-                    width: 4.0,
-                  ),
-                  Text(label)
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

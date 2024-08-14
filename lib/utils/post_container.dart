@@ -1,14 +1,19 @@
-
 import 'package:edventure/utils/post_stats.dart';
 import 'package:edventure/utils/profile_avatar.dart';
+import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
 import '../constants/images.dart';
 
-class PostContainer extends StatelessWidget {
+class PostContainer extends StatefulWidget {
   const PostContainer({
     super.key,
   });
 
+  @override
+  State<PostContainer> createState() => _PostContainerState();
+}
+
+class _PostContainerState extends State<PostContainer> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -24,7 +29,7 @@ class PostContainer extends StatelessWidget {
               blurRadius: 5,
               offset: const Offset(0, 3),
             )
-          ]
+          ],
         ),
         child: Column(
           children: [
@@ -37,10 +42,11 @@ class PostContainer extends StatelessWidget {
                   const SizedBox(
                     height: 7.0,
                   ),
-                  const Text('Hello this is Arbin shrestha' , 
+                  const Text(
+                    'Hello this is Arbin Shrestha',
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
-                      fontSize: 16
+                      fontSize: 16,
                     ),
                   ),
                   const SizedBox(
@@ -70,44 +76,69 @@ class PostContainer extends StatelessWidget {
   }
 }
 
-class PostHeader extends StatelessWidget {
+class PostHeader extends StatefulWidget {
   const PostHeader({
-    super.key, 
+    super.key,
   });
 
   @override
+  State<PostHeader> createState() => _PostHeaderState();
+}
+
+class _PostHeaderState extends State<PostHeader> {
+
+  @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [     
-        const ProfileAvatar(
-          image: AppImages.profile, 
-        ),
-        const SizedBox(width: 8.0,),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Arbin Shrestha' , 
-                style: TextStyle(
-                  fontWeight: FontWeight.w600
-                ),
-              ),
-              Row(
+    return Column(
+      children: [
+        Row(
+          children: [
+            const ProfileAvatar(
+              image: AppImages.profile,
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('5h ago ', style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12.0
-                  ),),
-                  Icon(
-                    Icons.public,
-                    color: Colors.grey[600],
-                    size: 12.0,
+                  const Text(
+                    'Arbin Shrestha',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '5h ago',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      Icon(
+                        Icons.public,
+                        color: Colors.grey[600],
+                        size: 12.0,
+                      ),
+                    ],
                   ),
                 ],
-              )
-            ],
-          ),
-        )
+              ),
+            ),
+            Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 12.0),
+              child: TextButton(
+                onPressed: () {},  
+                child: TTextButton(
+                  iconData: Icons.flag_outlined, 
+                  onPressed: (){}, 
+                  labelText: 'Report', 
+                  color: Colors.red
+                ),
+              ),
+            ),
+          ],
+        ),  
       ],
     );
   }

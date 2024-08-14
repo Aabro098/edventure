@@ -52,7 +52,8 @@ class _AppFormState extends State<AppForm> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
-            color: Colors.blue.shade300, 
+            color: Colors.blue.shade600, 
+            width:2.0
           ),
         ),
       ),
