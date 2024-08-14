@@ -111,14 +111,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Row(
                           children: [
-                            Star(),
-                            SizedBox(width: 2.0,),
-                            Star(),
-                            SizedBox(width: 2.0,),
-                            Star(),
-                            SizedBox(width: 2.0,),
-                            Star(),
-                            SizedBox(width: 8.0,),
+                            Star(count: 5,),
+                            SizedBox(width: 5.0,),
                             Text('4.0', style: TextStyle(fontSize: 34.0),),
                           ],
                         ),
@@ -167,10 +161,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                       ),
-                      const Text('I am a dedicated Flutter developer with 6 months of hands-on experience. I specialize in creating efficient, cross-platform apps with a focus on intuitive design and seamless user experience. My portfolio includes projects like a Notes app and a Flappy Bird game, showcasing my passion for mobile development.'),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        width: double.infinity,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.05),
+                              spreadRadius: 2,
+                              offset: const Offset(0, 2)
+                            )
+                          ]
+                        ),
+                        child: const Text(
+                          'I am a dedicated Flutter developer with 6 months of hands-on experience. I specialize in creating efficient, cross-platform apps with a focus on intuitive design and seamless user experience. My portfolio includes projects like a Notes app and a Flappy Bird game, showcasing my passion for mobile development.',
+                          style : TextStyle(
+                            fontSize : 14,
+                            fontWeight : FontWeight.normal,
+                            fontStyle: FontStyle.italic,
+                            overflow: TextOverflow.clip
+                          )
+                          ),
+                      ),
                       const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Text('Reviews',               
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Recent Reviews',               
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.grey,
@@ -178,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                       ),
-                      const NotificationCard(),
+                      const NotificationCard(review : true),
                     ],
                                     ),
                   ),

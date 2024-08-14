@@ -1,5 +1,4 @@
 import 'package:edventure/Widgets/notification_card.dart';
-import 'package:edventure/Widgets/user_card.dart';
 import 'package:edventure/utils/contact_list.dart';
 import 'package:edventure/utils/more_options.dart';
 import 'package:flutter/material.dart';
@@ -47,17 +46,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 SliverToBoxAdapter(
                   child: Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        child: const Center(
-                          child: UserCard(
-                            notification: true
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
                       Expanded(
                         child: GestureDetector(
                           onTap: () {},

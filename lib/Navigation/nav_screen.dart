@@ -22,7 +22,6 @@ class _NavScreenState extends State<NavScreen> {
     const ProfileScreen(),
     const FriendScreen(),
     const NotificationScreen(),
-    const Scaffold(),
   ];
 
   final List<IconData> _icons = [
@@ -31,7 +30,6 @@ class _NavScreenState extends State<NavScreen> {
     Icons.account_circle_outlined,
     Icons.group_outlined,
     Icons.notifications,
-    Icons.menu,
   ];
 
   int selectedIndex = 0;

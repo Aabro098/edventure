@@ -1,8 +1,12 @@
+import 'package:edventure/Widgets/stars.dart';
+import 'package:edventure/Widgets/user_card.dart';
 import 'package:flutter/material.dart';
 
 class NotificationCard extends StatelessWidget {
+  final bool? review;
   const NotificationCard({
-    super.key,
+    super.key, 
+    this.review,
   });
 
   @override
@@ -19,27 +23,39 @@ class NotificationCard extends StatelessWidget {
         ],
       ),
       padding: const EdgeInsets.all(12.0),
-      child: const Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(
-            'Hello this is the Notification model.\nThis is where I have been testing the flutter application.',
-            style: TextStyle(
-              fontWeight: FontWeight.w300,
-              fontSize: 14.0,
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(
+              child: UserCard(notification: true)
             ),
-            overflow: TextOverflow.clip,
           ),
-          SizedBox(
-            height: 5.0,
-          ),
-          Text(
-            '5h ago',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.normal,
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Hello this is the Notification model.\nThis is where I have been testing the flutter application.',
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  fontSize: 14.0,
+                ),
+                overflow: TextOverflow.clip,
+              ),
+              const SizedBox(
+                height: 5.0,
+              ),
+              review ?? false 
+              ? const Star(count : 3)
+              : const Text(
+                  '5h ago',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                  ),
+                )
+            ],
           ),
         ],
       ),
