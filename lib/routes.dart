@@ -1,7 +1,6 @@
 
 import 'package:edventure/Navigation/nav_screen.dart';
 import 'package:flutter/material.dart';
-
 import 'Screens/Auth Screens/Sign In/auth_screen.dart';
 import 'Screens/Profile Screen/profile_screen.dart';
 
@@ -12,21 +11,16 @@ Route<dynamic>generateRoute(RouteSettings routeSettings){
         settings: routeSettings,
         builder: (_) => const AuthScreen()
       );
-      // case SignUpScreen.routeName:
-      // return MaterialPageRoute(
-      //   settings: routeSettings,
-      //   builder: (_) => const SignUpScreen()
-      // );
       case ProfileScreen.routeName:
-      return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (_) => const ProfileScreen()
-      );
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const ProfileScreen()
+        );
       case NavScreen.routeName:
-      return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (_) => const NavScreen()
-      );
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const NavScreen()
+        );
     default:
       return MaterialPageRoute(
         settings: routeSettings,

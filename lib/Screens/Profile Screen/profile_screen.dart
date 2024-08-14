@@ -1,7 +1,7 @@
 
 import 'package:edventure/Widgets/details.dart';
 import 'package:edventure/Widgets/notification_card.dart';
-import 'package:edventure/utils/outlined_button.dart';
+import 'package:edventure/utils/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:edventure/constants/images.dart';
 import '../../Widgets/stars.dart';
@@ -121,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 5.0,),
-                    AppOutlinedButton(
+                    AppElevatedButton(
                       text: 'Edit Details', 
                       onTap: (){}, 
                       color: Colors.blue.shade600
