@@ -17,7 +17,7 @@ class Star extends StatelessWidget {
         (index) => const Icon(
           Icons.star,
           color: Colors.yellow,
-          size: 24,
+          size: 20,
         ),
       ),
     );
