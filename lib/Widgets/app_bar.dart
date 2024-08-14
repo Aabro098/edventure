@@ -1,6 +1,6 @@
-import 'package:edventure/Widgets/icon_button.dart';
-import 'package:edventure/Widgets/tab_bar.dart';
+import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
+import 'package:edventure/Widgets/tab_bar.dart';
 
 import 'user_card.dart';
 
@@ -61,10 +61,11 @@ class CustomAppBar extends StatelessWidget {
             children: [
               const UserCard(),
               const SizedBox(width: 12.0),
-              TIconButton(
+              TTextButton(
                 iconData: Icons.search,
-                iconSize: 30.0,
-                onPressed: (){}
+                labelText : 'Search',
+                onPressed: (){},
+                color: Colors.grey,
               ),
             ],
           )

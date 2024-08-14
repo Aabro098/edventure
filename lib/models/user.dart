@@ -10,13 +10,16 @@ class User {
   final String coverImage;
   final String address;
   final String bio;
-  final double rating;
+  final String about;
+  final int rating;
+  final int ratingNumber;
   final String education;
   final String status;
   final String type;
   final String username;
   final bool isVerified;
   final List<String> posts;
+  final List<String> review;
   final String token;
 
   User({
@@ -29,13 +32,16 @@ class User {
     required this.coverImage,
     required this.address,
     required this.bio,
+    required this.about,
     required this.rating,
+    required this.ratingNumber,
     required this.education,
     required this.status,
     required this.type,
     required this.username,
     required this.isVerified,
     required this.posts,
+    required this.review,
     required this.token,
   });
 
@@ -51,13 +57,16 @@ class User {
     result.addAll({'coverImage': coverImage});
     result.addAll({'address': address});
     result.addAll({'bio': bio});
+    result.addAll({'about': about});
     result.addAll({'rating': rating});
+    result.addAll({'ratingNumber': ratingNumber});
     result.addAll({'education': education});
     result.addAll({'status': status});
     result.addAll({'type': type});
     result.addAll({'username': username});
     result.addAll({'isVerified': isVerified});
     result.addAll({'posts': posts});
+    result.addAll({'review': review});
     result.addAll({'token': token});
   
     return result;
@@ -74,13 +83,16 @@ class User {
       coverImage: map['coverImage'] ?? '',
       address: map['address'] ?? '',
       bio: map['bio'] ?? '',
-      rating: map['rating']?.toDouble() ?? 0.0,
+      about: map['about'] ?? '',
+      rating: map['rating']?.toInt() ?? 0,
+      ratingNumber: map['ratingNumber']?.toInt() ?? 0,
       education: map['education'] ?? '',
       status: map['status'] ?? '',
       type: map['type'] ?? '',
       username: map['username'] ?? '',
       isVerified: map['isVerified'] ?? false,
       posts: List<String>.from(map['posts']),
+      review: List<String>.from(map['review']),
       token: map['token'] ?? '',
     );
   }

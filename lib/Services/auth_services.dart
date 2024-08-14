@@ -29,7 +29,9 @@ class AuthService {
         coverImage: '',
         address: '',
         bio : '',
-        rating:0.0,
+        about : '',
+        rating:0,
+        ratingNumber: 0,
         education: '',
         status : '',
         type: '',
@@ -37,6 +39,7 @@ class AuthService {
         token: '',
         isVerified: false, 
         posts: [],
+        review: []
       );
 
       http.Response res = await http.post(

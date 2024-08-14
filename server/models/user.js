@@ -54,9 +54,17 @@ const userSchema = mongoose.Schema({
         type: String,
         default: ''
     },
+    about : {
+        type: String,
+        default: ''
+    },
     rating: {
         type: Number,
-        default: 0.0
+        default: 0
+    },
+    numberRating: {
+        type: Number,
+        default: 0
     },
     education: {
         type: String,
@@ -86,6 +94,10 @@ const userSchema = mongoose.Schema({
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
+    }],
+    review: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review'
     }]
 });
 

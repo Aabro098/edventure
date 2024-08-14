@@ -4,26 +4,30 @@ class TTextButton extends StatelessWidget {
   final IconData iconData;
   final VoidCallback onPressed;
   final String labelText;
-  final Color color;
+  final Color? color;
   
   const TTextButton({
     super.key,
-    required this.iconData, 
-    required this.onPressed, 
+    required this.iconData,
+    required this.onPressed,
     required this.labelText,
-    required this.color
+    this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
       onPressed: (){},
-        icon: Icon(iconData,
-        color:color
+      icon: Icon(
+        iconData,
+        color: color ?? Colors.black
       ),
-      label: Text(labelText , style: const TextStyle(
-        color: Colors.black
-      ),),
+      label: Text(
+        labelText ,
+        style: TextStyle(
+          color: color ?? Colors.black
+        ),
+      ),
     );
   }
 }

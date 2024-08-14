@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Star extends StatelessWidget {
-  final int count;
+  final double count;
 
   const Star({
     super.key,
@@ -13,7 +13,7 @@ class Star extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(
-        count,
+        count.toInt(),
         (index) => const Icon(
           Icons.star,
           color: Colors.yellow,

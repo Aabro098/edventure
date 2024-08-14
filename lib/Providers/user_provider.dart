@@ -12,7 +12,9 @@ class UserProvider extends ChangeNotifier{
     coverImage: '', 
     address: '', 
     bio: '', 
-    rating: 0.0, 
+    about : '',
+    rating: 0,
+    ratingNumber: 0,  
     education: '', 
     status: '', 
     type: '', 
@@ -20,6 +22,7 @@ class UserProvider extends ChangeNotifier{
     token: '',
     isVerified : false, 
     posts: [],
+    review : []
   );
 
   User get user => _user;

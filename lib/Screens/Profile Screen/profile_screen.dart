@@ -1,9 +1,11 @@
 
-import 'package:edventure/Widgets/details.dart';
+import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Widgets/notification_card.dart';
 import 'package:edventure/utils/elevated_button.dart';
+import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:edventure/constants/images.dart';
+import 'package:provider/provider.dart';
 import '../../Widgets/stars.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -17,6 +19,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       body: Row(
         children: [
@@ -51,27 +54,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 10.0),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          'Arbin Shrestha',
-                          style: TextStyle(
+                          user.name,
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(width: 8.0,),
+                        const SizedBox(width: 8.0,),
                         Text(
-                          '(aabro_098)',
-                          style: TextStyle(
+                          user.username,
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
                         ),
-                        SizedBox(width: 8.0,),
+                        const SizedBox(width: 8.0,),
                         Center(
-                          child: Stack(
+                          child: user.isVerified 
+                          ? const Stack(
                             alignment: Alignment.center,
                             children: [
                               CircleAvatar(
@@ -84,47 +88,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 size: 10,
                               ),
                             ],
-                          ),
+                          ) 
+                          : const SizedBox.shrink(),
                         ),
                       ],
                     ),
-                    const Text(
-                      '"Those who do not know pain will never understand true peace." ✨👀',
-                      style: TextStyle(
+                    Text(
+                      user.bio,
+                      style: const TextStyle(  
                         fontSize: 16,
                         fontWeight: FontWeight.w300,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
                     const SizedBox(height: 5.0,),
-                    const Details(icon: Icons.email, text : 'arbinstha71@gmail.com', color: Colors.blue,),
+                    TTextButton(
+                      iconData: Icons.email, 
+                      onPressed: (){}, 
+                      labelText 
+                        : user.email.isNotEmpty 
+                        ? user.email 
+                        : 'Enter Email', 
+                      color: Colors.blue, 
+                    ),
                     const SizedBox(height: 5.0,),
-                    const Details(icon: Icons.phone, text : '9851018593'),
+                    TTextButton(
+                      iconData: Icons.phone_android, 
+                      onPressed: (){}, 
+                      labelText 
+                        : user.phone.isNotEmpty 
+                        ? user.phone 
+                        : 'Enter Phone', 
+                    ),
                     const SizedBox(height: 5.0,),
-                    const Details(icon: Icons.location_city, text : 'New Baneshwor , Shankhamul'),
+                    TTextButton(
+                      iconData: Icons.home, 
+                      onPressed: (){}, 
+                      labelText 
+                        : user.address.isNotEmpty 
+                        ? user.address 
+                        : 'Enter Adress', 
+                    ),
                     const SizedBox(height: 5.0,),
-                    const Details(icon: Icons.school, text : 'Khwopa Engineering College'),
+                    TTextButton(
+                      iconData: Icons.school, 
+                      onPressed: (){}, 
+                      labelText 
+                        : user.education.isNotEmpty 
+                        ? user.education 
+                        : 'Enter Education',
+                    ),
                     const SizedBox(height: 5.0,),
-                    const Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Star(count: 5,),
-                            SizedBox(width: 5.0,),
-                            Text('4.0', style: TextStyle(fontSize: 34.0),),
+                            Star(
+                              count: (user.ratingNumber != 0)
+                              ? (user.rating / user.ratingNumber)
+                              : 0,
+                            ),
+                            const SizedBox(width: 5.0),
+                            Text(
+                              (user.ratingNumber != 0)
+                                  ? (user.rating / user.ratingNumber).toStringAsFixed(1)
+                                  : '0.0',
+                              style: const TextStyle(fontSize: 20.0),
+                            ),
                           ],
                         ),
-                        SizedBox(height: 5.0,),
-                        Text('No of reviews : 189', style: TextStyle(fontSize: 16.0),),
+                        const SizedBox(height: 5.0,),
+                        Text('No of reviews : ${user.ratingNumber}', style: const TextStyle(fontSize: 16.0),),
                       ],
                     ),
                     const SizedBox(height: 5.0,),
                     AppElevatedButton(
                       text: 'Edit Details', 
                       onTap: (){}, 
-                      color: Colors.blue.shade600
+                      color: Colors.blue.shade400
                     )
                   ],
                 ),
@@ -161,29 +204,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        width: double.infinity,
-                        height: 90,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.05),
-                              spreadRadius: 2,
-                              offset: const Offset(1, 1)
-                            )
-                          ]
-                        ),
-                        child: const Text(
-                          'I am a dedicated Flutter developer with 6 months of hands-on experience. I specialize in creating efficient, cross-platform apps with a focus on intuitive design and seamless user experience. My portfolio includes projects like a Notes app and a Flappy Bird game, showcasing my passion for mobile development.',
-                          style : TextStyle(
-                            fontSize : 14,
-                            fontWeight : FontWeight.normal,
-                            fontStyle: FontStyle.normal,
-                            overflow: TextOverflow.clip
-                          )
+                      Stack(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            width: double.infinity,
+                            height: 90,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.05),
+                                  spreadRadius: 2,
+                                  offset: const Offset(1, 1)
+                                )
+                              ]
+                            ),
+                            child: Text(
+                              user.about.isNotEmpty 
+                              ? user.address
+                              : 'Enter your short description',
+                              style : const TextStyle(
+                                fontSize : 14,
+                                fontWeight : FontWeight.normal,
+                                fontStyle: FontStyle.normal,
+                                overflow: TextOverflow.clip
+                              )
+                            ) 
                           ),
+                          Positioned(
+                            bottom: 10,
+                            right: 10,
+                            child: GestureDetector(
+                              onTap: () {},
+                              child: const Icon(
+                                Icons.edit,
+                                size: 20,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const Padding(
                         padding: EdgeInsets.all(8.0),
@@ -195,9 +256,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                       ),
-                      const NotificationCard(review : true),
-                    ],
-                                    ),
+                      user.review.isNotEmpty
+                        ? const NotificationCard(review : true)
+                        : const Center(
+                          child: Text(
+                            'No Reviews available',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 18
+                            ),
+                          )
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
