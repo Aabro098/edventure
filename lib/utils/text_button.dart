@@ -17,7 +17,7 @@ class TTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
-      onPressed: (){},
+      onPressed: onPressed,
       icon: Icon(
         iconData,
         color: color ?? Colors.black

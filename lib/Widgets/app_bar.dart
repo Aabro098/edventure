@@ -1,10 +1,9 @@
-import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
+import 'package:edventure/utils/text_button.dart';
 import 'package:edventure/Widgets/tab_bar.dart';
-
 import 'user_card.dart';
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
   final List<IconData> icons;
   final int selectedIndex;
   final Function(int) onTap;
@@ -17,58 +16,98 @@ class CustomAppBar extends StatelessWidget {
   });
 
   @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+
+  void _toggleSearch() {
+    setState(() {
+      _isSearching = !_isSearching;
+      if (!_isSearching) {
+        _searchController.clear();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      height: 65.0,
-      decoration: BoxDecoration(
+      height: 70.0,
+      decoration: const BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade100,
-            offset: const Offset(0,2),
-            blurRadius: 4
-          )
-        ]
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.white,
+            width: 2.0,
+          ),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: Text("EdVenture", style: TextStyle(
-              letterSpacing: 1.2,
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              color: Colors.cyan.shade600
+            child: Text(
+              "EdVenture",
+              style: TextStyle(
+                letterSpacing: 1.2,
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: Colors.cyan.shade600,
+              ),
             ),
-                    ),
           ),
           const Spacer(),
-          Container(
-            color: Colors.white,
-            height: double.infinity,
-            width: 600.0,
-            child: CustomTabBar(
-              icons: icons,
-              selectedIndex: selectedIndex,
-              onTap: onTap,
-              isBottomIndicator : true
-            ),
-          ),
+          _isSearching
+              ? Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Search...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          _toggleSearch();
+                        },
+                      ),
+                    ),
+                  ),
+                )
+              : SizedBox(
+                  height: double.infinity,
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: CustomTabBar(
+                    icons: widget.icons,
+                    selectedIndex: widget.selectedIndex,
+                    onTap: widget.onTap,
+                    isBottomIndicator: true,
+                  ),
+                ),
           const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const UserCard(),
+              if (!_isSearching)
+                TTextButton(
+                  iconData: Icons.search,
+                  labelText: 'Search',
+                  onPressed: () {
+                    _toggleSearch();
+                  },
+                  color: Colors.grey,
+                ),
               const SizedBox(width: 12.0),
-              TTextButton(
-                iconData: Icons.search,
-                labelText : 'Search',
-                onPressed: (){},
-                color: Colors.grey,
-              ),
+              const UserCard(),
             ],
-          )
+          ),
         ],
       ),
     );

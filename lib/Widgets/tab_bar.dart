@@ -26,14 +26,12 @@ class CustomTabBar extends StatelessWidget {
                   color: Colors.cyan.shade700,
                   width: 3.0,
                 ),
-                insets: const EdgeInsets.symmetric(horizontal: 0),  // Adjust to make the border span the full width
               )
             : UnderlineTabIndicator(
                 borderSide: BorderSide(
                   color: Colors.cyan.shade700,
                   width: 3.0,
                 ),
-                insets: const EdgeInsets.symmetric(horizontal: 0),  // Adjust to make the border span the full width
               ),
         tabs: icons
             .asMap()
@@ -50,7 +48,7 @@ class CustomTabBar extends StatelessWidget {
                         color: i == selectedIndex
                             ? Colors.cyan.shade600
                             : Colors.black45,
-                        size: i == icons.length - 3 ? 36.0 : 30.0,
+                        size: i == icons.length - 3 ? 32.0 : 28.0,
                       ),
                     ),
                   ),

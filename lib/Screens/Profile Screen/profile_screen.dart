@@ -66,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(width: 8.0,),
                         Text(
-                          user.username,
+                          '(${user.username})',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
@@ -263,7 +263,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             'No Reviews available',
                             style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 18
+                              fontSize: 16
                             ),
                           )
                         ),
