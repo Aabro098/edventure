@@ -164,12 +164,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         width: double.infinity,
-                        height: 80,
+                        height: 90,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.05),
+                              color: Colors.grey.withOpacity(0.08),
                               spreadRadius: 2,
                               offset: const Offset(0, 2)
                             )
@@ -180,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           style : TextStyle(
                             fontSize : 14,
                             fontWeight : FontWeight.normal,
-                            fontStyle: FontStyle.italic,
+                            fontStyle: FontStyle.normal,
                             overflow: TextOverflow.clip
                           )
                           ),

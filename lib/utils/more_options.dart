@@ -9,7 +9,7 @@ class MoreOptionList extends StatefulWidget {
     [Icons.message , Colors.blue, 'Messenger'],
     [Icons.school , Colors.black, 'Institution'],
     [Icons.video_call_outlined , Colors.blue, 'Watch'],
-    [Icons.calendar_month_outlined , Colors.orange, 'Events'],
+    [Icons.settings_outlined,Colors.grey, 'Settings'],
     [Icons.logout , Colors.red, 'Log Out'],
   ];
 
