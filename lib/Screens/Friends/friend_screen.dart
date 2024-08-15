@@ -34,37 +34,18 @@ class _FriendScreenState extends State<FriendScreen> {
             width: 550,
             child: CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('Contacts',               
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: FriendCard(),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Text('People You May Know',               
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ),
-                ),
+                ConstantText(text: 'Saved Contacts',),
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: FriendCard(),
+                    child: FriendCard(suggested: false,),
+                  ),
+                ),
+                ConstantText(text: 'Suggested Contacts'),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: FriendCard(suggested: true,),
                   ),
                 ),
               ],
@@ -82,6 +63,30 @@ class _FriendScreenState extends State<FriendScreen> {
             )
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ConstantText extends StatelessWidget {
+  final String text;
+  const ConstantText({
+    super.key, 
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(text,               
+          style: const TextStyle(
+            fontSize: 18,
+            color: Colors.grey,
+            fontWeight: FontWeight.bold
+          ),
+        ),
       ),
     );
   }

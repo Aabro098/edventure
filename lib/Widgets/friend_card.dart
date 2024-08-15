@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+
 import 'package:edventure/constants/images.dart';
+
 import '../utils/profile_avatar.dart';
 
 class FriendCard extends StatelessWidget {
+  final bool suggested;
   const FriendCard({
     super.key,
+    required this.suggested,
   });
 
   @override
@@ -72,8 +76,10 @@ class FriendCard extends StatelessWidget {
             height: 50.0,
             child: InkWell(
               onTap: () {},
-              child: const Icon(
-                Icons.message,
+              child: Icon(
+                suggested 
+                ? Icons.notification_important
+                : Icons.message,
                 size: 24.0,
               ),
             ),
