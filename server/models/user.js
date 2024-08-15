@@ -20,6 +20,7 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type: String,
+        trim : true,
         requried: true,
         validate: {
             validator: (value) => {

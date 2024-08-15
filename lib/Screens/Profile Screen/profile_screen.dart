@@ -47,35 +47,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
   }
-
   Future<void> _handleButtonPress() async {
-  if (emailController.text.isEmpty || nameController.text.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Email and Name cannot be blank')),
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
+    setState(() {
+      _isLoading = true;
+      _isLoading? const CircularProgressIndicator() : null;
+    });
+
+    await authService.updateUser(
+      context: context,
+      email: emailController.text.isNotEmpty ? emailController.text : user.email,
+      name: nameController.text.isNotEmpty ? nameController.text : user.name,
+      phone: phoneController.text.isNotEmpty ? phoneController.text : null,
+      address: addressController.text.isNotEmpty ? addressController.text : null,
+      education: educationController.text.isNotEmpty ? educationController.text : null,
+      bio: bioController.text.isNotEmpty ? bioController.text : null,
+      about: aboutController.text.isNotEmpty ? aboutController.text : null,
     );
-    return;
+
+    setState(() {
+      _isLoading = false;
+    });
   }
-
-  setState(() {
-    _isLoading = true;
-    _isLoading ? const CircularProgressIndicator() : null;
-  });
-
-  await authService.updateUser(
-    context: context,
-    email: emailController.text, 
-    name: nameController.text,   
-    phone: phoneController.text, 
-    address: addressController.text, 
-    education: educationController.text, 
-    bio: bioController.text, 
-    about: aboutController.text, 
-  );
-
-  setState(() {
-    _isLoading = false;
-  });
-}
 
   @override
   void dispose() {
@@ -198,21 +192,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(width: 8.0),
                         Center(
                           child: user.isVerified
-                              ? const Stack(
-                                  alignment: Alignment.center,
+                              ? const Row(
+                                children: [
+                                  Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 8,
+                                          backgroundColor: Colors.blue,
+                                        ),
+                                        Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(width: 4.0),
+                                    Text('Verified',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.blue
+                                      ),
+                                    )
+                                ],
+                              ) 
+                                : Row(
                                   children: [
-                                    CircleAvatar(
-                                      radius: 8,
-                                      backgroundColor: Colors.blue,
+                                    const Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 8,
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      ],
                                     ),
-                                    Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 10,
-                                    ),
+                                    const SizedBox(width: 4.0),
+                                    GestureDetector(
+                                      onTap: (){},
+                                      child: const Text('Verify Now',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blue
+                                        ),
+                                      ),
+                                    )
                                   ],
                                 )
-                              : const SizedBox.shrink(),
                         ),
                       ],
                     ),
