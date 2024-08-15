@@ -62,16 +62,26 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ),
           const Spacer(),
           _isSearching
-              ? Expanded(
+          ? Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade100,
+                    spreadRadius: 3,
+                  )
+                ]
+              ),
+              width: MediaQuery.of(context).size.width*0.4,
+                child: Center(
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
                       hintText: 'Search...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      border: InputBorder.none,
+                      prefixIcon: const Icon(Icons.search_outlined),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.close),
                         onPressed: () {
@@ -80,17 +90,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       ),
                     ),
                   ),
-                )
-              : SizedBox(
-                  height: double.infinity,
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: CustomTabBar(
-                    icons: widget.icons,
-                    selectedIndex: widget.selectedIndex,
-                    onTap: widget.onTap,
-                    isBottomIndicator: true,
-                  ),
                 ),
+              ),
+          )
+          : SizedBox(
+              height: double.infinity,
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: CustomTabBar(
+                icons: widget.icons,
+                selectedIndex: widget.selectedIndex,
+                onTap: widget.onTap,
+                isBottomIndicator: true,
+              ),
+            ),
           const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,

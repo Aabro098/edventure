@@ -1,7 +1,6 @@
 
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Widgets/notification_card.dart';
-import 'package:edventure/utils/elevated_button.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:edventure/constants/images.dart';
@@ -17,9 +16,17 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isAbout = false;
+
+  void _changeAbout() {
+    setState(() {
+      _isAbout = !_isAbout;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
+    final TextEditingController aboutController = TextEditingController(text: user.about);
     return Scaffold(
       body: Row(
         children: [
@@ -163,12 +170,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text('No of reviews : ${user.ratingNumber}', style: const TextStyle(fontSize: 16.0),),
                       ],
                     ),
-                    const SizedBox(height: 5.0,),
-                    AppElevatedButton(
-                      text: 'Edit Details', 
-                      onTap: (){}, 
-                      color: Colors.blue.shade400
-                    )
                   ],
                 ),
               ),
@@ -206,42 +207,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Stack(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            width: double.infinity,
-                            height: 90,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.05),
-                                  spreadRadius: 2,
-                                  offset: const Offset(1, 1)
-                                )
-                              ]
-                            ),
-                            child: Text(
-                              user.about.isNotEmpty 
-                              ? user.address
-                              : 'Enter your short description',
-                              style : const TextStyle(
-                                fontSize : 14,
-                                fontWeight : FontWeight.normal,
-                                fontStyle: FontStyle.normal,
-                                overflow: TextOverflow.clip
-                              )
-                            ) 
-                          ),
-                          Positioned(
-                            bottom: 10,
-                            right: 10,
-                            child: GestureDetector(
-                              onTap: () {},
-                              child: const Icon(
-                                Icons.edit,
-                                size: 20,
-                                color: Colors.grey,
+                          GestureDetector(
+                            onDoubleTap: (){
+                              _changeAbout();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              width: double.infinity,
+                              height: 90,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.05),
+                                    spreadRadius: 2,
+                                    offset: const Offset(1, 1)
+                                  )
+                                ]
                               ),
+                              child: _isAbout  
+                              ? TextField(
+                                  controller: aboutController,
+                                  maxLines: null,
+                                  keyboardType: TextInputType.multiline,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Enter your details...',
+                                    hintStyle: TextStyle(
+                                      fontSize : 14,
+                                      fontWeight : FontWeight.normal,
+                                      fontStyle: FontStyle.normal,
+                                      overflow: TextOverflow.clip
+                                    ),
+                                    border: InputBorder.none,
+                                    alignLabelWithHint: true,
+                                    contentPadding:  EdgeInsets.only(top: 4.0, left: 8.0),
+                                  ),
+                                )
+                              : Text(
+                                  user.about.isNotEmpty 
+                                  ? user.address
+                                  : 'Enter your short description',
+                                  style : const TextStyle(
+                                    fontSize : 14,
+                                    fontWeight : FontWeight.normal,
+                                    fontStyle: FontStyle.normal,
+                                    overflow: TextOverflow.clip
+                                  )
+                                )
                             ),
                           ),
                         ],
