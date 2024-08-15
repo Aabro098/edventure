@@ -142,4 +142,58 @@ class AuthService {
     }
   }
 
+  Future<void> updateUser({
+    required BuildContext context,
+    String? email,
+    String? name,
+    String? phone,
+    String? address,
+    String? education,
+    String? bio,
+    String? about,
+  }) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('x-auth-token');
+
+      if (token == null) {
+        throw Exception('No token found');
+      }
+
+      Map<String, dynamic> updates = {};
+
+      if (email != null) updates['email'] = email;
+      if (name != null) updates['name'] = name;
+      if (phone != null) updates['phone'] = phone;
+      if (address != null) updates['address'] = address;
+      if (education != null) updates['education'] = education;
+      if (bio != null) updates['bio'] = bio;
+      if (about != null) updates['about'] = about;
+
+      http.Response res = await http.put(
+        Uri.parse('$uri/api/update'),
+        body: jsonEncode(updates),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token,
+        },
+      );
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          showSnackBar(
+            context,
+            'User information updated successfully',
+          );
+          Provider.of<UserProvider>(context, listen: false).setUser(res.body);
+        },
+      );
+    } catch (e) {
+      Future.delayed(Duration.zero, () {
+        showSnackBar(context, e.toString());
+      });
+    }
+  }
 }

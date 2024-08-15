@@ -91,4 +91,23 @@ authRouter.get('/', auth , async (req,res)=>{
     res.json({...user._doc , token : req.token});
 });
 
+authRouter.put('/api/update', auth, async (req, res) => {
+    try {
+      const updates = req.body;
+      const user = await User.findById(req.user);
+  
+      if (!user) {
+        return res.status(404).json({ msg: 'User not found' });
+      }
+      Object.keys(updates).forEach(key => {
+        user[key] = updates[key];
+      });
+  
+      await user.save();
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = authRouter;
