@@ -57,10 +57,11 @@ class _NavScreenState extends State<NavScreen> {
         bottomNavigationBar: !Responsive.isDesktop(context)
             ? Container(
                 padding: const EdgeInsets.only(bottom: 6.0),
-                child: CustomTabBar(
+                child: CustomCurvedNavigationBar(
                   icons: _icons,
                   selectedIndex: selectedIndex,
                   onTap: (index) => setState(() => selectedIndex = index),
+                  isBottomIndicator: true,
                 ),
               )
             : const SizedBox.shrink(),

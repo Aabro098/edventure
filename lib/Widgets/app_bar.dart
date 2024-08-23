@@ -37,9 +37,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       height: 70.0,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(
+      decoration: BoxDecoration(
+        color: Colors.blue.shade100,
+        border: const Border(
           bottom: BorderSide(
             color: Colors.white,
             width: 2.0,
@@ -49,14 +49,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
+          const Expanded(
             child: Text(
               "EdVenture",
               style: TextStyle(
                 letterSpacing: 1.2,
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
-                color: Colors.cyan.shade600,
+                color: Colors.blue,
               ),
             ),
           ),
@@ -96,11 +96,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
           : SizedBox(
               height: double.infinity,
               width: MediaQuery.of(context).size.width * 0.4,
-              child: CustomTabBar(
+              child: CustomCurvedNavigationBar(
                 icons: widget.icons,
                 selectedIndex: widget.selectedIndex,
                 onTap: widget.onTap,
-                isBottomIndicator: true,
               ),
             ),
           const Spacer(),

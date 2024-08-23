@@ -3,6 +3,7 @@ import 'package:edventure/Screens/Auth%20Screens/Sign%20In/auth_screen.dart';
 import 'package:edventure/Widgets/user_card.dart';
 import 'package:edventure/utils/options.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MoreOptionList extends StatefulWidget {
   final List<List> moreOptionList = const [
@@ -23,6 +24,16 @@ class MoreOptionList extends StatefulWidget {
 }
 
 class _MoreOptionListState extends State<MoreOptionList> {
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AuthScreen.routeName,
+      (route) => false,
+    );
+}
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,11 +53,7 @@ class _MoreOptionListState extends State<MoreOptionList> {
             child: Options(
               onTap: (){
                 if (option[2] == 'Log Out') {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    AuthScreen.routeName,
-                    (route) => false,
-                  );
+                  logout();
                 }
               },
               icon : option[0],
