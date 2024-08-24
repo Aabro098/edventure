@@ -39,7 +39,8 @@ class AuthService {
         token: '',
         isVerified: false, 
         posts: [],
-        review: []
+        review: [], 
+        isEmailVerified: false
       );
 
       http.Response res = await http.post(

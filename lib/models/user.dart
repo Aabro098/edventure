@@ -18,6 +18,7 @@ class User {
   final String type;
   final String username;
   final bool isVerified;
+  final bool isEmailVerified;
   final List<String> posts;
   final List<String> review;
   final String token;
@@ -40,6 +41,7 @@ class User {
     required this.type,
     required this.username,
     required this.isVerified,
+    required this.isEmailVerified,
     required this.posts,
     required this.review,
     required this.token,
@@ -65,6 +67,7 @@ class User {
     result.addAll({'type': type});
     result.addAll({'username': username});
     result.addAll({'isVerified': isVerified});
+    result.addAll({'isEmailVerified': isEmailVerified});
     result.addAll({'posts': posts});
     result.addAll({'review': review});
     result.addAll({'token': token});
@@ -91,6 +94,7 @@ class User {
       type: map['type'] ?? '',
       username: map['username'] ?? '',
       isVerified: map['isVerified'] ?? false,
+      isEmailVerified: map['isEmailVerified'] ?? false,
       posts: List<String>.from(map['posts']),
       review: List<String>.from(map['review']),
       token: map['token'] ?? '',

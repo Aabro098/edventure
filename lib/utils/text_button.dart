@@ -20,7 +20,7 @@ class TTextButton extends StatelessWidget {
       onPressed: onPressed,
       icon: Icon(
         iconData,
-        color: color ?? Colors.black
+        color: color ?? Colors.grey.shade800
       ),
       label: Text(
         labelText ,

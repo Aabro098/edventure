@@ -92,6 +92,10 @@ const userSchema = mongoose.Schema({
         type : Boolean,
         default : false
     },
+    isEmailVerified : {
+        type : Boolean,
+        default : false
+    },
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
