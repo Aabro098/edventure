@@ -19,8 +19,10 @@ class User {
   final String username;
   final bool isVerified;
   final bool isEmailVerified;
+  final bool isAvailable;
   final List<String> posts;
   final List<String> review;
+  final List<String> notification;
   final String token;
 
   User({
@@ -42,8 +44,10 @@ class User {
     required this.username,
     required this.isVerified,
     required this.isEmailVerified,
+    required this.isAvailable,
     required this.posts,
     required this.review,
+    required this.notification,
     required this.token,
   });
 
@@ -67,36 +71,42 @@ class User {
       username: map['username'] ?? '',
       isVerified: map['isVerified'] ?? false,
       isEmailVerified: map['isEmailVerified'] ?? false,
-      posts: List<String>.from(map['posts'] ?? []),
-      review: List<String>.from(map['review'] ?? []),
+      isAvailable: map['isAvailable'] ?? false,
+      posts: List<String>.from(map['posts']),
+      review: List<String>.from(map['review']),
+      notification: List<String>.from(map['notification']),
       token: map['token'] ?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-      'password': password,
-      'phone': phone,
-      'profileImage': profileImage,
-      'coverImage': coverImage,
-      'address': address,
-      'bio': bio,
-      'about': about,
-      'rating': rating,
-      'ratingNumber': ratingNumber,
-      'education': education,
-      'status': status,
-      'type': type,
-      'username': username,
-      'isVerified': isVerified,
-      'isEmailVerified': isEmailVerified,
-      'posts': posts,
-      'review': review,
-      'token': token,
-    };
+    final result = <String, dynamic>{};
+  
+    result.addAll({'id': id});
+    result.addAll({'name': name});
+    result.addAll({'email': email});
+    result.addAll({'password': password});
+    result.addAll({'phone': phone});
+    result.addAll({'profileImage': profileImage});
+    result.addAll({'coverImage': coverImage});
+    result.addAll({'address': address});
+    result.addAll({'bio': bio});
+    result.addAll({'about': about});
+    result.addAll({'rating': rating});
+    result.addAll({'ratingNumber': ratingNumber});
+    result.addAll({'education': education});
+    result.addAll({'status': status});
+    result.addAll({'type': type});
+    result.addAll({'username': username});
+    result.addAll({'isVerified': isVerified});
+    result.addAll({'isEmailVerified': isEmailVerified});
+    result.addAll({'isAvailable': isAvailable});
+    result.addAll({'posts': posts});
+    result.addAll({'review': review});
+    result.addAll({'notification': notification});
+    result.addAll({'token': token});
+  
+    return result;
   }
 
   String toJson() => json.encode(toMap());

@@ -23,7 +23,9 @@ class UserProvider extends ChangeNotifier{
     isVerified : false, 
     posts: [],
     review : [], 
-    isEmailVerified: false
+    isEmailVerified: false, 
+    isAvailable: false, 
+    notification: [],
   );
 
   User get user => _user;

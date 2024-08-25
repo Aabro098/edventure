@@ -96,6 +96,10 @@ const userSchema = mongoose.Schema({
         type : Boolean,
         default : false
     },
+    isAvailable : {
+        type : Boolean,
+        default : false
+    },
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
@@ -103,7 +107,11 @@ const userSchema = mongoose.Schema({
     review: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'
-    }]
+    }],
+    notification: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Notification'
+    }],
 });
 
 userSchema.pre('save', async function (next) {

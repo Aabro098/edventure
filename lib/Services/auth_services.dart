@@ -40,7 +40,9 @@ class AuthService {
         isVerified: false, 
         posts: [],
         review: [], 
-        isEmailVerified: false
+        isEmailVerified: false, 
+        isAvailable: false, 
+        notification: [],
       );
 
       http.Response res = await http.post(
