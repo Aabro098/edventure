@@ -1,4 +1,4 @@
-import 'package:edventure/Screens/Profile%20Screen/view_profile.dart';
+import 'package:edventure/Widgets/friend_card.dart';
 import 'package:flutter/material.dart';
 import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/models/user.dart';
@@ -71,49 +71,44 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   void _showOverlay() {
     final overlay = Overlay.of(context);
+    final width = MediaQuery.of(context).size.width * 0.4; 
+    final height = MediaQuery.of(context).size.height * 0.3; 
+
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         top: kToolbarHeight, 
-        left: 0,
-        right: 0,
+        left: MediaQuery.of(context).size.width * 0.3, 
+        width: width,
         child: Material(
-          elevation: 4.0, 
-          child: Container(
-            height: _searchResults.isNotEmpty ? 200.0 : 0.0,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: _searchResults.isNotEmpty
-                ? ListView.builder(
-                    itemCount: _searchResults.length,
-                    itemBuilder: (context, index) {
-                      final user = _searchResults[index];
-                      return ListTile(
-                        title: Text(user.name),
-                        subtitle: Text('@${user.username}'),
-                        leading: user.profileImage.isNotEmpty
-                            ? CircleAvatar(
-                                backgroundImage: NetworkImage(user.profileImage),
-                              )
-                            : const CircleAvatar(child: Icon(Icons.person)),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProfileViewScreen(userId: user.id),
-                            ),
+          elevation: 4.0,
+          child: Center(
+            child: Container(
+              height:  _searchResults.isNotEmpty ? height : 0.0,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: _searchResults.isNotEmpty
+                  ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView.builder(
+                        itemCount: _searchResults.length,
+                        itemBuilder: (context, index) {
+                          final user = _searchResults[index];
+                          return FriendCard(
+                            suggested: false,
+                            user: user,
                           );
-                          setState(() {
-                            _searchResults.clear();
-                          });
                         },
-                      );
-                    },
+                      ),
                   )
-                : const Center(
-                    child: Text('No results found', style: TextStyle(color: Colors.grey)),
-                  ),
+                  : const Center(
+                      child: Text(
+                        'No results found',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+            ),
           ),
         ),
       ),

@@ -1,5 +1,4 @@
 
-import 'package:edventure/Widgets/friend_card.dart';
 import 'package:edventure/utils/contact_list.dart';
 import 'package:edventure/utils/more_options.dart';
 import 'package:flutter/material.dart';
@@ -38,14 +37,14 @@ class _FriendScreenState extends State<FriendScreen> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: FriendCard(suggested: false,),
+                    // child: FriendCard(suggested: false, user: ,),
                   ),
                 ),
                 ConstantText(text: 'Suggested Contacts'),
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: FriendCard(suggested: true,),
+                    // child: FriendCard(suggested: true,),
                   ),
                 ),
               ],

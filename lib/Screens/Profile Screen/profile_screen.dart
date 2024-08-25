@@ -137,7 +137,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Colors.white,
+                            color:  user.isAvailable 
+                              ? Colors.green.withOpacity(0.3) : Colors.grey.shade100,
                             width: 5.0,
                           ),
                           boxShadow: [
@@ -149,10 +150,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ],
                         ),
-                        child: const CircleAvatar(
+                        child: user.profileImage.isNotEmpty
+                        ? CircleAvatar(
                           radius: 120,
-                          backgroundImage: AssetImage(AppImages.profile),
-                        ),
+                          backgroundImage: AssetImage(user.profileImage),
+                        )
+                        : const Icon(Icons.person, size: 240),
                       ),
                       const SizedBox(height: 10.0),
                       Row(
@@ -202,24 +205,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(width: 8.0),
                           Center(
                             child: user.isVerified
-                                ? const Row(
+                                ? Row(
                                   children: [
                                     Stack(
                                         alignment: Alignment.center,
                                         children: [
-                                          CircleAvatar(
+                                          const CircleAvatar(
                                             radius: 8,
                                             backgroundColor: Colors.blue,
                                           ),
-                                          Icon(
+                                          const Icon(
                                             Icons.check,
                                             color: Colors.white,
                                             size: 10,
                                           ),
+                                          Positioned(
+                                            bottom: 0,
+                                            right: 0,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                
+                                              },
+                                              child: const Stack(
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 10,
+                                                    backgroundColor: Colors.blue,
+                                                  ),
+                                                  Icon(
+                                                    Icons.check,
+                                                    color: Colors.white,
+                                                    size: 12,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                      SizedBox(width: 4.0),
-                                      Text('Verified',
+                                      const SizedBox(width: 4.0),
+                                      const Text('Verified',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.blue

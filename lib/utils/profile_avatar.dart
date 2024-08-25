@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
 
 class ProfileAvatar extends StatelessWidget {
-  final String image;
+  final String? image; 
 
   const ProfileAvatar({
-    super.key, 
+    super.key,
     required this.image,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CircleAvatar(
-          radius: 24.0,
-          backgroundColor: Colors.grey.shade100,
-          child: CircleAvatar(
-            radius: 24,
-            backgroundColor: Colors.grey[200],
-            child: ClipOval(
-              child: Image.asset(
-                image,
-                fit: BoxFit.cover,
-                width: 42.0,
-                height: 42.0,
-              ),
-            ),
-          ),
-        ),
-      ],
+    return CircleAvatar(
+      radius: 24,
+      backgroundColor: Colors.grey[300], 
+      backgroundImage: image != null && image!.isNotEmpty
+          ? NetworkImage(image!)
+          : null,
+      child: image == null || image!.isEmpty
+          ? Icon(
+              Icons.person,
+              size: 32,
+              color: Colors.grey[600],
+            )
+          : null,
     );
   }
 }

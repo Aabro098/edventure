@@ -1,16 +1,22 @@
+import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
-
-import 'package:edventure/constants/images.dart';
-
 import '../utils/profile_avatar.dart';
 
-class FriendCard extends StatelessWidget {
+class FriendCard extends StatefulWidget {
   final bool suggested;
+  final User user; 
+
   const FriendCard({
     super.key,
-    required this.suggested,
+    required this.suggested, 
+    required this.user, 
   });
 
+  @override
+  State<FriendCard> createState() => _FriendCardState();
+}
+
+class _FriendCardState extends State<FriendCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,8 +38,10 @@ class FriendCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {},
-              child: const ProfileAvatar(
-                image: AppImages.profile,
+              child: ProfileAvatar(
+                image: widget.user.profileImage.isNotEmpty 
+                    ? widget.user.profileImage
+                    : '', 
               ),
             ),
           ),
@@ -47,9 +55,9 @@ class FriendCard extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {},
-                    child: const Text(
-                      'Arbin Shrestha',
-                      style: TextStyle(
+                    child: Text(
+                      widget.user.name, 
+                      style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -57,9 +65,9 @@ class FriendCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10.0),
-                  const Text(
-                    'Those who do not know pain will never understand true peace.',
-                    style: TextStyle(
+                  Text(
+                    widget.user.bio,
+                    style: const TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.normal,
                       fontStyle: FontStyle.italic,
@@ -77,9 +85,9 @@ class FriendCard extends StatelessWidget {
             child: InkWell(
               onTap: () {},
               child: Icon(
-                suggested 
-                ? Icons.notification_important
-                : Icons.message,
+                widget.suggested 
+                    ? Icons.notification_important
+                    : Icons.message,
                 size: 24.0,
               ),
             ),

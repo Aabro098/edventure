@@ -72,41 +72,39 @@ class User {
       isVerified: map['isVerified'] ?? false,
       isEmailVerified: map['isEmailVerified'] ?? false,
       isAvailable: map['isAvailable'] ?? false,
-      posts: List<String>.from(map['posts']),
-      review: List<String>.from(map['review']),
-      notification: List<String>.from(map['notification']),
+      posts: List<String>.from(map['posts'] ?? []),
+      review: List<String>.from(map['review'] ?? []),
+      notification: List<String>.from(map['notification'] ?? []),
       token: map['token'] ?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
-    final result = <String, dynamic>{};
-  
-    result.addAll({'id': id});
-    result.addAll({'name': name});
-    result.addAll({'email': email});
-    result.addAll({'password': password});
-    result.addAll({'phone': phone});
-    result.addAll({'profileImage': profileImage});
-    result.addAll({'coverImage': coverImage});
-    result.addAll({'address': address});
-    result.addAll({'bio': bio});
-    result.addAll({'about': about});
-    result.addAll({'rating': rating});
-    result.addAll({'ratingNumber': ratingNumber});
-    result.addAll({'education': education});
-    result.addAll({'status': status});
-    result.addAll({'type': type});
-    result.addAll({'username': username});
-    result.addAll({'isVerified': isVerified});
-    result.addAll({'isEmailVerified': isEmailVerified});
-    result.addAll({'isAvailable': isAvailable});
-    result.addAll({'posts': posts});
-    result.addAll({'review': review});
-    result.addAll({'notification': notification});
-    result.addAll({'token': token});
-  
-    return result;
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'password': password,
+      'phone': phone,
+      'profileImage': profileImage,
+      'coverImage': coverImage,
+      'address': address,
+      'bio': bio,
+      'about': about,
+      'rating': rating,
+      'ratingNumber': ratingNumber,
+      'education': education,
+      'status': status,
+      'type': type,
+      'username': username,
+      'isVerified': isVerified,
+      'isEmailVerified': isEmailVerified,
+      'isAvailable': isAvailable,
+      'posts': posts,
+      'review': review,
+      'notification' : notification,
+      'token': token,
+    };
   }
 
   String toJson() => json.encode(toMap());
