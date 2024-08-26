@@ -20,7 +20,7 @@ class AppElevatedButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8)
         ),
-        minimumSize: const Size(double.infinity, 32),
+        minimumSize: const Size(double.infinity ,  28),
         backgroundColor: color,
         foregroundColor: Colors.white,
       ), 

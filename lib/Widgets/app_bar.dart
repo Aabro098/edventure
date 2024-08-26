@@ -4,6 +4,7 @@ import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/models/user.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:edventure/Widgets/tab_bar.dart';
+import '../Screens/Profile Screen/view_profile.dart';
 import 'user_card.dart';
 
 class CustomAppBar extends StatefulWidget {
@@ -98,6 +99,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           return FriendCard(
                             suggested: false,
                             user: user,
+                            onTap : (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfileViewScreen(userId: user.id),
+                                )
+                                ).then((_){
+                                  _removeOverlay();
+                                });
+                            }
                           );
                         },
                       ),

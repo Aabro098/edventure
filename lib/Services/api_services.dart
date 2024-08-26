@@ -56,4 +56,20 @@ class ApiService {
       throw Exception('Error occurred while searching for users: $e');
     }
   }
+  Future<User> toggleAvailability(String token) async {
+    final response = await http.put(
+      Uri.parse('$uri/api/toggle-availability'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': token,
+      },
+      body: jsonEncode({}),
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(response.body);
+    } else {
+      throw Exception('Failed to toggle availability');
+    }
+}
 }

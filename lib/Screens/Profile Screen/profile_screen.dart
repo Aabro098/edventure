@@ -1,6 +1,10 @@
 import 'package:edventure/Providers/user_provider.dart';
+import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Widgets/notification_card.dart';
+import 'package:edventure/models/user.dart';
+import 'package:edventure/utils/elevated_button.dart';
+import 'package:edventure/utils/snackbar.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:edventure/constants/images.dart';
@@ -24,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isEducation = false;
   bool _isBio = false;
   bool _isLoading = false; 
+  late bool isAvailable;
 
   late TextEditingController aboutController;
   late TextEditingController nameController;
@@ -45,6 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     phoneController = TextEditingController(text: user.phone);
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
+    isAvailable = user.isAvailable;
   }
   Future<void> _handleButtonPress() async {
     final user = Provider.of<UserProvider>(context, listen: false).user;
@@ -68,6 +74,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<void> toggleAvailability() async {
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final String token = userProvider.user.token;
+      User updatedUser = await ApiService().toggleAvailability(token);
+      setState(() {
+        isAvailable = updatedUser.isAvailable;
+      });
+    } catch (e) {
+      showSnackBar(context, 'Could not change the state!!!');
+    }
   }
 
   @override
@@ -128,36 +147,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
               flex: 1,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color:  user.isAvailable 
-                              ? Colors.green.withOpacity(0.3) : Colors.grey.shade100,
-                            width: 5.0,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              offset: const Offset(0, 4),
-                              blurRadius: 10,
-                              spreadRadius: 2,
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color:  user.isAvailable 
+                                  ? Colors.green.shade300 : Colors.red.shade200,
+                                width: 5.0,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  offset: const Offset(0, 4),
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: user.profileImage.isNotEmpty
-                        ? CircleAvatar(
-                          radius: 120,
-                          backgroundImage: AssetImage(user.profileImage),
-                        )
-                        : const Icon(Icons.person, size: 240),
+                            child: user.profileImage.isNotEmpty
+                            ? CircleAvatar(
+                              radius: 120,
+                              backgroundImage: AssetImage(user.profileImage),
+                            )
+                            : const Icon(Icons.person, size: 240),
+                          ),
+                          const SizedBox(width: 10,),
+                          Expanded(
+                            child: AppElevatedButton(
+                              text: user.isAvailable? 'Rest' : 'Active', 
+                              onTap: toggleAvailability,
+                              color: user.isAvailable ?  Colors.red.shade400 : Colors.green.shade400,
+                            ),
+                          )
+                        ],
                       ),
-                      const SizedBox(height: 10.0),
+                      const SizedBox(width: 10.0,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [

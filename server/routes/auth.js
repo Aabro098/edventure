@@ -110,4 +110,22 @@ authRouter.put('/api/update', auth, async (req, res) => {
     }
 });
 
+authRouter.put('/api/toggle-availability', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user);
+        
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        user.isAvailable = !user.isAvailable;
+
+        await user.save();
+
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = authRouter;
