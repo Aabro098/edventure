@@ -55,7 +55,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: Colors.white,
+                                color: user.isAvailable 
+                                  ? Colors.green.shade300 : Colors.red.shade200,
                                 width: 5.0,
                               ),
                               boxShadow: [
@@ -67,10 +68,12 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                                 ),
                               ],
                             ),
-                            child: const CircleAvatar(
+                            child: user.profileImage.isNotEmpty
+                            ? CircleAvatar(
                               radius: 120,
-                              backgroundImage: AssetImage(AppImages.profile),
-                            ),
+                              backgroundImage: AssetImage(user.profileImage),
+                            )
+                            : const Icon(Icons.person, size: 240),
                           ),
                           const SizedBox(height: 10.0),
                           Row(
