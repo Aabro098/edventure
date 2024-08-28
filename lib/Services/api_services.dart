@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ApiService {
   Future<User> fetchUserData(String userId) async {
@@ -23,17 +25,18 @@ class ApiService {
       }
   }
 
-  Future<List<User>> searchUsers(BuildContext context, String query , user) async {
+  Future<List<User>> searchUsers(BuildContext context, String query) async {
     try {
-      
+      final user = Provider.of<UserProvider>(context, listen: false).user;
       final response = await http.get(
-        Uri.parse('$uri/search?query=${Uri.encodeComponent(query)}'),
+        Uri.parse('$uri/search?query=${Uri.encodeComponent(query)}&userId=${user.id}'),
       );
+
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         return data
-          .where((userJson) => userJson is Map<String, dynamic> && userJson['id'] != user.id)
+          .where((userJson) => userJson is Map<String, dynamic> && userJson['_id'] != user.id)
           .map<User>((userJson) => User.fromMap(userJson))
           .toList();
       } else {

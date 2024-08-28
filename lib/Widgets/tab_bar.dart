@@ -48,7 +48,7 @@ class CustomCurvedNavigationBar extends StatelessWidget {
               color: index == selectedIndex
                   ? Colors.blue
                   : Colors.black45,
-              size: index == icons.length - 3 ? 32.0 : 28.0,
+              size: index == icons.length - 3 ? 30.0 : 28.0,
             ),
           ),
         );
@@ -57,7 +57,7 @@ class CustomCurvedNavigationBar extends StatelessWidget {
       backgroundColor: isBottomIndicator ?  Colors.white :  Colors.lightBlue.shade100,
       buttonBackgroundColor: Colors.transparent,
       animationCurve: Curves.easeInOut,
-      animationDuration: const Duration(milliseconds: 600),
+      animationDuration: const Duration(milliseconds: 500),
       onTap: onTap,
     );
   }
