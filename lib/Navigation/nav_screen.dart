@@ -4,6 +4,7 @@ import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/Widgets/tab_bar.dart';
 import 'package:flutter/material.dart';
 import '../Screens/Home Screen/home_screen.dart';
+import '../Screens/Map Screen/map_screen.dart';
 import '../Screens/Profile Screen/profile_screen.dart';
 import '../Widgets/responsive.dart';
 
@@ -18,16 +19,16 @@ class NavScreen extends StatefulWidget {
 class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
-    const Scaffold(), 
     const ProfileScreen(),
+    const MapScreen(),
     const FriendScreen(),
     const NotificationScreen(),
   ];
 
   final List<IconData> _icons = [
-    Icons.home,
-    Icons.ondemand_video,
+    Icons.article,
     Icons.account_circle_outlined,
+    Icons.map,
     Icons.group_outlined,
     Icons.notifications,
   ];

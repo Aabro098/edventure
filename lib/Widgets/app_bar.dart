@@ -136,7 +136,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   void _removeOverlay() {
     if (_overlayEntry != null) {
-      print('Removing Overlay>>>');
       _overlayEntry!.remove();
       _overlayEntry = null;
     }
