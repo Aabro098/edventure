@@ -1,9 +1,11 @@
+import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Widgets/friend_card.dart';
 import 'package:flutter/material.dart';
 import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/models/user.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:edventure/Widgets/tab_bar.dart';
+import 'package:provider/provider.dart';
 import '../Screens/Profile Screen/view_profile.dart';
 import 'user_card.dart';
 
@@ -43,9 +45,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   void _searchUsers(String query) async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
     if (query.isNotEmpty) {
       try {
-        List<User> results = await ApiService().searchUsers(query);
+        List<User> results = await ApiService().searchUsers(context ,query , user);
         setState(() {
           _searchResults = results;
         });

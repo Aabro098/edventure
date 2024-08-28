@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import '../../Widgets/stars.dart';
 
 class ProfileScreen extends StatefulWidget {
-  static const String routeName = 'home-screen';
+  static const String routeName = 'profile-screen';
   const ProfileScreen({super.key});
 
   @override

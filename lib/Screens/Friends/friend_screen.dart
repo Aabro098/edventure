@@ -33,7 +33,7 @@ class _FriendScreenState extends State<FriendScreen> {
             width: 550,
             child: CustomScrollView(
               slivers: [
-                ConstantText(text: 'Saved Contacts',),
+                ConstantText(text: 'Recent Contacts',),
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
