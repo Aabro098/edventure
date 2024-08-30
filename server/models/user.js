@@ -108,9 +108,10 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'
     }],
-    notification: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Notification'
+    
+    notifications: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Notification' 
     }],
 });
 

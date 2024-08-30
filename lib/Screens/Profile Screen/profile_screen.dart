@@ -147,173 +147,179 @@ class _ProfileScreenState extends State<ProfileScreen> {
               flex: 1,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color:  user.isAvailable 
-                                  ? Colors.green.shade300 : Colors.red.shade200,
-                                width: 5.0,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  offset: const Offset(0, 4),
-                                  blurRadius: 10,
-                                  spreadRadius: 2,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color:  user.isAvailable 
+                                    ? Colors.green.shade300 : Colors.red.shade200,
+                                  width: 5.0,
                                 ),
-                              ],
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: const Offset(0, 4),
+                                    blurRadius: 10,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
+                              ),
+                              child: user.profileImage.isNotEmpty
+                              ? CircleAvatar(
+                                radius: 120,
+                                backgroundImage: AssetImage(user.profileImage),
+                              )
+                              : const Icon(Icons.person, size: 240),
                             ),
-                            child: user.profileImage.isNotEmpty
-                            ? CircleAvatar(
-                              radius: 120,
-                              backgroundImage: AssetImage(user.profileImage),
+                            const SizedBox(width: 10,),
+                            Expanded(
+                              child: AppElevatedButton(
+                                text: user.isAvailable? 'Rest' : 'Active', 
+                                onTap: toggleAvailability,
+                                color: user.isAvailable ?  Colors.red.shade400 : Colors.green.shade400,
+                              ),
                             )
-                            : const Icon(Icons.person, size: 240),
-                          ),
-                          const SizedBox(width: 10,),
-                          Expanded(
-                            child: AppElevatedButton(
-                              text: user.isAvailable? 'Rest' : 'Active', 
-                              onTap: toggleAvailability,
-                              color: user.isAvailable ?  Colors.red.shade400 : Colors.green.shade400,
-                            ),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
                       const SizedBox(width: 10.0,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          _isName
-                          ? Expanded(
-                            child: TextField(
-                              controller: nameController,
-                              decoration: InputDecoration(
-                                hintText: 'Full Name',
-                                hintStyle: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.check),
-                                  onPressed: () {
-                                    setState(() {
-                                      _isName = false;
-                                      _handleButtonPress();
-                                    });
-                                  },
-                                ),
-                                border: InputBorder.none
-                              ),
-                            ),
-                          )
-                          : GestureDetector(
-                              onDoubleTap: _changeName,
-                              child: Text(
-                                user.name,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            _isName
+                            ? Expanded(
+                              child: TextField(
+                                controller: nameController,
+                                decoration: InputDecoration(
+                                  hintText: 'Full Name',
+                                  hintStyle: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.check),
+                                    onPressed: () {
+                                      setState(() {
+                                        _isName = false;
+                                        _handleButtonPress();
+                                      });
+                                    },
+                                  ),
+                                  border: InputBorder.none
                                 ),
                               ),
+                            )
+                            : GestureDetector(
+                                onDoubleTap: _changeName,
+                                child: Text(
+                                  user.name,
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(width: 8.0),
+                            Text(
+                              '(${user.username})',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
-                          const SizedBox(width: 8.0),
-                          Text(
-                            '(${user.username})',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          Center(
-                            child: user.isVerified
-                                ? Row(
-                                  children: [
-                                    Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          const CircleAvatar(
-                                            radius: 8,
-                                            backgroundColor: Colors.blue,
-                                          ),
-                                          const Icon(
-                                            Icons.check,
-                                            color: Colors.white,
-                                            size: 10,
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            right: 0,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                
-                                              },
-                                              child: const Stack(
-                                                alignment: Alignment.center,
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 10,
-                                                    backgroundColor: Colors.blue,
-                                                  ),
-                                                  Icon(
-                                                    Icons.check,
-                                                    color: Colors.white,
-                                                    size: 12,
-                                                  ),
-                                                ],
+                            const SizedBox(width: 8.0),
+                            Center(
+                              child: user.isVerified
+                                  ? Row(
+                                    children: [
+                                      Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            const CircleAvatar(
+                                              radius: 8,
+                                              backgroundColor: Colors.blue,
+                                            ),
+                                            const Icon(
+                                              Icons.check,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                            Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  
+                                                },
+                                                child: const Stack(
+                                                  alignment: Alignment.center,
+                                                  children: [
+                                                    CircleAvatar(
+                                                      radius: 10,
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                    Icon(
+                                                      Icons.check,
+                                                      color: Colors.white,
+                                                      size: 12,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 4.0),
-                                      const Text('Verified',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.blue
+                                          ],
                                         ),
-                                      )
-                                  ],
-                                ) 
-                                  : Row(
-                                    children: [
-                                      const Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 8,
-                                            backgroundColor: Colors.grey,
-                                          ),
-                                          Icon(
-                                            Icons.check,
-                                            color: Colors.white,
-                                            size: 10,
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 4.0),
-                                      GestureDetector(
-                                        onTap: (){},
-                                        child: const Text('Verify Now',
+                                        const SizedBox(width: 4.0),
+                                        const Text('Verified',
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Colors.blue
                                           ),
-                                        ),
-                                      )
+                                        )
                                     ],
-                                  )
-                          ),
-                        ],
+                                  ) 
+                                    : Row(
+                                      children: [
+                                        const Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 8,
+                                              backgroundColor: Colors.grey,
+                                            ),
+                                            Icon(
+                                              Icons.check,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 4.0),
+                                        GestureDetector(
+                                          onTap: (){},
+                                          child: const Text('Verify Now',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.blue
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                            ),
+                          ],
+                        ),
                       ),
                       !_isBio
                         ? user.bio.isNotEmpty
@@ -325,6 +331,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             },
                             child: Text(
                               user.bio,
+                              textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w300,
@@ -489,27 +496,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Star(
-                                count: (user.ratingNumber != 0)
-                                    ? (user.rating / user.ratingNumber)
-                                    : 0,
-                              ),
-                              const SizedBox(width: 5.0),
-                              Text(
-                                (user.ratingNumber != 0)
-                                    ? (user.rating / user.ratingNumber)
-                                        .toStringAsFixed(1)
-                                    : '0.0',
-                                style: const TextStyle(fontSize: 20.0),
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Star(
+                                  count: (user.ratingNumber != 0)
+                                      ? (user.rating / user.ratingNumber)
+                                      : 0,
+                                ),
+                                const SizedBox(width: 5.0),
+                                Text(
+                                  (user.ratingNumber != 0)
+                                      ? (user.rating / user.ratingNumber)
+                                          .toStringAsFixed(1)
+                                      : '0.0',
+                                  style: const TextStyle(fontSize: 20.0),
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 5.0),
-                          Text(
-                            'No of reviews : ${user.ratingNumber}',
-                            style: const TextStyle(fontSize: 16.0),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'No of reviews : ${user.ratingNumber}',
+                              style: const TextStyle(fontSize: 16.0),
+                            ),
                           ),
                         ],
                       ),

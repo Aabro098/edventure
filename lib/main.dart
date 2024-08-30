@@ -8,12 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-      create: (context) =>UserProvider()
-    )
-  ],
-  child: const MyApp()));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -26,10 +30,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final AuthService authService = AuthService();
 
-  @override
-  void initState(){
-    super.initState();
-    authService.getUserData(context: context);
+  Future<void> _initializeUserData() async {
+    await authService.getUserData(context: context);
   }
 
   @override
@@ -40,14 +42,28 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.light(
-          primary: TAppColor.secondaryColor
-        )
+          primary: TAppColor.secondaryColor,
+        ),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: Provider.of<UserProvider>(context).
-        user.token.isNotEmpty 
-          ? const NavScreen() 
-          : const AuthScreen()
+      home: FutureBuilder(
+        future: _initializeUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          } else if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(child: Text('Error: ${snapshot.error}')),
+            );
+          } else {
+            return Provider.of<UserProvider>(context).user.token.isNotEmpty
+                ? const NavScreen()
+                : const AuthScreen();
+          }
+        },
+      ),
     );
   }
 }

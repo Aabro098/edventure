@@ -1,9 +1,13 @@
+import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/api_services.dart';
+import 'package:edventure/Services/notification_api.dart';
+import 'package:edventure/Widgets/user_details.dart';
+import 'package:edventure/utils/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:edventure/Widgets/notification_card.dart';
 import 'package:edventure/constants/images.dart';
 import 'package:edventure/models/user.dart';
-import '../../Widgets/stars.dart';
+import 'package:provider/provider.dart';
 
 class ProfileViewScreen extends StatefulWidget {
   final String userId;
@@ -19,6 +23,18 @@ class ProfileViewScreen extends StatefulWidget {
 class _ProfileViewScreenState extends State<ProfileViewScreen> {
 
   late Future<User> _userData;
+  void sendNotification(
+    String userId,
+    String senderId,
+    String message
+  ) async {
+    final NotificationServices notificationServices = NotificationServices();
+    await notificationServices.addNotification(
+      userId: userId,
+      senderId: senderId,
+      message: message,
+    );
+  }
 
   @override
   void initState() {
@@ -28,6 +44,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<UserProvider>(context).user;
     return Scaffold(
       body: FutureBuilder<User>(
         future: _userData,
@@ -44,231 +61,24 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               children: [
                 Expanded(
                   flex: 1,
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: user.isAvailable 
-                                  ? Colors.green.shade300 : Colors.red.shade200,
-                                width: 5.0,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  offset: const Offset(0, 4),
-                                  blurRadius: 10,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: user.profileImage.isNotEmpty
-                            ? CircleAvatar(
-                              radius: 120,
-                              backgroundImage: AssetImage(user.profileImage),
-                            )
-                            : const Icon(Icons.person, size: 240),
-                          ),
-                          const SizedBox(height: 10.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.name,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(width: 8.0),
-                              Text(
-                                '(${user.username})',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                              const SizedBox(width: 8.0),
-                              Center(
-                                child: user.isVerified
-                                    ? const Row(
-                                      children: [
-                                        Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 8,
-                                                backgroundColor: Colors.blue,
-                                              ),
-                                              Icon(
-                                                Icons.check,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(width: 4.0),
-                                          Text('Verified',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.blue
-                                            ),
-                                          )
-                                      ],
-                                    ) 
-                                      : const Row(
-                                        children: [
-                                          Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 8,
-                                                backgroundColor: Colors.grey,
-                                              ),
-                                              Icon(
-                                                Icons.check,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      )
-                              ),
-                            ],
-                          ),
-                          user.bio.isNotEmpty
-                            ? Text(
-                              user.bio,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            )
-                            : const SizedBox.shrink(), 
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(12,0,0,0),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.email,
-                                    size: 24,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    user.email,
-                                    style:  const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                ],
-                              ),
-                            ),  
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(12,0,0,0),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.phone_android,
-                                    size: 24,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    user.phone,
-                                    style:  const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(12,0,0,0),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.home,
-                                    size: 24,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    user.address,
-                                    style:  const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5.0),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(12,0,0,0),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.school,
-                                    size: 24,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    user.education,
-                                    style:  const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                ],
-                              ),
-                            ),
-                          const SizedBox(height: 5.0),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Star(
-                                    count: (user.ratingNumber != 0)
-                                        ? (user.rating / user.ratingNumber)
-                                        : 0,
-                                  ),
-                                  const SizedBox(width: 5.0),
-                                  Text(
-                                    (user.ratingNumber != 0)
-                                        ? (user.rating / user.ratingNumber)
-                                            .toStringAsFixed(1)
-                                        : '0.0',
-                                    style: const TextStyle(fontSize: 20.0),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5.0),
-                              Text(
-                                'No of reviews : ${user.ratingNumber}',
-                                style: const TextStyle(fontSize: 16.0),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                  child: Column(
+                    children: [
+                      UserDetails(user: user),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20,8,20,8),
+                        child: AppElevatedButton(
+                          text: 'Send Request', 
+                          onTap: (){
+                            sendNotification(
+                              user.id,
+                              currentUser.id,
+                              'wants to make a contact with you.',
+                            );
+                          }, 
+                          color: Colors.green.shade600
+                        ),
+                      )
+                    ],
                   ),
                 ),
                 Expanded(
@@ -371,3 +181,4 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     );
   }
 }
+

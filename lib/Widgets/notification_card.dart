@@ -1,21 +1,29 @@
-
 import 'package:edventure/Widgets/stars.dart';
 import 'package:edventure/Widgets/user_card.dart';
 import 'package:edventure/constants/Colors/colors.dart';
+import 'package:edventure/models/notification.dart';
 import 'package:flutter/material.dart';
 
-class NotificationCard extends StatelessWidget {
+class NotificationCard extends StatefulWidget {
   final bool? review;
+  final NotificationModel? notification;
   const NotificationCard({
     super.key, 
-    this.review,
+    this.review, 
+    this.notification,
   });
+
+  @override
+  State<NotificationCard> createState() => _NotificationCardState();
+}
+
+class _NotificationCardState extends State<NotificationCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: review == true ? 400 : null,
+      width: widget.review == true ? 400 : null,
       decoration: BoxDecoration(
-      color: TAppColor.getRandomColor(),
+        color: TAppColor.getRandomColor(),
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
@@ -38,7 +46,7 @@ class NotificationCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (review ?? false) 
+                if (widget.review ?? false) 
                   const Text(
                     'Arbin Shrestha',
                     style: TextStyle(
@@ -46,21 +54,36 @@ class NotificationCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                if (review ?? false) 
+                if (widget.review ?? false) 
                   const SizedBox(height: 5.0),
-                const Text(
-                  'Aryan Shrestha wants to send you a message.',
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14.0,
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: widget.notification?.senderId ?? '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0,
+                          color: Colors.black, 
+                        ),
+                      ),
+                      TextSpan(
+                        text: widget.notification?.message ?? '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0,
+                          color: Colors.black, 
+                        ),
+                      ),
+                    ],
                   ),
+                  maxLines: 4,
                   overflow: TextOverflow.visible,
-                  maxLines: 4, 
                 ),
                 const SizedBox(height: 5.0),
-                if (review ?? false) 
+                if (widget.review ?? false) 
                   const Star(count: 3),
-                if (review == null || !(review ?? false)) 
+                if (widget.review == null || !(widget.review ?? false)) 
                   const Text(
                     '5h ago',
                     style: TextStyle(
