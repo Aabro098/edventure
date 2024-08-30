@@ -3,10 +3,9 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../models/user'); 
 
-// Fetch user data by ID
 router.get('/user/:id', async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select('-password'); // Corrected from _id to id
+        const user = await User.findById(req.params.id).select('-password'); 
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
@@ -19,10 +18,9 @@ router.get('/user/:id', async (req, res) => {
     }
 });
 
-// Search for users excluding the current user
+
 router.get('/search', async (req, res) => {
     try {
-        console.log('Search endpoint hit');
         const { query, userId } = req.query; 
 
         if (!query || !userId) {
@@ -37,7 +35,6 @@ router.get('/search', async (req, res) => {
             ]
         }).select('name username profileImage bio _id'); 
 
-        console.log(users);
         res.json(users);
     } catch (error) {
         console.error('Error searching for users:', error);
