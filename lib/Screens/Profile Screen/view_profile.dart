@@ -32,7 +32,9 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     await notificationServices.addNotification(
       userId: userId,
       senderId: senderId,
-      message: message,
+      message: message, 
+      notificationStatus: false,
+      responseStatus: false, 
     );
   }
 
@@ -72,7 +74,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                             sendNotification(
                               user.id,
                               currentUser.id,
-                              'wants to make a contact with you.',
+                              ' wants to make a contact with you.',
                             );
                           }, 
                           color: Colors.green.shade600
@@ -156,7 +158,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                                 ),
                               ),
                               user.review.isNotEmpty
-                                ? const NotificationCard(review: true)
+                                ? const NotificationCard()
                                 : const Center(
                                     child: Text(
                                       'No Reviews available',

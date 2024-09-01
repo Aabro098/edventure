@@ -100,7 +100,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             suggested: false,
                             user: user,
                             onTap : (){
-                              print('Tapped on user: ${user.name}');
                               _removeOverlay();
                               Navigator.push(
                                 context,

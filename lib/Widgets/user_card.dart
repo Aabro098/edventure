@@ -1,17 +1,14 @@
-
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:flutter/material.dart';
-
 import 'package:edventure/constants/images.dart';
 import 'package:provider/provider.dart';
-
 import '../utils/profile_avatar.dart';
 
 class UserCard extends StatelessWidget {
-  final bool? notification;
+  final bool? isNotification;
   const UserCard({
     super.key,
-    this.notification,
+    this.isNotification,
   });
 
   @override
@@ -24,7 +21,7 @@ class UserCard extends StatelessWidget {
         children: [
           const ProfileAvatar(image: AppImages.profile),
           const SizedBox(width: 6.0),
-          if (!(notification ?? false))
+          if (!(isNotification ?? false))
             Flexible(
               child: Text(
                 user.name,

@@ -640,7 +640,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           user.review.isNotEmpty
-                              ? const NotificationCard(review: true)
+                              ? const NotificationCard()
                               : const Center(
                                   child: Text(
                                     'No Reviews available',
