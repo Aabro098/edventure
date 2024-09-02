@@ -1,33 +1,38 @@
-import 'package:edventure/models/user.dart'; 
+import 'dart:convert';
 
 class Review {
-  final User user; 
+  final String id;
+  final String senderId;
   final String description; 
   final int rating; 
-
   Review({
-    required this.user,
+    required this.id,
+    required this.senderId,
     required this.description,
     required this.rating,
-  }) {
-    if (rating < 1 || rating > 5) {
-      throw ArgumentError('Rating must be between 1 and 5');
-    }
+  });
+
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+  
+    result.addAll({'id': id});
+    result.addAll({'senderId': senderId});
+    result.addAll({'description': description});
+    result.addAll({'rating': rating});
+  
+    return result;
   }
 
-  factory Review.fromJson(Map<String, dynamic> json) {
+  factory Review.fromMap(Map<String, dynamic> map) {
     return Review(
-      user: User.fromJson(json['user']), 
-      description: json['description'],
-      rating: json['rating'],
+      id: map['id'] ?? '',
+      senderId: map['senderId'] ?? '',
+      description: map['description'] ?? '',
+      rating: map['rating']?.toInt() ?? 0,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'user': user.toJson(), 
-      'description': description,
-      'rating': rating,
-    };
-  }
+  String toJson() => json.encode(toMap());
+
+  factory Review.fromJson(String source) => Review.fromMap(json.decode(source));
 }

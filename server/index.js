@@ -8,6 +8,7 @@ const DB = "mongodb+srv://arbinstha71:Aabro098@cluster0.m51ocmp.mongodb.net/?ret
 const authRouter = require("./routes/auth");
 const profile = require("./routes/profile");
 const notification = require("./routes/notification");
+const review = require("./routes/review");
 const placesRoutes = require('./routes/maps_proxy');
 
 const PORT = 3000;
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(authRouter);
 app.use(profile);
 app.use(notification);
+app.use(review);
 app.use(placesRoutes);
 
 mongoose

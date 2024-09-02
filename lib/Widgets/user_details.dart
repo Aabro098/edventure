@@ -223,7 +223,7 @@ class UserDetails extends StatelessWidget {
                   children: [
                     Star(
                       count: (user.ratingNumber != 0)
-                          ? (user.rating / user.ratingNumber)
+                          ? ((user.rating / user.ratingNumber).round())
                           : 0,
                     ),
                     const SizedBox(width: 5.0),

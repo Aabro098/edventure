@@ -80,9 +80,6 @@ class _NotificationCardState extends State<NotificationCard> {
         } else if (snapshot.hasData) {
           userName = snapshot.data?.name ?? 'Unknown';
         }
-        print('Response Status: ${widget.notification!.responseStatus}');
-        print('Notification Status: ${widget.notification!.notificationStatus}');
-
         return Container(
           decoration: BoxDecoration(
             color: TAppColor.getRandomColor(),

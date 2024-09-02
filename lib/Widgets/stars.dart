@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Star extends StatelessWidget {
-  final double count;
+  final int count;
 
   const Star({
     super.key,

@@ -1,7 +1,10 @@
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/Services/auth_services.dart';
-import 'package:edventure/Widgets/notification_card.dart';
+import 'package:edventure/Services/review_services.dart';
+import 'package:edventure/Widgets/review_card.dart';
+import 'package:edventure/constants/variable.dart';
+import 'package:edventure/models/review.dart';
 import 'package:edventure/models/user.dart';
 import 'package:edventure/utils/elevated_button.dart';
 import 'package:edventure/utils/snackbar.dart';
@@ -30,6 +33,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = false; 
   late bool isAvailable;
 
+  final reviewService = ReviewService(baseUrl: uri);
+
   late TextEditingController aboutController;
   late TextEditingController nameController;
   late TextEditingController addressController;
@@ -37,12 +42,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late TextEditingController phoneController;
   late TextEditingController emailController;
   late TextEditingController bioController;
+  late Future<List<Review>> _reviewsFuture;
 
   @override
   void initState() {
     super.initState();
 
     final user = Provider.of<UserProvider>(context, listen: false).user;
+    _reviewsFuture = reviewService.fetchReviewsByUserId(user.id);
     aboutController = TextEditingController(text: user.about);
     nameController = TextEditingController(text: user.name);
     addressController = TextEditingController(text: user.address);
@@ -52,6 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     bioController = TextEditingController(text: user.bio);
     isAvailable = user.isAvailable;
   }
+
   Future<void> _handleButtonPress() async {
     final user = Provider.of<UserProvider>(context, listen: false).user;
 
@@ -85,6 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         isAvailable = updatedUser.isAvailable;
       });
     } catch (e) {
+      // ignore: use_build_context_synchronously
       showSnackBar(context, 'Could not change the state!!!');
     }
   }
@@ -502,7 +511,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children: [
                                 Star(
                                   count: (user.ratingNumber != 0)
-                                      ? (user.rating / user.ratingNumber)
+                                      ? ((user.rating / user.ratingNumber).round())
                                       : 0,
                                 ),
                                 const SizedBox(width: 5.0),
@@ -534,129 +543,153 @@ class _ProfileScreenState extends State<ProfileScreen> {
               flex: 2,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 250,
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(AppImages.background),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Text(
-                              'About',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Stack(
-                            children: [
-                              SingleChildScrollView(
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  width: double.infinity,
-                                  height: 90,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.05),
-                                        spreadRadius: 2,
-                                        offset: const Offset(1, 1),
-                                      ),
-                                    ],
-                                  ),
-                                  child: _isAbout
-                                      ? TextField(
-                                          controller: aboutController,
-                                          maxLines: null,
-                                          keyboardType: TextInputType.multiline,
-                                          decoration: const InputDecoration(
-                                            hintStyle: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.normal,
-                                              fontStyle: FontStyle.normal,
-                                              overflow: TextOverflow.clip,
-                                            ),
-                                            border: InputBorder.none,
-                                            alignLabelWithHint: true,
-                                            contentPadding: EdgeInsets.only(
-                                                top: 4.0, left: 8.0),
-                                          ),
-                                        )
-                                      : Text(
-                                          user.about.isNotEmpty
-                                              ? user.about
-                                              : 'Enter your short description', 
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.normal,
-                                            fontStyle: FontStyle.normal,
-                                            overflow: TextOverflow.clip,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 10, 
-                                right: 10, 
-                                child: IconButton(
-                                  icon: _isAbout 
-                                  ? const Icon(Icons.check , color: Colors.blue)
-                                  : const Icon(Icons.edit , color: Colors.black),
-                                  onPressed: () {
-                                    setState(() {
-                                      if (_isAbout) {
-                                        _handleButtonPress();
-                                      }
-                                      _isAbout = !_isAbout;
-                                    });
-                                  },
-                                ),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 250,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(AppImages.background),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Text(
+                        'About',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Stack(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          width: double.infinity,
+                          height: 90,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.05),
+                                spreadRadius: 2,
+                                offset: const Offset(1, 1),
                               ),
                             ],
                           ),
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Recent Reviews',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          user.review.isNotEmpty
-                              ? const NotificationCard()
-                              : const Center(
-                                  child: Text(
-                                    'No Reviews available',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 16,
+                          child: _isAbout
+                              ? TextField(
+                                  controller: aboutController,
+                                  maxLines: null,
+                                  keyboardType: TextInputType.multiline,
+                                  decoration: const InputDecoration(
+                                    hintStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                      fontStyle: FontStyle.normal,
+                                      overflow: TextOverflow.clip,
                                     ),
+                                    border: InputBorder.none,
+                                    alignLabelWithHint: true,
+                                    contentPadding: EdgeInsets.only(
+                                        top: 4.0, left: 8.0),
+                                  ),
+                                )
+                              : Text(
+                                  user.about.isNotEmpty
+                                      ? user.about
+                                      : 'Enter your short description',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                    fontStyle: FontStyle.normal,
+                                    overflow: TextOverflow.clip,
                                   ),
                                 ),
-                        ],
+                        ),
+                        Positioned(
+                          bottom: 10,
+                          right: 10,
+                          child: IconButton(
+                            icon: _isAbout
+                                ? const Icon(Icons.check, color: Colors.blue)
+                                : const Icon(Icons.edit, color: Colors.black),
+                            onPressed: () {
+                              setState(() {
+                                if (_isAbout) {
+                                  _handleButtonPress();
+                                }
+                                _isAbout = !_isAbout;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Recent Reviews',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: FutureBuilder<List<Review>>(
+                        future: _reviewsFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return const Center(child: Text('No reviews found.'));
+                          }
+
+                          final reviews = snapshot.data!;
+                          return ListView.builder(
+                            itemCount: (reviews.length / 2).ceil(),
+                            itemBuilder: (context, index) {
+                              final startIndex = index * 2;
+                              final secondReview = (startIndex + 1 < reviews.length) ? reviews[startIndex + 1] : null;
+                              return Row(
+                                children: [
+                                  Expanded(
+                                    child: ReviewCard(
+                                      senderId: reviews[startIndex].senderId,
+                                      description: reviews[startIndex].description,
+                                      rating: reviews[startIndex].rating,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  secondReview != null
+                                      ? Expanded(
+                                          child: ReviewCard(
+                                            senderId: secondReview.senderId,
+                                            description: secondReview.description,
+                                            rating: secondReview.rating,
+                                          ),
+                                        )
+                                      : Expanded(child: Container()),
+                                ],
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
