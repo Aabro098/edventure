@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Widgets/user_details.dart';
-import 'package:edventure/constants/Colors/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
+import 'package:http/http.dart' as http;
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -15,10 +18,14 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   static const LatLng _pKathmandu = LatLng(27.7172, 85.3240);
-  late GoogleMapController _controller;
+  final MapController _mapController = MapController();
   LatLng? _currentLocation;
   final Location _locationService = Location();
-  bool _isMapReady = false;
+
+  final TextEditingController _searchController = TextEditingController();
+  LatLng? _searchedLocation;
+
+  List<Map<String, dynamic>> _suggestions = [];
 
   @override
   void initState() {
@@ -53,9 +60,79 @@ class _MapScreenState extends State<MapScreen> {
       });
     }
 
-    if (_isMapReady && _currentLocation != null) {
-      _controller.animateCamera(CameraUpdate.newLatLng(_currentLocation!));
+    if (_currentLocation != null) {
+      _mapController.move(_currentLocation!, 17);
     }
+  }
+
+  Future<void> _searchLocation(String query) async {
+    final url = Uri.parse('https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=1');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      if (data.isNotEmpty) {
+        final lat = double.parse(data[0]['lat']);
+        final lon = double.parse(data[0]['lon']);
+        setState(() {
+          _searchedLocation = LatLng(lat, lon);
+        });
+
+        _mapController.move(_searchedLocation!, 17);
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location not found')),
+        );
+      }
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error searching location')),
+      );
+    }
+  }
+
+  Future<void> _getSuggestions(String query) async {
+    if (query.isEmpty) {
+      setState(() {
+        _suggestions = [];
+      });
+      return;
+    }
+
+    final url = Uri.parse('https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=5');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+
+      setState(() {
+        _suggestions = data
+            .map<Map<String, dynamic>>(
+              (item) => {
+                'name': item['display_name'],
+                'lat': double.parse(item['lat']),
+                'lon': double.parse(item['lon']),
+              },
+            )
+            .toList();
+      });
+    }
+  }
+
+  void _handleSearch() {
+    _searchLocation(_searchController.text);
+  }
+
+  void _selectSuggestion(String name, double lat, double lon) {
+    setState(() {
+      _searchController.text = name;
+      _searchedLocation = LatLng(lat, lon);
+      _suggestions = [];
+    });
+    _mapController.move(_searchedLocation!, 17);
   }
 
   @override
@@ -65,48 +142,125 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       body: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
+          Flexible(
             flex: 1,
-            child: Container(
-              color: TAppColor.getRandomColor(),
-              child: SizedBox.expand(
-                child: UserDetails(user: user)
-              )
-            ),
+            child: UserDetails(user: user),
           ),
-          Expanded(
+          Flexible(
             flex: 2,
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: _currentLocation ?? _pKathmandu,
-                zoom: 17,
-              ),
-              onMapCreated: (GoogleMapController controller) {
-                _controller = controller;
-                _isMapReady = true;
-                if (_currentLocation != null) {
-                  _controller.animateCamera(CameraUpdate.newLatLng(_currentLocation!));
-                }
-              },
-              markers: _currentLocation != null
-                  ? {
-                      Marker(
-                        markerId: const MarkerId('currentLocation'),
-                        icon: BitmapDescriptor.defaultMarker,
-                        position: _currentLocation!,
-                        infoWindow: const InfoWindow(
-                          title: 'Your Location',
+            child: Stack(
+              children: [
+                FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter: _currentLocation ?? _pKathmandu,
+                    initialZoom: 17,
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.example.app',
+                      tileProvider: CancellableNetworkTileProvider(),
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        if (_currentLocation != null)
+                          Marker(
+                            width: 80.0,
+                            height: 80.0,
+                            point: _currentLocation!,
+                            child: const Icon(
+                              Icons.location_pin,
+                              color: Colors.red,
+                              size: 40,
+                            ),
+                          ),
+                        if (_searchedLocation != null)
+                          Marker(
+                            width: 80.0,
+                            height: 80.0,
+                            point: _searchedLocation!,
+                            child: const Icon(
+                              Icons.location_pin,
+                              color: Colors.blue,
+                              size: 40,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: 40,
+                  left: 20,
+                  right: 80,
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
                         ),
-                      )
-                    }
-                  : {},
-              mapType: MapType.normal,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: true,
-              zoomGesturesEnabled: true,
-              scrollGesturesEnabled: true,
+                        child: TextFormField(
+                          controller: _searchController,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Search location',
+                          ),
+                          onChanged: (value) {
+                            _getSuggestions(value);
+                          },
+                        ),
+                      ),
+                      if (_suggestions.isNotEmpty)
+                        Container(
+                          color: Colors.white,
+                          constraints: const BoxConstraints(maxHeight: 200), 
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: _suggestions.length,
+                            itemBuilder: (context, index) {
+                              final suggestion = _suggestions[index];
+                              return ListTile(
+                                title: Text(suggestion['name']),
+                                onTap: () {
+                                  _selectSuggestion(
+                                    suggestion['name'],
+                                    suggestion['lat'],
+                                    suggestion['lon'],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 40,
+                  right: 20,
+                  child: ElevatedButton(
+                    onPressed: _handleSearch,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      elevation: 5,
+                      shape: const CircleBorder(),
+                    ),
+                    child: const Icon(Icons.search),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

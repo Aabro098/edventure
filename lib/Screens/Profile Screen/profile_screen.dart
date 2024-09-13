@@ -30,7 +30,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isAddress = false;
   bool _isEducation = false;
   bool _isBio = false;
-  bool _isLoading = false; 
   late bool isAvailable;
 
   final reviewService = ReviewService(baseUrl: uri);
@@ -54,34 +53,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
     nameController = TextEditingController(text: user.name);
     addressController = TextEditingController(text: user.address);
     educationController = TextEditingController(text: user.education);
-    phoneController = TextEditingController(text: user.phone);
+    phoneController = TextEditingController(text : user.phone);
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
     isAvailable = user.isAvailable;
   }
 
-  Future<void> _handleButtonPress() async {
+  Future<void> updateEmail() async {
     final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (emailController.text.isNotEmpty && emailController.text != user.email) {
+      await authService.updateUser(context: context, email: emailController.text);
+    }
+  }
 
-    setState(() {
-      _isLoading = true;
-      _isLoading? const CircularProgressIndicator() : null;
-    });
+  Future<void> updateName() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (nameController.text.isNotEmpty && nameController.text != user.name) {
+      await authService.updateUser(context: context, name: nameController.text);
+    }
+  }
 
-    await authService.updateUser(
-      context: context,
-      email: emailController.text.isNotEmpty ? emailController.text : user.email,
-      name: nameController.text.isNotEmpty ? nameController.text : user.name,
-      phone: phoneController.text.isNotEmpty ? phoneController.text : null,
-      address: addressController.text.isNotEmpty ? addressController.text : null,
-      education: educationController.text.isNotEmpty ? educationController.text : null,
-      bio: bioController.text.isNotEmpty ? bioController.text : null,
-      about: aboutController.text.isNotEmpty ? aboutController.text : null,
-    );
+  Future<void> updatePhone() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (phoneController.text != user.phone) {
+      await authService.updateUser(context: context, phone: phoneController.text);
+    }
+  }
 
-    setState(() {
-      _isLoading = false;
-    });
+  Future<void> updateAddress() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (addressController.text != user.address) {
+      await authService.updateUser(context: context, address: addressController.text);
+    }
+  }
+
+  Future<void> updateEducation() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (educationController.text != user.education) {
+      await authService.updateUser(context: context, education: educationController.text);
+    }
+  }
+
+  Future<void> updateBio() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (bioController.text != user.bio) {
+      await authService.updateUser(context: context, bio: bioController.text);
+    }
+  }
+
+  Future<void> updateAbout() async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (aboutController.text != user.about) {
+      await authService.updateUser(context: context, about: aboutController.text);
+    }
   }
 
   Future<void> toggleAvailability() async {
@@ -221,7 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     onPressed: () {
                                       setState(() {
                                         _isName = false;
-                                        _handleButtonPress();
+                                        updateName();
                                       });
                                     },
                                   ),
@@ -371,7 +395,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 onPressed: () {
                                   setState(() {
                                     _isBio = false;
-                                    _handleButtonPress();
+                                    updateBio();
                                   });
                                 },
                               ),
@@ -426,7 +450,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 onPressed: () {
                                   setState(() {
                                     _isPhone = false;
-                                    _handleButtonPress();
+                                    updatePhone();
                                   });
                                 },
                               ),
@@ -456,7 +480,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onPressed: () {
                                 setState(() {
                                   _isAddress = false;
-                                  _handleButtonPress();
+                                  updateAddress();
                                 });
                               },
                             ),
@@ -486,7 +510,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 onPressed: () {
                                   setState(() {
                                     _isEducation = false;
-                                    _handleButtonPress();
+                                    updateEducation();
                                   });
                                 },
                               ),
@@ -622,7 +646,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onPressed: () {
                               setState(() {
                                 if (_isAbout) {
-                                  _handleButtonPress();
+                                  updateAbout();
                                 }
                                 _isAbout = !_isAbout;
                               });
