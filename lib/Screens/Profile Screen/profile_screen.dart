@@ -534,14 +534,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Row(
                               children: [
                                 Star(
-                                  count: (user.ratingNumber != 0)
-                                      ? ((user.rating / user.ratingNumber).round())
+                                  count: (user.numberRating != 0)
+                                      ? ((user.rating / user.numberRating).round())
                                       : 0,
                                 ),
                                 const SizedBox(width: 5.0),
                                 Text(
-                                  (user.ratingNumber != 0)
-                                      ? (user.rating / user.ratingNumber)
+                                  (user.numberRating != 0)
+                                      ? (user.rating / user.numberRating)
                                           .toStringAsFixed(1)
                                       : '0.0',
                                   style: const TextStyle(fontSize: 20.0),
@@ -552,7 +552,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'No of reviews : ${user.ratingNumber}',
+                              'No of reviews : ${user.numberRating}',
                               style: const TextStyle(fontSize: 16.0),
                             ),
                           ),

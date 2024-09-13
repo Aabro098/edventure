@@ -21,6 +21,21 @@ router.post('/submit_review', async (req, res) => {
         });
 
         await newReview.save();
+
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.review.push(newReview._id);
+        const totalRating = user.rating + rating;
+        const numberRatingCount = user.numberRating + 1 ;
+        user.rating = totalRating;
+        user.numberRating = numberRatingCount;
+
+        await user.save();
+
         res.status(200).json({ success: true, message: 'Review submitted successfully' });
     } catch (err) {
         console.error('Error submitting review:', err);
@@ -29,15 +44,20 @@ router.post('/submit_review', async (req, res) => {
 });
 
 router.get('/reviews/:userId', async (req, res) => {
-const userId = req.params.userId;
+    const userId = req.params.userId;
 
-try {
-    const reviews = await Review.find({ senderId: userId });
-    res.status(200).json(reviews);
-} catch (err) {
-    console.error('Error fetching reviews:', err);
-    res.status(500).json({ success: false, message: 'Server error' });
-}
+    try {
+        const user = await User.findById(userId).populate('review');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user.review);
+    } catch (err) {
+        console.error('Error fetching reviews:', err);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
 });
+
 
 module.exports = router;

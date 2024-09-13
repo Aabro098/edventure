@@ -102,7 +102,7 @@ const userSchema = mongoose.Schema({
     },
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post'
+        ref: 'post'
     }],
     review: [{
         type: mongoose.Schema.Types.ObjectId,

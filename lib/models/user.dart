@@ -12,7 +12,7 @@ class User {
   final String bio;
   final String about;
   final int rating;
-  final int ratingNumber;
+  final int numberRating;
   final String education;
   final String status;
   final String type;
@@ -37,7 +37,7 @@ class User {
     required this.bio,
     required this.about,
     required this.rating,
-    required this.ratingNumber,
+    required this.numberRating,
     required this.education,
     required this.status,
     required this.type,
@@ -64,7 +64,7 @@ class User {
       bio: map['bio'] ?? '',
       about: map['about'] ?? '',
       rating: map['rating']?.toInt() ?? 0,
-      ratingNumber: map['ratingNumber']?.toInt() ?? 0,
+      numberRating: map['numberRating']?.toInt() ?? 0,
       education: map['education'] ?? '',
       status: map['status'] ?? '',
       type: map['type'] ?? '',
@@ -92,7 +92,7 @@ class User {
       'bio': bio,
       'about': about,
       'rating': rating,
-      'ratingNumber': ratingNumber,
+      'numberRating': numberRating,
       'education': education,
       'status': status,
       'type': type,

@@ -14,7 +14,7 @@ class UserProvider extends ChangeNotifier{
     bio: '', 
     about : '',
     rating: 0,
-    ratingNumber: 0,  
+    numberRating: 0,  
     education: '', 
     status: '', 
     type: '', 

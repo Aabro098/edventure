@@ -9,7 +9,6 @@ const authRouter = require("./routes/auth");
 const profile = require("./routes/profile");
 const notification = require("./routes/notification");
 const review = require("./routes/review");
-const placesRoutes = require('./routes/maps_proxy');
 
 const PORT = 3000;
 const HOST = 'localhost';
@@ -23,7 +22,6 @@ app.use(authRouter);
 app.use(profile);
 app.use(notification);
 app.use(review);
-app.use(placesRoutes);
 
 mongoose
     .connect(DB)

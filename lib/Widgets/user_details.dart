@@ -12,6 +12,7 @@ class UserDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(user.numberRating);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -222,14 +223,14 @@ class UserDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Star(
-                      count: (user.ratingNumber != 0)
-                          ? ((user.rating / user.ratingNumber).round())
+                      count: (user.numberRating != 0)
+                          ? ((user.rating / user.numberRating).round())
                           : 0,
                     ),
                     const SizedBox(width: 5.0),
                     Text(
-                      (user.ratingNumber != 0)
-                          ? (user.rating / user.ratingNumber)
+                      (user.numberRating != 0)
+                          ? (user.rating / user.numberRating)
                               .toStringAsFixed(1)
                           : '0.0',
                           textAlign: TextAlign.center,
@@ -239,7 +240,7 @@ class UserDetails extends StatelessWidget {
                 ),
                 const SizedBox(height: 5.0),
                 Text(
-                  'No of reviews : ${user.ratingNumber}',
+                  'No of reviews : ${user.numberRating}',
                   style: const TextStyle(fontSize: 16.0),
                 ),
               ],

@@ -81,13 +81,11 @@ class _MapScreenState extends State<MapScreen> {
 
         _mapController.move(_searchedLocation!, 17);
       } else {
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Location not found')),
         );
       }
     } else {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error searching location')),
       );
