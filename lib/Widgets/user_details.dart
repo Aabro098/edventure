@@ -12,7 +12,6 @@ class UserDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(user.numberRating);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -183,11 +182,14 @@ class UserDetails extends StatelessWidget {
                     size: 24,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    user.address,
-                    style:  const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal
+                  Expanded(
+                    child: Text(
+                      user.address,
+                      style:  const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(width: 8),

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import '../Screens/Home Screen/home_screen.dart';
 import '../Screens/Map Screen/map_screen.dart';
 import '../Screens/Profile Screen/profile_screen.dart';
-import '../Widgets/responsive.dart';
 
 class NavScreen extends StatefulWidget {
   static const String routeName = 'nav-screen';
@@ -41,31 +40,27 @@ class _NavScreenState extends State<NavScreen> {
     return DefaultTabController(
       length: _icons.length,
       child: Scaffold(
-        appBar: Responsive.isDesktop(context)
-            ? PreferredSize(
-                preferredSize: Size(screenSize.width, 100.0),
-                child: CustomAppBar(
-                  icons: _icons,
-                  selectedIndex: selectedIndex,
-                  onTap: (index) => setState(() => selectedIndex = index),
-                ),
-              )
-            : null,
+        appBar: PreferredSize(
+          preferredSize: Size(screenSize.width, 100.0),
+          child: CustomAppBar(
+            icons: _icons,
+            selectedIndex: selectedIndex,
+            onTap: (index) => setState(() => selectedIndex = index),
+          ),
+        ),
         body: IndexedStack(
           index: selectedIndex,
           children: _screens,
         ),
-        bottomNavigationBar: !Responsive.isDesktop(context)
-            ? Container(
-                padding: const EdgeInsets.only(bottom: 6.0),
-                child: CustomCurvedNavigationBar(
-                  icons: _icons,
-                  selectedIndex: selectedIndex,
-                  onTap: (index) => setState(() => selectedIndex = index),
-                  isBottomIndicator: true,
-                ),
-              )
-            : const SizedBox.shrink(),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: CustomCurvedNavigationBar(
+            icons: _icons,
+            selectedIndex: selectedIndex,
+            onTap: (index) => setState(() => selectedIndex = index),
+            isBottomIndicator: true,
+          ),
+        )
       ),
     );
   }

@@ -65,6 +65,7 @@ class AuthService {
       );
     } catch (e) {
       Future.delayed(Duration.zero, () {
+        // ignore: use_build_context_synchronously
         showSnackBar(context, e.toString());
       });
     }
@@ -88,12 +89,15 @@ class AuthService {
       );
       httpErrorHandle(
         response: res,
+        // ignore: use_build_context_synchronously
         context: context,
         onSuccess: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
+          // ignore: use_build_context_synchronously
           Provider.of<UserProvider>(context , listen : false).setUser(res.body);
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
           Navigator.pushNamedAndRemoveUntil(
+            // ignore: use_build_context_synchronously
             context, 
             NavScreen.routeName, 
             (route) => false
@@ -102,48 +106,51 @@ class AuthService {
       );
     } catch (e) {
       Future.delayed(Duration.zero, () {
+        // ignore: use_build_context_synchronously
         showSnackBar(context, e.toString());
       });
     }
   }
 
-Future<void> getUserData({required BuildContext context}) async {
-  try {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('x-auth-token');
+  Future<void> getUserData({required BuildContext context}) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('x-auth-token');
 
-    if (token == null) {
-      prefs.setString('x-auth-token', '');
-      token = ''; 
-    }
+      if (token == null) {
+        prefs.setString('x-auth-token', '');
+        token = ''; 
+      }
 
-    var tokenRes = await http.post(
-      Uri.parse('$uri/isTokenValid'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'x-auth-token': token,
-      },
-    );
-
-    var response = jsonDecode(tokenRes.body);
-
-    if (response == true) {
-      http.Response userRes = await http.get(
-        Uri.parse('$uri/'),
+      var tokenRes = await http.post(
+        Uri.parse('$uri/isTokenValid'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': token,
         },
       );
-      var userProvider = Provider.of<UserProvider>(context, listen: false);
-      userProvider.setUser(userRes.body);
-    }
-  } catch (e) {
-      Future.microtask(() {
-        showSnackBar(context, e.toString());
+
+      var response = jsonDecode(tokenRes.body);
+
+      if (response == true) {
+        http.Response userRes = await http.get(
+          Uri.parse('$uri/'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': token,
+          },
+        );
+        // ignore: use_build_context_synchronously
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.setUser(userRes.body);
+      }
+    } catch (e) {
+        Future.microtask(() {
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, e.toString());
       });
     }
-  }
+    }
 
   Future<void> updateUser({
     required BuildContext context,
@@ -184,6 +191,7 @@ Future<void> getUserData({required BuildContext context}) async {
 
       httpErrorHandle(
         response: res,
+        // ignore: use_build_context_synchronously
         context: context,
         onSuccess: () {
           showSnackBar(
@@ -195,6 +203,7 @@ Future<void> getUserData({required BuildContext context}) async {
       );
     } catch (e) {
       Future.delayed(Duration.zero, () {
+        // ignore: use_build_context_synchronously
         showSnackBar(context, e.toString());
       });
     }

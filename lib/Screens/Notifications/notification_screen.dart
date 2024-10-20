@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/notification_api.dart';
 import 'package:edventure/Widgets/notification_card.dart';
-import 'package:edventure/utils/contact_list.dart';
-import 'package:edventure/utils/more_options.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -24,87 +22,61 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     final userId = Provider.of<UserProvider>(context).user.id;
     return Scaffold(
-      body: Row(
-        children: [
-          const Flexible(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: MoreOptionList(),
-              ),
-            ),
-          ),
-          const SizedBox(width: 20),
-          Flexible(
-            flex: 3,
-            child: FutureBuilder<List<NotificationModel>>(
-              future: userId.isNotEmpty
-                  ? _fetchNotifications(userId)
-                  : Future.error('User ID is not available'),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error}'),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text('No notifications'),
-                  );
-                }
-                final notifications = snapshot.data!;
-                return CustomScrollView(
-                  slivers: [
-                    const SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                          'Notifications',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+      body: Flexible(
+        flex: 3,
+        child: FutureBuilder<List<NotificationModel>>(
+          future: userId.isNotEmpty
+              ? _fetchNotifications(userId)
+              : Future.error('User ID is not available'),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text('No notifications'),
+              );
+            }
+            final notifications = snapshot.data!;
+            return CustomScrollView(
+              slivers: [
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      'Notifications',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final notification = notifications[index];
-                          return Column(
-                            children: [
-                              NotificationCard(notification: notification),
-                              if (index < notifications.length - 1)
-                                const SizedBox(height: 8.0),
-                            ],
-                          );
-                        },
-                        childCount: notifications.length,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-          const SizedBox(width: 20),
-          const Flexible(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: ContactList(),
-              ),
-            ),
-          ),
-        ],
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final notification = notifications[index];
+                      return Column(
+                        children: [
+                          NotificationCard(notification: notification),
+                          if (index < notifications.length - 1)
+                            const SizedBox(height: 8.0),
+                        ],
+                      );
+                    },
+                    childCount: notifications.length,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

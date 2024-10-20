@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
-const multer = require('multer');
 
 const DB = "mongodb+srv://arbinstha71:Aabro098@cluster0.m51ocmp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
@@ -10,8 +9,8 @@ const profile = require("./routes/profile");
 const notification = require("./routes/notification");
 const review = require("./routes/review");
 
-const PORT = 3000;
-const HOST = 'localhost';
+const PORT = process.env.PORT || 3000;
+const HOST = '192.168.1.3';
 
 const app = express();
 
@@ -31,6 +30,6 @@ mongoose
         console.log(e);
     })
 
-app.listen(PORT,HOST,() => {
+app.listen(PORT,() => {
     console.log(`Server is running on http://${HOST}:${PORT}`);
 });

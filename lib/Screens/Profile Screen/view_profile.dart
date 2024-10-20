@@ -132,6 +132,9 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                                 currentUser.id,
                                 ' wants to make a contact with you.',
                               );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Request sent successfully!!!')),
+                              );
                             },
                             color: Colors.green.shade600,
                           ),

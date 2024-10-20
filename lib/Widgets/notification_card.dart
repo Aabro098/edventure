@@ -151,6 +151,7 @@ class _NotificationCardState extends State<NotificationCard> {
                                 TTextButton(
                                   iconData: Icons.check,
                                   onPressed: () {
+                                    setState(() {});
                                     sendNotification(
                                       widget.notification!.senderId,
                                       currentUser.id,
@@ -164,6 +165,7 @@ class _NotificationCardState extends State<NotificationCard> {
                                 TTextButton(
                                   iconData: Icons.close,
                                   onPressed: () {
+                                    setState(() {});
                                     sendNotification(
                                       widget.notification!.senderId,
                                       currentUser.id,

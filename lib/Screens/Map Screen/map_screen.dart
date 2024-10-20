@@ -1,11 +1,8 @@
 import 'dart:convert';
-import 'package:edventure/Providers/user_provider.dart';
-import 'package:edventure/Widgets/user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,12 +21,18 @@ class _MapScreenState extends State<MapScreen> {
 
   final TextEditingController _searchController = TextEditingController();
   LatLng? _searchedLocation;
+  bool  _mapInitialized = false;
 
   List<Map<String, dynamic>> _suggestions = [];
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _mapInitialized = true;
+      });
+    });
     _getLocationPermission();
   }
 
@@ -66,6 +69,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _searchLocation(String query) async {
+    if (!_mapInitialized) return;
     final url = Uri.parse('https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=1');
     final response = await http.get(url);
 
@@ -81,18 +85,15 @@ class _MapScreenState extends State<MapScreen> {
 
         _mapController.move(_searchedLocation!, 17);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location not found')),
-        );
+        throw Exception('Location not Found !!!');
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error searching location')),
-      );
+      throw Exception('Error Searching Location !!!');
     }
   }
 
   Future<void> _getSuggestions(String query) async {
+    if (!_mapInitialized) return;
     if (query.isEmpty) {
       setState(() {
         _suggestions = [];
@@ -121,6 +122,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _handleSearch() {
+    
     _searchLocation(_searchController.text);
   }
 
@@ -135,133 +137,125 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    final user = userProvider.user;
+    // final userProvider = Provider.of<UserProvider>(context);
+    // final user = userProvider.user;
 
     return Scaffold(
-      body: Row(
-        children: [
-          Flexible(
-            flex: 1,
-            child: UserDetails(user: user),
-          ),
-          Flexible(
-            flex: 2,
-            child: Stack(
+      body: Flexible(
+        flex: 2,
+        child: Stack(
+          children: [
+            FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: _currentLocation ?? _pKathmandu,
+                initialZoom: 17,
+              ),
               children: [
-                FlutterMap(
-                  mapController: _mapController,
-                  options: MapOptions(
-                    initialCenter: _currentLocation ?? _pKathmandu,
-                    initialZoom: 17,
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.example.app',
-                      tileProvider: CancellableNetworkTileProvider(),
-                    ),
-                    MarkerLayer(
-                      markers: [
-                        if (_currentLocation != null)
-                          Marker(
-                            width: 80.0,
-                            height: 80.0,
-                            point: _currentLocation!,
-                            child: const Icon(
-                              Icons.location_pin,
-                              color: Colors.red,
-                              size: 40,
-                            ),
-                          ),
-                        if (_searchedLocation != null)
-                          Marker(
-                            width: 80.0,
-                            height: 80.0,
-                            point: _searchedLocation!,
-                            child: const Icon(
-                              Icons.location_pin,
-                              color: Colors.blue,
-                              size: 40,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.example.app',
+                  tileProvider: CancellableNetworkTileProvider(),
                 ),
-                Positioned(
-                  top: 40,
-                  left: 20,
-                  right: 80,
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: TextFormField(
-                          controller: _searchController,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Search location',
-                          ),
-                          onChanged: (value) {
-                            _getSuggestions(value);
-                          },
+                MarkerLayer(
+                  markers: [
+                    if (_currentLocation != null)
+                      Marker(
+                        width: 80.0,
+                        height: 80.0,
+                        point: _currentLocation!,
+                        child: const Icon(
+                          Icons.location_pin,
+                          color: Colors.red,
+                          size: 40,
                         ),
                       ),
-                      if (_suggestions.isNotEmpty)
-                        Container(
-                          color: Colors.white,
-                          constraints: const BoxConstraints(maxHeight: 200), 
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: _suggestions.length,
-                            itemBuilder: (context, index) {
-                              final suggestion = _suggestions[index];
-                              return ListTile(
-                                title: Text(suggestion['name']),
-                                onTap: () {
-                                  _selectSuggestion(
-                                    suggestion['name'],
-                                    suggestion['lat'],
-                                    suggestion['lon'],
-                                  );
-                                },
-                              );
-                            },
-                          ),
+                    if (_searchedLocation != null)
+                      Marker(
+                        width: 80.0,
+                        height: 80.0,
+                        point: _searchedLocation!,
+                        child: const Icon(
+                          Icons.location_pin,
+                          color: Colors.blue,
+                          size: 40,
                         ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: 40,
-                  right: 20,
-                  child: ElevatedButton(
-                    onPressed: _handleSearch,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      elevation: 5,
-                      shape: const CircleBorder(),
-                    ),
-                    child: const Icon(Icons.search),
-                  ),
+                      ),
+                  ],
                 ),
               ],
             ),
-          ),
-        ],
+            Positioned(
+              top: 40,
+              left: 20,
+              right: 80,
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: TextFormField(
+                      controller: _searchController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Search location',
+                      ),
+                      onChanged: (value) {
+                        _getSuggestions(value);
+                      },
+                    ),
+                  ),
+                  if (_suggestions.isNotEmpty)
+                    Container(
+                      color: Colors.white,
+                      constraints: const BoxConstraints(maxHeight: 200), 
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _suggestions.length,
+                        itemBuilder: (context, index) {
+                          final suggestion = _suggestions[index];
+                          return ListTile(
+                            title: Text(suggestion['name']),
+                            onTap: () {
+                              _selectSuggestion(
+                                suggestion['name'],
+                                suggestion['lat'],
+                                suggestion['lon'],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 40,
+              right: 20,
+              child: ElevatedButton(
+                onPressed: _handleSearch,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  elevation: 5,
+                  shape: const CircleBorder(),
+                ),
+                child: const Icon(Icons.search),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

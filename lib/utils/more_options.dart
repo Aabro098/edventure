@@ -28,6 +28,7 @@ class _MoreOptionListState extends State<MoreOptionList> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
     Navigator.pushNamedAndRemoveUntil(
+      // ignore: use_build_context_synchronously
       context,
       AuthScreen.routeName,
       (route) => false,

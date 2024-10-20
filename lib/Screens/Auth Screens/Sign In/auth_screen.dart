@@ -70,56 +70,9 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 600),
-            curve: Curves.easeInOut,
-            left: _isSignUp ? MediaQuery.of(context).size.width / 2 : 0,
-            right: _isSignUp ? 0 : MediaQuery.of(context).size.width / 2,
+          Center(
             child: Container(
-              width: MediaQuery.of(context).size.width / 2,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: _isSignUp ? const Radius.circular(30) : Radius.zero,
-                  bottomLeft: _isSignUp ? const Radius.circular(30) : Radius.zero,
-                  topRight: !_isSignUp ? const Radius.circular(30) : Radius.zero,
-                  bottomRight: !_isSignUp ? const Radius.circular(30) : Radius.zero,
-                ),
-                color: TAppColor.backgroundColor,
-              ),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "EdVenture",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 34,
-                    ),
-                  ),
-                  SizedBox(height: 18),
-                  Text(
-                    "Learn and share technically and globally",
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontStyle: FontStyle.italic
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-            left: _isSignUp ? 0 : MediaQuery.of(context).size.width / 2,
-            right: _isSignUp ? MediaQuery.of(context).size.width / 2 : 0,
-            child: Container(
-              width: MediaQuery.of(context).size.width / 2,
+              width: MediaQuery.of(context).size.width / 1.2,              
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               child: SizedBox(
