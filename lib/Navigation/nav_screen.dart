@@ -1,8 +1,8 @@
 
 import 'package:edventure/Widgets/app_bar.dart';
+import 'package:edventure/utils/more_options.dart';
 import 'package:flutter/material.dart';
 import '../Screens/Friends/friend_screen.dart';
-import '../Screens/Home Screen/home_screen.dart';
 import '../Screens/Map Screen/map_screen.dart';
 import '../Screens/Notifications/notification_screen.dart';
 import '../Screens/Profile Screen/profile_screen.dart';
@@ -24,7 +24,7 @@ class _NavScreenState extends State<NavScreen> {
     const ProfileScreen(),
     const MapScreen(),
     const FriendScreen(),
-    const HomeScreen(),
+    const MoreOptionList(),
   ];
 
   final List<IconData> _icons = [
@@ -32,15 +32,15 @@ class _NavScreenState extends State<NavScreen> {
     Icons.account_circle_outlined,
     Icons.map,
     Icons.group_outlined,
-    Icons.more_vert,
+    Icons.menu,
   ];
 
   final List<String> pagename= [
-    'Explore',
+    'Notifications',
     'Profile',
     'Map',
     'Contacts',
-    'Notifications',
+    'More Options',
   ];
 
   @override
