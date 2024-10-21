@@ -9,7 +9,6 @@ import 'package:edventure/models/review.dart';
 import 'package:edventure/utils/elevated_button.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
-import 'package:edventure/constants/images.dart';
 import 'package:edventure/models/user.dart';
 import 'package:provider/provider.dart';
 
@@ -148,15 +147,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          Container(
-                            height: 250,
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(AppImages.background),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
                           const Padding(
                             padding: EdgeInsets.all(5.0),
                             child: Text(

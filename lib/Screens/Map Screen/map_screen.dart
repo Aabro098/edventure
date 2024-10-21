@@ -141,121 +141,118 @@ class _MapScreenState extends State<MapScreen> {
     // final user = userProvider.user;
 
     return Scaffold(
-      body: Flexible(
-        flex: 2,
-        child: Stack(
-          children: [
-            FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: _currentLocation ?? _pKathmandu,
-                initialZoom: 17,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.app',
-                  tileProvider: CancellableNetworkTileProvider(),
-                ),
-                MarkerLayer(
-                  markers: [
-                    if (_currentLocation != null)
-                      Marker(
-                        width: 80.0,
-                        height: 80.0,
-                        point: _currentLocation!,
-                        child: const Icon(
-                          Icons.location_pin,
-                          color: Colors.red,
-                          size: 40,
-                        ),
-                      ),
-                    if (_searchedLocation != null)
-                      Marker(
-                        width: 80.0,
-                        height: 80.0,
-                        point: _searchedLocation!,
-                        child: const Icon(
-                          Icons.location_pin,
-                          color: Colors.blue,
-                          size: 40,
-                        ),
-                      ),
-                  ],
-                ),
-              ],
+      body: Stack(
+        children: [
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: _currentLocation ?? _pKathmandu,
+              initialZoom: 17,
             ),
-            Positioned(
-              top: 40,
-              left: 20,
-              right: 80,
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: TextFormField(
-                      controller: _searchController,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Search location',
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.app',
+                tileProvider: CancellableNetworkTileProvider(),
+              ),
+              MarkerLayer(
+                markers: [
+                  if (_currentLocation != null)
+                    Marker(
+                      width: 80.0,
+                      height: 80.0,
+                      point: _currentLocation!,
+                      child: const Icon(
+                        Icons.location_pin,
+                        color: Colors.red,
+                        size: 40,
                       ),
-                      onChanged: (value) {
-                        _getSuggestions(value);
-                      },
                     ),
-                  ),
-                  if (_suggestions.isNotEmpty)
-                    Container(
-                      color: Colors.white,
-                      constraints: const BoxConstraints(maxHeight: 200), 
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _suggestions.length,
-                        itemBuilder: (context, index) {
-                          final suggestion = _suggestions[index];
-                          return ListTile(
-                            title: Text(suggestion['name']),
-                            onTap: () {
-                              _selectSuggestion(
-                                suggestion['name'],
-                                suggestion['lat'],
-                                suggestion['lon'],
-                              );
-                            },
-                          );
-                        },
+                  if (_searchedLocation != null)
+                    Marker(
+                      width: 80.0,
+                      height: 80.0,
+                      point: _searchedLocation!,
+                      child: const Icon(
+                        Icons.location_pin,
+                        color: Colors.blue,
+                        size: 40,
                       ),
                     ),
                 ],
               ),
-            ),
-            Positioned(
-              top: 40,
-              right: 20,
-              child: ElevatedButton(
-                onPressed: _handleSearch,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  elevation: 5,
-                  shape: const CircleBorder(),
+            ],
+          ),
+          Positioned(
+            top: 20,
+            left: 20,
+            right: 80,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: TextFormField(
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Search location',
+                    ),
+                    onChanged: (value) {
+                      _getSuggestions(value);
+                    },
+                  ),
                 ),
-                child: const Icon(Icons.search),
-              ),
+                if (_suggestions.isNotEmpty)
+                  Container(
+                    color: Colors.white,
+                    constraints: const BoxConstraints(maxHeight: 200), 
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _suggestions.length,
+                      itemBuilder: (context, index) {
+                        final suggestion = _suggestions[index];
+                        return ListTile(
+                          title: Text(suggestion['name']),
+                          onTap: () {
+                            _selectSuggestion(
+                              suggestion['name'],
+                              suggestion['lat'],
+                              suggestion['lon'],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            top: 20,
+            right: 20,
+            child: ElevatedButton(
+              onPressed: _handleSearch,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                elevation: 5,
+                shape: const CircleBorder(),
+              ),
+              child: const Icon(Icons.search),
+            ),
+          ),
+        ],
       ),
     );
   }

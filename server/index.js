@@ -10,7 +10,7 @@ const notification = require("./routes/notification");
 const review = require("./routes/review");
 
 const PORT = process.env.PORT || 3000;
-const HOST = '192.168.1.3';
+const HOST = '192.168.1.9';
 
 const app = express();
 

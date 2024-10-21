@@ -20,7 +20,6 @@ class User {
   final bool isVerified;
   final bool isEmailVerified;
   final bool isAvailable;
-  final List<String> posts;
   final List<String> review;
   final List<String> notification;
   final String token;
@@ -45,7 +44,6 @@ class User {
     required this.isVerified,
     required this.isEmailVerified,
     required this.isAvailable,
-    required this.posts,
     required this.review,
     required this.notification,
     required this.token,
@@ -72,7 +70,6 @@ class User {
       isVerified: map['isVerified'] ?? false,
       isEmailVerified: map['isEmailVerified'] ?? false,
       isAvailable: map['isAvailable'] ?? false,
-      posts: List<String>.from(map['posts'] ?? []),
       review: List<String>.from(map['review'] ?? []),
       notification: List<String>.from(map['notification'] ?? []),
       token: map['token'] ?? '',
@@ -100,7 +97,6 @@ class User {
       'isVerified': isVerified,
       'isEmailVerified': isEmailVerified,
       'isAvailable': isAvailable,
-      'posts': posts,
       'review': review,
       'notification' : notification,
       'token': token,

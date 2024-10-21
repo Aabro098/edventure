@@ -22,42 +22,29 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     final userId = Provider.of<UserProvider>(context).user.id;
     return Scaffold(
-      body: Flexible(
-        flex: 3,
-        child: FutureBuilder<List<NotificationModel>>(
-          future: userId.isNotEmpty
-              ? _fetchNotifications(userId)
-              : Future.error('User ID is not available'),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text('No notifications'),
-              );
-            }
-            final notifications = snapshot.data!;
-            return CustomScrollView(
+      body: FutureBuilder<List<NotificationModel>>(
+        future: userId.isNotEmpty
+            ? _fetchNotifications(userId)
+            : Future.error('User ID is not available'),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text('No notifications'),
+            );
+          }
+          final notifications = snapshot.data!;
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(8,8,8,4),
+            child: CustomScrollView(
               slivers: [
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text(
-                      'Notifications',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -74,9 +61,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   ),
                 ),
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

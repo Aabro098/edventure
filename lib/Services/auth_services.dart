@@ -38,7 +38,6 @@ class AuthService {
         username: '',
         token: '',
         isVerified: false, 
-        posts: [],
         review: [], 
         isEmailVerified: false, 
         isAvailable: false, 

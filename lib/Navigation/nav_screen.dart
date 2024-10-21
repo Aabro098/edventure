@@ -1,14 +1,15 @@
-import 'package:edventure/Screens/Friends/friend_screen.dart';
-import 'package:edventure/Screens/Notifications/notification_screen.dart';
+
 import 'package:edventure/Widgets/app_bar.dart';
-import 'package:edventure/Widgets/tab_bar.dart';
 import 'package:flutter/material.dart';
+import '../Screens/Friends/friend_screen.dart';
 import '../Screens/Home Screen/home_screen.dart';
 import '../Screens/Map Screen/map_screen.dart';
+import '../Screens/Notifications/notification_screen.dart';
 import '../Screens/Profile Screen/profile_screen.dart';
+import '../Widgets/tab_bar.dart';
 
 class NavScreen extends StatefulWidget {
-  static const String routeName = 'nav-screen';
+  static const String routeName = '/nav_screen';
   const NavScreen({super.key});
 
   @override
@@ -16,51 +17,49 @@ class NavScreen extends StatefulWidget {
 }
 
 class _NavScreenState extends State<NavScreen> {
+  int selectedIndex = 2; 
+
   final List<Widget> _screens = [
-    const HomeScreen(),
+    const NotificationScreen(),
     const ProfileScreen(),
     const MapScreen(),
     const FriendScreen(),
-    const NotificationScreen(),
+    const HomeScreen(),
   ];
 
   final List<IconData> _icons = [
-    Icons.article,
+    Icons.notifications,
     Icons.account_circle_outlined,
     Icons.map,
     Icons.group_outlined,
-    Icons.notifications,
+    Icons.more_vert,
   ];
 
-  int selectedIndex = 0;
+  final List<String> pagename= [
+    'Explore',
+    'Profile',
+    'Map',
+    'Contacts',
+    'Notifications',
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    return DefaultTabController(
-      length: _icons.length,
+    return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size(screenSize.width, 100.0),
-          child: CustomAppBar(
-            icons: _icons,
-            selectedIndex: selectedIndex,
-            onTap: (index) => setState(() => selectedIndex = index),
-          ),
+        appBar: CustomAppBar(
+          pagename : pagename,
+          selectedIndex: selectedIndex,
         ),
         body: IndexedStack(
           index: selectedIndex,
           children: _screens,
         ),
-        bottomNavigationBar: Container(
-          padding: const EdgeInsets.only(bottom: 6.0),
-          child: CustomCurvedNavigationBar(
-            icons: _icons,
-            selectedIndex: selectedIndex,
-            onTap: (index) => setState(() => selectedIndex = index),
-            isBottomIndicator: true,
-          ),
-        )
+        bottomNavigationBar: CustomCurvedNavigationBar(
+          icons: _icons,
+          selectedIndex: selectedIndex,
+          onTap: (index) => setState(() => selectedIndex = index),
+        ),
       ),
     );
   }

@@ -21,7 +21,6 @@ class UserProvider extends ChangeNotifier{
     username: '', 
     token: '',
     isVerified : false, 
-    posts: [],
     review : [], 
     isEmailVerified: false, 
     isAvailable: false, 

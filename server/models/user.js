@@ -100,10 +100,6 @@ const userSchema = mongoose.Schema({
         type : Boolean,
         default : false
     },
-    posts: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'post'
-    }],
     review: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'
