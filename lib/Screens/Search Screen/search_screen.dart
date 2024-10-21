@@ -54,8 +54,29 @@ class _SearchScreenState extends State<SearchScreen> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search users...',
+                  hintStyle: TextStyle(
+                    color: Colors.grey
+                  ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: const BorderSide(
+                      color: Colors.lightBlue,
+                      width: 2.0
+                    )
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: const BorderSide(
+                      color: Colors.blue, 
+                      width: 2.0,        
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: const BorderSide(
+                      color: Colors.cyan,
+                      width: 1.0,        
+                    ),
                   ),
                   suffixIcon: _isSearching
                       ? Padding(

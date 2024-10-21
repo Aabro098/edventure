@@ -1,5 +1,5 @@
 
-import 'package:edventure/Screens/Home%20Screen/search_screen.dart';
+import 'package:edventure/Screens/Search%20Screen/search_screen.dart';
 import 'package:edventure/utils/options.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
