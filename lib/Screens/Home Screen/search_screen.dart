@@ -43,70 +43,72 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(pagename: ['Search'], selectedIndex: 0),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search users...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+    return SafeArea(
+      child: Scaffold(
+        appBar: CustomAppBar(pagename: ['Search'], selectedIndex: 0),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search users...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  suffixIcon: _isSearching
+                      ? Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            _searchUsers(_searchController.text);
+                          },
+                        ),
                 ),
-                suffixIcon: _isSearching
-                    ? Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                onChanged: (query) {
+                  _searchUsers(query); 
+                },
+              ),
+              const SizedBox(height: 16.0),
+              
+              Expanded(
+                child: _searchResults.isEmpty
+                    ? Center(
+                        child: _isSearching
+                            ? CircularProgressIndicator()
+                            : const Text(
+                                'No results found',
+                                style: TextStyle(color: Colors.grey),
+                              ),
                       )
-                    : IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: () {
-                          _searchUsers(_searchController.text);
+                    : ListView.builder(
+                        itemCount: _searchResults.length,
+                        itemBuilder: (context, index) {
+                          final user = _searchResults[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: FriendCard(
+                              suggested: false,
+                              user: user,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProfileViewScreen(userId: user.id),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
                         },
                       ),
               ),
-              onChanged: (query) {
-                _searchUsers(query); 
-              },
-            ),
-            const SizedBox(height: 16.0),
-            
-            Expanded(
-              child: _searchResults.isEmpty
-                  ? Center(
-                      child: _isSearching
-                          ? CircularProgressIndicator()
-                          : const Text(
-                              'No results found',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                    )
-                  : ListView.builder(
-                      itemCount: _searchResults.length,
-                      itemBuilder: (context, index) {
-                        final user = _searchResults[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: FriendCard(
-                            suggested: false,
-                            user: user,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProfileViewScreen(userId: user.id),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

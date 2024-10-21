@@ -94,220 +94,220 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserProvider>(context).user;
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () {
-          setState(() {
-            _reviewController.clear();
-            _selectedStars = 0;
-            isAddReview = false;
-          });
-        },
-        child: FutureBuilder<User>(
-          future: _userData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData) {
-              return const Center(child: Text('No data found'));
-            } else {
-              final user = snapshot.data!;
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    children: [
-                      UserDetails(user: user),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                        child: AppElevatedButton(
-                          text: 'Send Request',
-                          onTap: () {
-                            sendNotification(
-                              user.id,
-                              currentUser.id,
-                              ' wants to make a contact with you.',
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Request sent successfully!!!')),
-                            );
-                          },
-                          color: Colors.green.shade600,
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Text(
-                          'About',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
+    return SafeArea(
+      child: Scaffold(
+        body: GestureDetector(
+          onTap: () {
+            setState(() {
+              _reviewController.clear();
+              _selectedStars = 0;
+              isAddReview = false;
+            });
+          },
+          child: FutureBuilder<User>(
+            future: _userData,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData) {
+                return const Center(child: Text('No data found'));
+              } else {
+                final user = snapshot.data!;
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        UserDetails(user: user),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                          child: AppElevatedButton(
+                            text: 'Send Request',
+                            onTap: () {
+                              sendNotification(
+                                user.id,
+                                currentUser.id,
+                                ' wants to make a contact with you.',
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Request sent successfully!!!')),
+                              );
+                            },
+                            color: Colors.green.shade600,
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        width: double.infinity,
-                        height: 90,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.05),
-                              spreadRadius: 2,
-                              offset: const Offset(1, 1),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Text(
+                            'About',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          width: double.infinity,
+                          height: 90,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.05),
+                                spreadRadius: 2,
+                                offset: const Offset(1, 1),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            user.about.isNotEmpty
+                                ? user.about
+                                : 'No description available',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                              fontStyle: FontStyle.normal,
+                              overflow: TextOverflow.clip,
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Recent Reviews',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            TTextButton(
+                              iconData: Icons.edit,
+                              onPressed: () {
+                                setState(() {
+                                  isAddReview = true;
+                                });
+                              },
+                              labelText: 'Add Review',
+                              color: Colors.blue,
                             ),
                           ],
                         ),
-                        child: Text(
-                          user.about.isNotEmpty
-                              ? user.about
-                              : 'No description available',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                            fontStyle: FontStyle.normal,
-                            overflow: TextOverflow.clip,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Recent Reviews',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          TTextButton(
-                            iconData: Icons.edit,
-                            onPressed: () {
-                              setState(() {
-                                isAddReview = true;
-                              });
-                            },
-                            labelText: 'Add Review',
-                            color: Colors.blue,
-                          ),
-                        ],
-                      ),
-                      isAddReview
-                        ? SizedBox(
-                            height: 200,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: TextFormField(
-                                    controller: _reviewController,
-                                    maxLines: null,
-                                    keyboardType: TextInputType.multiline,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Enter your review here...',
-                                      hintStyle: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal,
-                                        fontStyle: FontStyle.normal,
-                                        overflow: TextOverflow.clip,
+                        isAddReview
+                          ? SizedBox(
+                              height: 200,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: TextFormField(
+                                      controller: _reviewController,
+                                      maxLines: null,
+                                      keyboardType: TextInputType.multiline,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Enter your review here...',
+                                        hintStyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                          fontStyle: FontStyle.normal,
+                                          overflow: TextOverflow.clip,
+                                        ),
+                                        border: InputBorder.none,
+                                        alignLabelWithHint: true,
+                                        contentPadding: EdgeInsets.only(
+                                            top: 4.0, left: 8.0),
                                       ),
-                                      border: InputBorder.none,
-                                      alignLabelWithHint: true,
-                                      contentPadding: EdgeInsets.only(
-                                          top: 4.0, left: 8.0),
                                     ),
                                   ),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: List.generate(5, (index) {
-                                        return IconButton(
-                                          icon: Icon(
-                                            Icons.star,
-                                            color: index < _selectedStars
-                                                ? Colors.yellow
-                                                : Colors.grey,
-                                          ),
-                                          onPressed: () =>
-                                              _handleStarTap(index + 1),
-                                        );
-                                      }),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _submitReview(
-                                          user.id,
-                                          currentUser.id,
-                                        );
-                                      },
-                                      child: const Icon(Icons.check),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        : Expanded(
-                            child: FutureBuilder<List<Review>>(
-                              future: _reviewsFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                } else if (snapshot.hasError) {
-                                  return Center(
-                                      child: Text(
-                                          'Error: ${snapshot.error}'));
-                                } else if (!snapshot.hasData ||
-                                    snapshot.data!.isEmpty) {
-                                  return const Center(
-                                      child: Text('No reviews found.'));
-                                }
-                  
-                                final reviews = snapshot.data!;
-                  
-                                return ListView.builder(
-                                  shrinkWrap: true, 
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: reviews.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: ReviewCard(
-                                              senderId: reviews[index].senderId,
-                                              description: reviews[index].description,
-                                              rating: reviews[index].rating,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: List.generate(5, (index) {
+                                          return IconButton(
+                                            icon: Icon(
+                                              Icons.star,
+                                              color: index < _selectedStars
+                                                  ? Colors.yellow
+                                                  : Colors.grey,
                                             ),
-                                          ), 
-                                        ],
+                                            onPressed: () =>
+                                                _handleStarTap(index + 1),
+                                          );
+                                        }),
                                       ),
-                                    );
-                                  },
-                                );
-                              },
-                            ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          _submitReview(
+                                            user.id,
+                                            currentUser.id,
+                                          );
+                                        },
+                                        child: const Icon(Icons.check),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          : FutureBuilder<List<Review>>(
+                            future: _reviewsFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                    child: Text(
+                                        'Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                    child: Text('No reviews found.'));
+                              }
+                                            
+                              final reviews = snapshot.data!;
+                                            
+                              return ListView.builder(
+                                shrinkWrap: true, 
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: reviews.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: ReviewCard(
+                                            senderId: reviews[index].senderId,
+                                            description: reviews[index].description,
+                                            rating: reviews[index].rating,
+                                          ),
+                                        ), 
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
-          },
+                );
+              }
+            },
+          ),
         ),
       ),
     );
