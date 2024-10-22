@@ -1,9 +1,9 @@
 
+import 'package:edventure/Screens/Messenger/chat_screen.dart';
 import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/utils/more_options.dart';
 import 'package:flutter/material.dart';
 import '../Screens/Map Screen/map_screen.dart';
-import '../Screens/Notifications/notification_screen.dart';
 import '../Screens/Profile Screen/profile_screen.dart';
 import '../Screens/Search Screen/search_screen.dart';
 import '../Widgets/tab_bar.dart';
@@ -20,7 +20,7 @@ class _NavScreenState extends State<NavScreen> {
   int selectedIndex = 2; 
 
   final List<Widget> _screens = [
-    const NotificationScreen(),
+    const ChatScreen(),
     const ProfileScreen(),
     const MapScreen(),
     const SearchScreen(),
@@ -28,7 +28,7 @@ class _NavScreenState extends State<NavScreen> {
   ];
 
   final List<IconData> _icons = [
-    Icons.notifications,
+    Icons.chat,
     Icons.account_circle_outlined,
     Icons.map,
     Icons.search,
@@ -36,7 +36,7 @@ class _NavScreenState extends State<NavScreen> {
   ];
 
   final List<String> pagename= [
-    'Notifications',
+    'Messenger',
     'Profile',
     'Map',
     'Search',

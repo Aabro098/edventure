@@ -26,7 +26,7 @@ class UserCard extends StatelessWidget {
               child: Text(
                 user.name,
                 style: const TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 18.0,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),

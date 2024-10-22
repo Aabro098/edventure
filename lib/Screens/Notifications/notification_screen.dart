@@ -1,3 +1,4 @@
+import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/models/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     final userId = Provider.of<UserProvider>(context).user.id;
     return Scaffold(
+      appBar: CustomAppBar(pagename: ['Notifications'], selectedIndex: 0),
       body: FutureBuilder<List<NotificationModel>>(
         future: userId.isNotEmpty
             ? _fetchNotifications(userId)

@@ -1,5 +1,6 @@
 
-import 'package:edventure/Screens/Search%20Screen/search_screen.dart';
+import 'package:edventure/Screens/Friends/friend_screen.dart';
+import 'package:edventure/Screens/Notifications/notification_screen.dart';
 import 'package:edventure/utils/options.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,10 +9,10 @@ import '../Screens/Auth Screens/Sign In/auth_screen.dart';
 
 class MoreOptionList extends StatefulWidget {
   final List<List> moreOptionList = const [
-    [Icons.search , Colors.purple, 'Search', SearchScreen()],
-    [Icons.message , Colors.blue, 'Messenger'],
-    [Icons.school , Colors.black, 'Institution'],
-    [Icons.edit , Colors.black, 'Change Password'],
+    [Icons.notifications , Colors.grey, 'Notification', NotificationScreen()],
+    [Icons.group , Colors.grey, 'Contacts', FriendScreen()],
+    [Icons.school , Colors.grey, 'Institution'],
+    [Icons.edit , Colors.grey, 'Change Password'],
     [Icons.settings_outlined,Colors.grey, 'Settings'],
   ];
 

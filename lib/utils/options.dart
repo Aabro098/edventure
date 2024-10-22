@@ -20,7 +20,7 @@ class Options extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Icon(icon , size: 30 , color: color,),
+          Icon(icon , size: 28 , color: color,),
           const SizedBox(
             width : 6.0,
           ),
@@ -28,7 +28,7 @@ class Options extends StatelessWidget {
             child: Text(
               label,
               style: const TextStyle(
-                fontSize: 16.0
+                fontSize: 18.0
               ),
               overflow: TextOverflow.ellipsis,
             ),
