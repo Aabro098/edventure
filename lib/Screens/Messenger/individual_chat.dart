@@ -98,11 +98,79 @@ class _IndividualChatState extends State<IndividualChat> {
         ),
       ),
     );
+  }  
+
+  Widget bottomsheet(){
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16) ,  topRight: Radius.circular(16)
+        )
+      ),
+      height: 280,
+      width: MediaQuery.of(context).size.width,
+      child: Card(
+        margin: EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  iconCreation(Icons.insert_drive_file , 'Document' , Colors.blue),
+                  const SizedBox(width: 40),
+                  iconCreation(Icons.camera , 'Camera' , Colors.pink),
+                  const SizedBox(width: 40),
+                  iconCreation(Icons.insert_photo , 'Gallery' , Colors.purple),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  iconCreation(Icons.headset , 'Audio' , Colors.orange),
+                  const SizedBox(width: 40),
+                  iconCreation(Icons.location_pin , 'Location' , Colors.red),
+                  const SizedBox(width: 40),
+                  iconCreation(Icons.person , 'Contact' , Colors.blue),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
-}
 
-Widget bottomsheet(){
-  return Container(
-
-  );
+  Widget iconCreation(
+    IconData icon ,
+    String text,
+    Color color
+  ){
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 30, 
+          backgroundColor: color,
+          child: Icon(
+            icon, 
+            size: 28,
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        Text(
+          text,
+          style: TextStyle(
+            color: Colors.black54,
+            fontSize: 14.0
+          ),
+        )
+      ],
+    );
+  }
 }

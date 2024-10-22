@@ -16,25 +16,14 @@ class Options extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          Icon(icon , size: 28 , color: color,),
-          const SizedBox(
-            width : 6.0,
-          ),
-          Flexible(
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 18.0
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        ],
+    return ListTile(
+      leading: Icon(
+        icon,        
+        color: color, 
       ),
+      title: Text(label),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
     );
   }
 }

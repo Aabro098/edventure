@@ -136,7 +136,7 @@ class UserDetails extends StatelessWidget {
             const SizedBox(height: 8.0),
             ProfileList(text : user.email, icons: Icons.email),  
             const SizedBox(height: 8.0),
-            ProfileList(text: user.phone, icons: Icons.phone),
+            ProfileList(text: user.phone.isNotEmpty? user.phone : 'Not Available', icons: Icons.phone),
             const SizedBox(height: 8.0),
             Row(
               children: [
@@ -147,7 +147,7 @@ class UserDetails extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    user.address,
+                    user.address.isNotEmpty ? user.address : 'Not Available',
                     style:  const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.normal
@@ -158,7 +158,7 @@ class UserDetails extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8.0),
-            ProfileList(text: user.education, icons: Icons.school),
+            ProfileList(text: user.education.isNotEmpty ? user.education : 'Not Available', icons: Icons.school),
             const SizedBox(height: 20.0),
             Column(
               children: [

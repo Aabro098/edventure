@@ -11,7 +11,9 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthService {
+import '../Screens/Auth Screens/Sign In/auth_screen.dart';
+
+class AuthService with ChangeNotifier{
   Future signUpUser({
     required BuildContext context,
     required String email,
@@ -207,5 +209,19 @@ class AuthService {
         showSnackBar(context, e.toString());
       });
     }
+  }
+
+  Future<void> logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    
+    notifyListeners();
+    
+    Navigator.pushNamedAndRemoveUntil(
+      // ignore: use_build_context_synchronously
+      context,
+      AuthScreen.routeName,  
+      (route) => false,
+    );
   }
 }

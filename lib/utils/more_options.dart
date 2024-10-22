@@ -1,11 +1,9 @@
 
 import 'package:edventure/Screens/Friends/friend_screen.dart';
 import 'package:edventure/Screens/Notifications/notification_screen.dart';
+import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/utils/options.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../Screens/Auth Screens/Sign In/auth_screen.dart';
 
 class MoreOptionList extends StatefulWidget {
   final List<List> moreOptionList = const [
@@ -25,44 +23,49 @@ class MoreOptionList extends StatefulWidget {
 }
 
 class _MoreOptionListState extends State<MoreOptionList> {
-  Future<void> logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('token');
-    Navigator.pushNamedAndRemoveUntil(
-      // ignore: use_build_context_synchronously
-      context,
-      AuthScreen.routeName,
-      (route) => false,
-    );
-}
+  final AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 280.0),
-        child: ListView.builder(
-          itemCount: widget.moreOptionList.length,
-          itemBuilder: (BuildContext context , int index){
-            final List option = widget.moreOptionList[index];
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Options(
-                onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => option[3], 
-                    ),
-                  );
-                },
-                icon : option[0],
-                color : option[1],
-                label : option[2]
+    return Container(
+      padding: EdgeInsets.all(12.0),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.moreOptionList.length,
+              itemBuilder: (BuildContext context , int index){
+                final List option = widget.moreOptionList[index];
+                return Options(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => option[3], 
+                      ),
+                    );
+                  },
+                  icon : option[0],
+                  color : option[1],
+                  label : option[2]
+                );
+            }),
+          ),
+          Center(
+            child: GestureDetector(
+              onTap: () async {
+                await authService.logout(context);
+              },
+              child: Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 18
+                ),
               ),
-            );
-        }),
+            ),
+          )
+        ],
       ),
     );
   }

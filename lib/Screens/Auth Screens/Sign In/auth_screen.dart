@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Widgets/app_form.dart';
 import 'package:edventure/constants/Colors/colors.dart';
 import 'package:edventure/utils/elevated_button.dart';
-import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
   static const String routeName = 'auth';
@@ -114,7 +115,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       if (!_isSignUp) const SizedBox(height: 10.0),
                       if (!_isSignUp)
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            showModalBottomSheet(context: context, builder: (context)=>bottomSheet());
+                          },
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
@@ -172,6 +175,74 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
         ],
       ),
+    );
+  }
+  Widget bottomSheet(){
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.transparent
+      ),
+      width: MediaQuery.of(context).size.width,
+      height: 200,
+      child: Card(
+        child: Column(
+          children: [
+            Options(text: 'Email', icon: Icons.email),
+            const SizedBox(height: 20),
+            Options(text: 'Phone', icon: Icons.phone),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Options extends StatelessWidget {
+  final String text;
+  final IconData icon;
+  const Options({
+    super.key,
+    required this.text,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          size: 40,
+          color: Colors.grey,
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        Column(
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                color: Colors.black54,
+                fontWeight: FontWeight.bold,
+                fontSize: 24
+              ),
+            ),
+            const SizedBox(
+              height: 8.0,
+            ),
+            Text(
+              'Change via $text',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16
+              ),
+            )
+          ],
+        )
+      ],
     );
   }
 }
