@@ -104,6 +104,11 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'
     }],
+
+    socketId: {
+        type: String,
+        required: false, 
+    },
     
     notifications: [{ 
         type: mongoose.Schema.Types.ObjectId, 

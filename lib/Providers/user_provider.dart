@@ -22,6 +22,7 @@ class UserProvider extends ChangeNotifier{
     token: '',
     isVerified : false, 
     review : [], 
+    socketId: '',
     isEmailVerified: false, 
     isAvailable: false, 
     notification: [],

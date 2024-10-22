@@ -39,6 +39,7 @@ class AuthService {
         token: '',
         isVerified: false, 
         review: [], 
+        socketId: '',
         isEmailVerified: false, 
         isAvailable: false, 
         notification: [],
