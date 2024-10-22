@@ -23,11 +23,11 @@ class CustomCurvedNavigationBar extends StatelessWidget {
         int index = icons.indexOf(icon);
         return Icon(
           icon,
-          color: index == selectedIndex ? Colors.cyan.shade700 : Colors.black54,
+          color: index == selectedIndex ? Colors.cyan.shade800 : Colors.black54,
           size: 28.0, 
         );
       }).toList(),
-      color: Colors.cyan.shade200,
+      color: Colors.cyan.shade100,
       backgroundColor: Colors.transparent,
       buttonBackgroundColor: Colors.transparent, 
       animationCurve: Curves.easeInOut,

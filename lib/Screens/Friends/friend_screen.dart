@@ -14,25 +14,27 @@ class FriendScreen extends StatefulWidget {
 class _FriendScreenState extends State<FriendScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: CustomAppBar(pagename: ['Contacts'], selectedIndex: 0),
-      body: CustomScrollView(
-        slivers: [
-          ConstantText(text: 'Recent Contacts',),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              // child: FriendCard(suggested: false, user: ,),
+    return SafeArea(
+      child: Scaffold(
+        appBar: CustomAppBar(pagename: ['Contacts'], selectedIndex: 0),
+        body: CustomScrollView(
+          slivers: [
+            ConstantText(text: 'Recent Contacts',),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                // child: FriendCard(suggested: false, user: ,),
+              ),
             ),
-          ),
-          ConstantText(text: 'Suggested Contacts'),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              // child: FriendCard(suggested: true,),
+            ConstantText(text: 'Suggested Contacts'),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                // child: FriendCard(suggested: true,),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

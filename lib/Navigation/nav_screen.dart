@@ -36,11 +36,11 @@ class _NavScreenState extends State<NavScreen> {
   ];
 
   final List<String> pagename= [
-    'Messenger',
-    'Profile',
+    'Chats',
+    'Your Profile',
     'Map',
     'Search',
-    'More Options',
+    'Menu',
   ];
 
   @override

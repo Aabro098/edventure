@@ -2,6 +2,7 @@ import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/Services/notification_api.dart';
 import 'package:edventure/Services/review_services.dart';
+import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/Widgets/review_card.dart';
 import 'package:edventure/Widgets/user_details.dart';
 import 'package:edventure/constants/variable.dart';
@@ -96,6 +97,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     final currentUser = Provider.of<UserProvider>(context).user;
     return SafeArea(
       child: Scaffold(
+        appBar: CustomAppBar(pagename: ['Profile'], selectedIndex: 0),
         body: GestureDetector(
           onTap: () {
             setState(() {

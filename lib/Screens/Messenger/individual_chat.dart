@@ -11,12 +11,13 @@ class IndividualChat extends StatefulWidget {
 class _IndividualChatState extends State<IndividualChat> {
   @override
   Widget build(BuildContext context) {
+    final TextEditingController messageController = TextEditingController();
     double screenHeight =  MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.blue.shade100,
+      backgroundColor: Colors.blue.shade50,
       appBar: AppBar(
-        backgroundColor: Colors.cyan.shade50,
+        backgroundColor: Colors.blue.shade100,
         elevation: 0.0,
         leadingWidth: 250,
         leading: Padding(
@@ -34,7 +35,7 @@ class _IndividualChatState extends State<IndividualChat> {
           ),
         ],
       ),
-      body: Container(
+      body: SizedBox(
         height: screenHeight,
         width: screenWidth,
         child: Stack(
@@ -44,14 +45,15 @@ class _IndividualChatState extends State<IndividualChat> {
               alignment: Alignment.bottomCenter,
               child: Row(
                 children: [
-                  Container(
-                    width: screenWidth - 45,
+                  SizedBox(
+                    width: screenWidth - 60,
                     child: Card(
                       margin: EdgeInsets.only(left: 12.0 , right: 4.0 , bottom: 8.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.0)
                       ),
                       child: TextFormField(
+                        controller: messageController,
                         textAlignVertical: TextAlignVertical.center,
                         keyboardType: TextInputType.multiline,
                         maxLines: 4,
@@ -62,7 +64,20 @@ class _IndividualChatState extends State<IndividualChat> {
                           hintStyle: TextStyle(
                             color: Colors.grey
                           ),
-                          prefixIcon: Icon(Icons.emoji_emotions)
+                          prefixIcon: InkWell(
+                            onTap: (){
+                              showModalBottomSheet(
+                                context: context , 
+                                builder: (context)=>bottomsheet()
+                              );
+                            },
+                            child: Icon(
+                              Icons.attachment_outlined
+                            )
+                          ),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
                         ),
                       ),
                     ),
@@ -71,7 +86,9 @@ class _IndividualChatState extends State<IndividualChat> {
                     width: 4.0,
                   ),
                   IconButton(
-                    onPressed: (){}, 
+                    onPressed: (){
+
+                    }, 
                     icon: Icon(Icons.send , size: 20,)
                   )
                 ],
@@ -82,4 +99,10 @@ class _IndividualChatState extends State<IndividualChat> {
       ),
     );
   }
+}
+
+Widget bottomsheet(){
+  return Container(
+
+  );
 }
