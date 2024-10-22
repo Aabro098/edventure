@@ -1,6 +1,5 @@
 import 'package:edventure/Services/api_services.dart';
 import 'package:flutter/material.dart';
-import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/Widgets/friend_card.dart';
 import '../../models/user.dart';
 import '../Profile Screen/view_profile.dart';
@@ -45,7 +44,6 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: CustomAppBar(pagename: ['Search'], selectedIndex: 0),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

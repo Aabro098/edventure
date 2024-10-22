@@ -1,4 +1,5 @@
 
+import 'package:edventure/Widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 
 class FriendScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class _FriendScreenState extends State<FriendScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      appBar: CustomAppBar(pagename: ['Contacts'], selectedIndex: 0),
       body: CustomScrollView(
         slivers: [
           ConstantText(text: 'Recent Contacts',),

@@ -2,10 +2,10 @@
 import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/utils/more_options.dart';
 import 'package:flutter/material.dart';
-import '../Screens/Friends/friend_screen.dart';
 import '../Screens/Map Screen/map_screen.dart';
 import '../Screens/Notifications/notification_screen.dart';
 import '../Screens/Profile Screen/profile_screen.dart';
+import '../Screens/Search Screen/search_screen.dart';
 import '../Widgets/tab_bar.dart';
 
 class NavScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class _NavScreenState extends State<NavScreen> {
     const NotificationScreen(),
     const ProfileScreen(),
     const MapScreen(),
-    const FriendScreen(),
+    const SearchScreen(),
     const MoreOptionList(),
   ];
 
@@ -31,7 +31,7 @@ class _NavScreenState extends State<NavScreen> {
     Icons.notifications,
     Icons.account_circle_outlined,
     Icons.map,
-    Icons.group_outlined,
+    Icons.search,
     Icons.menu,
   ];
 
@@ -39,7 +39,7 @@ class _NavScreenState extends State<NavScreen> {
     'Notifications',
     'Profile',
     'Map',
-    'Contacts',
+    'Search',
     'More Options',
   ];
 
