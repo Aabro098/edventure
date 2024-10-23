@@ -1,3 +1,4 @@
+import 'package:edventure/constants/variable.dart';
 import 'package:flutter/material.dart';
 
 import 'package:edventure/Services/auth_services.dart';
@@ -88,10 +89,22 @@ class _AuthScreenState extends State<AuthScreen> {
                         child: Text(
                           "EdVenture",
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 28,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.2,
                             color: TAppColor.secondaryColor,
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          appMoto,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                            color: Colors.black45,
                           ),
                         ),
                       ),
@@ -123,14 +136,14 @@ class _AuthScreenState extends State<AuthScreen> {
                             child: Text(
                               "Forgot Password?",
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 14,
                                 color: TAppColor.backgroundColor,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
                         ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 10),
                       AppElevatedButton(
                         text: _isSignUp ? "Sign Up" : "Login",
                         onTap: _handleButtonPress,
