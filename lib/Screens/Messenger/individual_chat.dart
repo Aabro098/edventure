@@ -1,14 +1,39 @@
+
 import 'package:edventure/Widgets/user_card.dart';
+import 'package:edventure/constants/variable.dart';
+import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class IndividualChat extends StatefulWidget {
-  const IndividualChat({super.key});
+  final User user;
+  const IndividualChat({
+    super.key, 
+    required this.user
+  });
 
   @override
   State<IndividualChat> createState() => _IndividualChatState();
 }
 
 class _IndividualChatState extends State<IndividualChat> {
+  late io.Socket socket;
+
+  @override
+  void initState(){
+    super.initState();
+    connect();
+  }
+
+  void connect(){
+    socket =io.io(uri,<String , dynamic>{
+      "transports" : ["websocket"],
+      "autoConnect" : false 
+    });
+    socket.connect();
+    socket.emit("/test","Hello World");
+  }
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController messageController = TextEditingController();
@@ -22,7 +47,7 @@ class _IndividualChatState extends State<IndividualChat> {
         leadingWidth: 250,
         leading: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: UserCard(),
+          child: UserCard(user : widget.user),
         ),
         actions: [
           IconButton(

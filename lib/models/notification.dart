@@ -5,7 +5,7 @@ class NotificationModel {
   final String senderId;
   final String message;
   final bool notificationStatus;
-  final bool responseStatus;
+  bool responseStatus;
   final DateTime dateTime;
 
   NotificationModel({

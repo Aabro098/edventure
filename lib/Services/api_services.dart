@@ -64,4 +64,21 @@ class ApiService {
       throw Exception('Failed to toggle availability');
     }
   }
+
+  Future<List<User>> fetchAllUsers(BuildContext context) async {
+    try {
+      final user = Provider.of<UserProvider>(context, listen: false).user;
+
+      final response = await http.get(Uri.parse('$uri/users?userId=${user.id}'));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map<User>((userJson) => User.fromMap(userJson)).toList();
+      } else {
+        throw Exception('Failed to load users. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error occurred while fetching users: $e');
+    }
+  }
 }

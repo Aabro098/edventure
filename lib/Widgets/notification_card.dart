@@ -11,9 +11,10 @@ import 'package:provider/provider.dart';
 
 class NotificationCard extends StatefulWidget {
   final NotificationModel? notification;
+
   const NotificationCard({
     super.key,
-    this.notification,
+    required this.notification,
   });
 
   @override
@@ -23,13 +24,9 @@ class NotificationCard extends StatefulWidget {
 class _NotificationCardState extends State<NotificationCard> {
   late Future<User> _userFuture;
 
-  void sendNotification(
-    String userId,
-    String senderId,
-    String message,
-  ) async {
+  void sendNotification(String userId, String senderId, String message) async {
     final NotificationServices notificationServices = NotificationServices();
-    
+
     await notificationServices.addNotification(
       userId: userId,
       senderId: senderId,
@@ -39,21 +36,21 @@ class _NotificationCardState extends State<NotificationCard> {
     );
     await notificationServices.updateNotificationStatus(widget.notification!.id, true);
     
-    setState(() {});
+    setState(() {
+       _userFuture = ApiService().fetchUserData(widget.notification!.senderId);
+       widget.notification!.responseStatus = true;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    if (widget.notification != null) {
-      _userFuture = ApiService().fetchUserData(widget.notification!.senderId);
-    }
+    _userFuture = ApiService().fetchUserData(widget.notification!.senderId);
   }
 
   String _formatDateTime(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
-
     if (difference.inDays >= 1) {
       return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
     } else if (difference.inHours >= 1) {
@@ -68,76 +65,49 @@ class _NotificationCardState extends State<NotificationCard> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserProvider>(context).user;
-    return FutureBuilder<User>(
-      future: _userFuture,
-      builder: (context, snapshot) {
-        String userName = widget.notification?.senderId ?? '';
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          userName = 'Loading...';
-        } else if (snapshot.hasError) {
-          userName = 'Error';
-        } else if (snapshot.hasData) {
-          userName = snapshot.data?.name ?? 'Unknown';
-        }
-        return Container(
-          decoration: BoxDecoration(
-            color: TAppColor.getRandomColor(),
-            borderRadius: BorderRadius.circular(12.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                blurRadius: 7.0,
-                offset: const Offset(0, 2),
-              ),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        color: TAppColor.getRandomColor(),
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 7.0,
+            offset: const Offset(0, 2),
           ),
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Center(
-                  child: UserCard(isNotification: true),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: userName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const WidgetSpan(
-                            child: SizedBox(width: 5.0),
-                          ),
-                          TextSpan(
-                            text: widget.notification?.message ?? '',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 14.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
+        ],
+      ),
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        children: [
+          Expanded(child: _buildUserCard()),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: widget.notification?.message ?? '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0,
+                          color: Colors.black,
+                        ),
                       ),
-                      maxLines: 4,
-                      overflow: TextOverflow.visible,
-                    ),
-                    const SizedBox(height: 5.0),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                      child: widget.notification!.responseStatus
-                        ?  const SizedBox.shrink() 
-                        :  widget.notification!.notificationStatus
+                    ],
+                  ),
+                  maxLines: 4,
+                  overflow: TextOverflow.visible,
+                ),
+                const SizedBox(height: 5.0),
+                Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: widget.notification!.responseStatus
+                      ? const SizedBox.shrink()
+                      : widget.notification!.notificationStatus
                           ? const Text(
                               'Responded',
                               style: TextStyle(
@@ -146,12 +116,13 @@ class _NotificationCardState extends State<NotificationCard> {
                                 color: Colors.grey,
                               ),
                             )
-                          : Row(
+                          : Flexible(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 TTextButton(
                                   iconData: Icons.check,
                                   onPressed: () {
-                                    setState(() {});
                                     sendNotification(
                                       widget.notification!.senderId,
                                       currentUser.id,
@@ -161,11 +132,10 @@ class _NotificationCardState extends State<NotificationCard> {
                                   labelText: 'YES',
                                   color: Colors.green,
                                 ),
-                                const SizedBox(width: 60),
+                                SizedBox(height: 4.0),
                                 TTextButton(
                                   iconData: Icons.close,
                                   onPressed: () {
-                                    setState(() {});
                                     sendNotification(
                                       widget.notification!.senderId,
                                       currentUser.id,
@@ -176,21 +146,37 @@ class _NotificationCardState extends State<NotificationCard> {
                                   color: Colors.red,
                                 ),
                               ],
-                            )
-                    ),
-                    Text(
-                      _formatDateTime(widget.notification?.dateTime ?? DateTime.now()),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
+                            ),
+                        ),
                 ),
-              ),
-            ],
+                Text(
+                  _formatDateTime(widget.notification?.dateTime ?? DateTime.now()),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
           ),
-        );
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserCard() {
+    return FutureBuilder<User>(
+      future: _userFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return const Center(child: Icon(Icons.error, color: Colors.red));
+        } else if (snapshot.hasData) {
+          final user = snapshot.data!;
+          return UserCard(isNotification: true, user: user);
+        }
+        return const SizedBox.shrink(); 
       },
     );
   }

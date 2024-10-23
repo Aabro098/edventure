@@ -1,36 +1,35 @@
-import 'package:edventure/Providers/user_provider.dart';
+
+import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:edventure/constants/images.dart';
-import 'package:provider/provider.dart';
 import '../utils/profile_avatar.dart';
 
 class UserCard extends StatelessWidget {
   final bool? isNotification;
+  final User user;
   const UserCard({
     super.key,
-    this.isNotification,
+    this.isNotification, 
+    required this.user,
   });
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context).user;
     return InkWell(
       onTap: () {},
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const ProfileAvatar(image: AppImages.profile),
-          const SizedBox(width: 6.0),
-          if (!(isNotification ?? false))
-            Flexible(
-              child: Text(
-                user.name,
-                style: const TextStyle(
-                  fontSize: 18.0,
-                ),
-                overflow: TextOverflow.ellipsis,
+          ProfileAvatar(image: user.profileImage),
+          const SizedBox(width: 8.0),
+          Flexible(
+            child: Text(
+              user.name,
+              style: TextStyle(
+                fontSize: isNotification!=null ? 18.0 : 16.0,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
+          ),
         ],
       ),
     );

@@ -38,6 +38,10 @@ mongoose
 
 io.on("connection", socket => {  
     console.log("Socket connected");
+    console.log(socket.id ,'has joined');
+    socket.on("/test",(msg)=>{
+        console.log(msg);        
+    })
 });
 
 server.listen(PORT, () => {

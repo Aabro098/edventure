@@ -42,4 +42,16 @@ router.get('/search', async (req, res) => {
     }
 });
 
+router.get('/users', async (req, res) => {
+    const currentUserId = req.query.userId; 
+
+    try {
+        const users = await User.find({ _id: { $ne: currentUserId } }); 
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to fetch users', error });
+    }
+});
+
+
 module.exports = router;

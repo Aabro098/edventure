@@ -143,7 +143,7 @@ class _SelectContactState extends State<SelectContact> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => IndividualChat(),
+                                builder: (context) => IndividualChat(user: user),
                               ),
                             );
                           },
