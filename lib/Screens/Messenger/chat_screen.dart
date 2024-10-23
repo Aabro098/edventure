@@ -1,4 +1,5 @@
 
+import 'package:edventure/Screens/Messenger/select_contact.dart';
 import 'package:edventure/utils/custom_card.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,12 @@ class ChatScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (builder)=>SelectContact()
+            )
+          );
         },
         child: Icon(
           Icons.chat_sharp
