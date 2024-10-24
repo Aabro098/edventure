@@ -18,10 +18,19 @@ class IndividualChat extends StatefulWidget {
 
 class _IndividualChatState extends State<IndividualChat> {
   late io.Socket socket;
+  bool show = false;
+  FocusNode focusNode  = FocusNode();
 
   @override
   void initState(){
     super.initState();
+    focusNode.addListener((){
+      if (focusNode.hasFocus){
+        setState(() {
+          show = false;
+        });
+      }
+    });
     connect();
   }
 
@@ -31,7 +40,7 @@ class _IndividualChatState extends State<IndividualChat> {
       "autoConnect" : false 
     });
     socket.connect();
-    socket.emit("/test","Hello World");
+    socket.emit("/test",widget.user.id);
   }
 
   @override
