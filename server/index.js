@@ -9,6 +9,7 @@ const authRouter = require("./routes/auth");
 const profile = require("./routes/profile");
 const notification = require("./routes/notification");
 const review = require("./routes/review");
+const Message = require("./models/Message");
 
 const PORT = process.env.PORT || 3000;
 const HOST = '192.168.1.5';
@@ -40,16 +41,31 @@ var clients = {};
 io.on("connection", socket => {  
     console.log("Socket connected");
     console.log(socket.id ,'has joined');
-    socket.on("/test",(id)=>{
+    
+    socket.on("/test", (id) => {
         console.log(id);    
-        clients[id]=socket;
+        clients[id] = socket;
         console.log(clients);    
     });
-    socket.on("message",(msg)=>{
+
+    socket.on("message", async (msg) => {
         console.log(msg);
         let targetId = msg.targetId;
-        if(clients[targetId]){
-            clients[targetId].emit("message",msg);
+        
+        try {
+            const newMessage = new Message({
+                sourceId: msg.sourceId,
+                targetId: msg.targetId,
+                message: msg.message,
+            });
+
+            await newMessage.save();
+            console.log("Message saved to DB:", newMessage);
+
+            clients[targetId].emit("message", msg);
+
+        } catch (error) {
+            console.error("Error saving message:", error);
         }
     });
 });

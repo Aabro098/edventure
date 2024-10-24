@@ -7,4 +7,20 @@ class MessageModel {
     required this.message,
     required this.time,
   });
+  
+  factory MessageModel.fromJson(Map<String, dynamic> json) {
+    return MessageModel(
+      type: json['type'],
+      message: json['message'],
+      time: json['time'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      'message': message,
+      'time': time,
+    };
+  }
 }
