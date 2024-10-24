@@ -36,12 +36,22 @@ mongoose
         console.log(e);
 });
 
+var clients = {};
 io.on("connection", socket => {  
     console.log("Socket connected");
     console.log(socket.id ,'has joined');
-    socket.on("/test",(msg)=>{
-        console.log(msg);        
-    })
+    socket.on("/test",(id)=>{
+        console.log(id);    
+        clients[id]=socket;
+        console.log(clients);    
+    });
+    socket.on("message",(msg)=>{
+        console.log(msg);
+        let targetId = msg.targetId;
+        if(clients[targetId]){
+            clients[targetId].emit("message",msg);
+        }
+    });
 });
 
 server.listen(PORT, () => {

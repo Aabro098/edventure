@@ -1,10 +1,10 @@
-class MessageModel {
+class ChatModel {
    String? id;
    String? currentMessage;
    bool? select = false;
    String? time;
 
-  MessageModel({
+  ChatModel({
     this.id,
     this.currentMessage,
     this.select,

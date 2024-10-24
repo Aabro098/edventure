@@ -1,8 +1,12 @@
 
+import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Widgets/user_card.dart';
 import 'package:edventure/constants/variable.dart';
+import 'package:edventure/models/message.dart';
 import 'package:edventure/models/user.dart';
+import 'package:edventure/utils/message_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class IndividualChat extends StatefulWidget {
@@ -20,6 +24,9 @@ class _IndividualChatState extends State<IndividualChat> {
   late io.Socket socket;
   bool show = false;
   FocusNode focusNode  = FocusNode();
+  final TextEditingController messageController = TextEditingController();
+  List<MessageModel> messages = [];
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState(){
@@ -41,11 +48,37 @@ class _IndividualChatState extends State<IndividualChat> {
     });
     socket.connect();
     socket.emit("/test",widget.user.id);
+    socket.onConnect((data){
+      socket.on("message", (msg){
+        setmessage("destination", msg["message"]);
+        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+      });
+    });
+  }
+
+  void sendMessage(String message , String sourceId , String targetId){
+    setmessage("source", message);
+    socket.emit(
+      "message",
+      {
+        "message" : message ,
+        "sourceId":sourceId , 
+        "targetId":targetId
+      }
+    );
+  }
+
+  void setmessage(String type , String message){
+    MessageModel messageModel = MessageModel(type: type, message: message, time: DateTime.now().toString().substring(10, 16));
+    setState(() {
+      messages.add(messageModel);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController messageController = TextEditingController();
+    final currentUser = Provider.of<UserProvider>(context).user;
     double screenHeight =  MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -69,12 +102,36 @@ class _IndividualChatState extends State<IndividualChat> {
           ),
         ],
       ),
-      body: SizedBox(
+      body: Container(
         height: screenHeight,
         width: screenWidth,
-        child: Stack(
+        child: Column(
           children: [
-            ListView(),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                controller: _scrollController,
+                itemCount: messages.length+1,
+                itemBuilder: (context , index){
+                  if (index == messages.length) {
+                    return Container(
+                      height: 70,
+                    );
+                  }
+                  if (messages[index].type == "source") {
+                    return OwnMessageCard(
+                      message: messages[index].message,
+                      time: messages[index].time,
+                    );
+                  } else {
+                    return ReplyCard(
+                      message: messages[index].message,
+                      time: messages[index].time,
+                    );
+                  }
+                }
+              )
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Row(
@@ -90,8 +147,8 @@ class _IndividualChatState extends State<IndividualChat> {
                         controller: messageController,
                         textAlignVertical: TextAlignVertical.center,
                         keyboardType: TextInputType.multiline,
-                        maxLines: 4,
                         minLines: 1,
+                        maxLines: 4,
                         decoration: InputDecoration(
                           hintText: 'Type a message...',
                           contentPadding: EdgeInsets.all(4.0),
@@ -121,13 +178,16 @@ class _IndividualChatState extends State<IndividualChat> {
                   ),
                   IconButton(
                     onPressed: (){
-
+                      sendMessage(messageController.text, currentUser.id , widget.user.id);
+                      setState(() {
+                        messageController.clear(); 
+                      });
                     }, 
                     icon: Icon(Icons.send , size: 20,)
                   )
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -206,5 +266,10 @@ class _IndividualChatState extends State<IndividualChat> {
         )
       ],
     );
+  }
+  @override
+  void dispose(){
+    messageController.dispose();
+    super.dispose();
   }
 }
