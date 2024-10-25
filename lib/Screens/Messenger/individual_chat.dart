@@ -20,7 +20,7 @@ class IndividualChat extends StatefulWidget {
 }
 
 class IndividualChatState extends State<IndividualChat> {
-late io.Socket socket;
+  late io.Socket socket;
   bool show = false;
   FocusNode focusNode = FocusNode();
   final TextEditingController messageController = TextEditingController();
@@ -43,6 +43,21 @@ late io.Socket socket;
     fetchMessages();
   }
 
+  String formatMessageTime(dynamic timestamp) {
+    try {
+      if (timestamp is String) {
+        if (timestamp.length == 5 && timestamp.contains(':')) {
+          return timestamp;
+        }
+        return DateTime.parse(timestamp).toString().substring(11, 16);
+      } else {
+        return DateTime.now().toString().substring(11, 16);
+      }
+    } catch (e) {
+      return DateTime.now().toString().substring(11, 16);
+    }
+  }
+
   Future<void> fetchMessages() async {
     String url = '$uri/messages/$currentUserId/${widget.user.id}';
     
@@ -51,8 +66,13 @@ late io.Socket socket;
       if (response.statusCode == 200) {
         List<dynamic> jsonMessages = json.decode(response.body);
         List<MessageModel> fetchedMessages = jsonMessages.map((json) {
-          json['currentUserId'] = currentUserId;
-          return MessageModel.fromJson(json);
+          return MessageModel(
+            sourceId: json['sourceId'],
+            targetId: json['targetId'],
+            message: json['message'],
+            time: formatMessageTime(json['timestamp'] ?? json['time']),
+            type: json['sourceId'] == currentUserId ? 'source' : 'destination'
+          );
         }).toList();
 
         setState(() {
@@ -64,7 +84,7 @@ late io.Socket socket;
         });
       }
     } catch (error) {
-      print('Error fetching messages: $error');
+      throw Exception('Error fetching messages: $error');
     }
   }
 
@@ -81,11 +101,11 @@ late io.Socket socket;
 
     socket.on("message", (msg) {
       MessageModel messageModel = MessageModel(
-        type: "destination",
-        message: msg["message"],
         sourceId: msg["sourceId"],
         targetId: msg["targetId"],
+        message: msg["message"],
         time: DateTime.now().toString().substring(11, 16),
+        type: msg["sourceId"] == currentUserId ? 'source' : 'destination'
       );
       
       setState(() {
@@ -98,12 +118,14 @@ late io.Socket socket;
   void sendMessage(String message, String sourceId, String targetId) {
     if (message.trim().isEmpty) return;
 
+    final currentTime = DateTime.now().toString().substring(11, 16);
+    
     MessageModel messageModel = MessageModel(
-      type: "source",
-      message: message,
       sourceId: sourceId,
       targetId: targetId,
-      time: DateTime.now().toString().substring(11, 16),
+      message: message,
+      time: currentTime,
+      type: 'source'
     );
 
     setState(() {
@@ -114,10 +136,12 @@ late io.Socket socket;
       "message": message,
       "sourceId": sourceId,
       "targetId": targetId,
+      "time": currentTime,
     });
 
     scrollToBottom();
   }
+
 
   void scrollToBottom() {
     if (scrollController.hasClients) {
