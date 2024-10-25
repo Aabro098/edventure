@@ -70,19 +70,22 @@ class IndividualChatState extends State<IndividualChat> {
   }
 
   void connect() {
-    socket = io.io(uri, <String, dynamic>{
-      "transports": ["websocket"],
-      "autoConnect": false,
-    });
+    socket = io.io(uri, 
+      io.OptionBuilder()
+      .setTransports(['websocket'])
+      .disableAutoConnect()
+      .build()
+    );
     socket.connect();
     socket.emit("/test", widget.user.id);
 
-    socket.onConnect((data) {
-      socket.on("message", (msg) {
-        setmessage("destination", msg["message"]);
-        scrollController.animateTo(scrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-      });
+    socket.on("message", (msg) {
+      setmessage("destination", msg["message"]);
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     });
   }
 
@@ -288,6 +291,7 @@ class IndividualChatState extends State<IndividualChat> {
   @override
   void dispose() {
     messageController.dispose();
+    socket.disconnect();
     socket.dispose();
     super.dispose();
   }

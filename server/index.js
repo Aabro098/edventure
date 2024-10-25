@@ -37,36 +37,54 @@ mongoose
         console.log(e);
 });
 
-var clients = {};
-io.on("connection", socket => {  
-    console.log("Socket connected");
-    console.log(socket.id ,'has joined');
-    
+const clients = {};
+
+io.on("connection", (socket) => {
+    console.log("Socket connected:", socket.id);
+
     socket.on("/test", (id) => {
-        console.log(id);    
+        console.log("Registered client ID:", id);
         clients[id] = socket;
-        console.log(clients);    
+        console.log("Current connected clients:", Object.keys(clients));
     });
 
     socket.on("message", async (msg) => {
-        console.log(msg);
-        let targetId = msg.targetId;
-        
-        try {
-            const newMessage = new Message({
-                sourceId: msg.sourceId,
-                targetId: msg.targetId,
-                message: msg.message,
-            });
+        console.log("Received message:", msg);
+        const { sourceId, targetId, message } = msg;
 
+        try {
+            if (!sourceId || !targetId || !message) {
+                throw new Error("Invalid message format");
+            }
+
+            const newMessage = new Message({ sourceId, targetId, message });
             await newMessage.save();
             console.log("Message saved to DB:", newMessage);
 
-            clients[targetId].emit("message", msg);
+            if (clients[targetId]) {
+                clients[targetId].emit("message", msg);
+                console.log(`Message emitted to client ${targetId}:`, msg);
+            } else {
+                console.error("Target client not connected:", targetId);
+            }
 
         } catch (error) {
-            console.error("Error saving message:", error);
+            console.error("Error in message handler:", error.message || error);
         }
+    });
+
+    socket.on("disconnect", () => {
+        console.log("Socket disconnected:", socket.id);
+
+        for (const id in clients) {
+            if (clients[id] === socket) {
+                console.log("Removing client ID:", id);
+                delete clients[id];
+                break;
+            }
+        }
+
+        console.log("Updated clients after disconnect:", Object.keys(clients));
     });
 });
 
