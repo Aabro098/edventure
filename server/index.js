@@ -1,22 +1,23 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
-const http = require("http");  
+const http = require("http");
 
 const DB = "mongodb+srv://arbinstha71:Aabro098@cluster0.m51ocmp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const Message = require('./models/Message');
 
 const authRouter = require("./routes/auth");
 const profile = require("./routes/profile");
 const notification = require("./routes/notification");
 const review = require("./routes/review");
-const Message = require("./models/Message");
+const messageRouter = require("./routes/messages");
 
 const PORT = process.env.PORT || 3000;
 const HOST = '192.168.1.5';
 
 const app = express();
-var server = http.createServer(app);
-var io = require('socket.io')(server, {
+const server = http.createServer(app);
+const io = require('socket.io')(server, {
     cors: {
         origin: '*',
     },
@@ -28,24 +29,26 @@ app.use(authRouter);
 app.use(profile);
 app.use(notification);
 app.use(review);
+app.use(messageRouter);  
 
 mongoose
     .connect(DB)
     .then(() => {
         console.log("Connection Successful");
-    }).catch((e) => {
+    })
+    .catch((e) => {
         console.log(e);
-});
+    });
 
-const clients = {};
+const clients = new Map();
 
 io.on("connection", (socket) => {
     console.log("Socket connected:", socket.id);
 
     socket.on("/test", (id) => {
         console.log("Registered client ID:", id);
-        clients[id] = socket;
-        console.log("Current connected clients:", Object.keys(clients));
+        clients.set(id, socket);
+        console.log("Current connected clients:", Array.from(clients.keys()));
     });
 
     socket.on("message", async (msg) => {
@@ -57,34 +60,50 @@ io.on("connection", (socket) => {
                 throw new Error("Invalid message format");
             }
 
-            const newMessage = new Message({ sourceId, targetId, message });
+            const newMessage = new Message({
+                sourceId,
+                targetId,
+                message,
+                timestamp: new Date()
+            });
+
             await newMessage.save();
             console.log("Message saved to DB:", newMessage);
 
-            if (clients[targetId]) {
-                clients[targetId].emit("message", msg);
-                console.log(`Message emitted to client ${targetId}:`, msg);
+            // Send to target client if online
+            const targetSocket = clients.get(targetId);
+            if (targetSocket) {
+                targetSocket.emit("message", {
+                    message: message,
+                    sourceId: sourceId,
+                    targetId: targetId,
+                    timestamp: newMessage.timestamp
+                });
+                console.log(`Message sent to client ${targetId}`);
             } else {
-                console.error("Target client not connected:", targetId);
+                console.log(`Target client ${targetId} not connected. Message stored in DB.`);
             }
-
         } catch (error) {
-            console.error("Error in message handler:", error.message || error);
+            console.error("Error in message handler:", error);
+            socket.emit("error", {
+                message: "Error processing message",
+                error: error.message
+            });
         }
     });
 
     socket.on("disconnect", () => {
         console.log("Socket disconnected:", socket.id);
-
-        for (const id in clients) {
-            if (clients[id] === socket) {
+        
+        for (const [id, sock] of clients.entries()) {
+            if (sock === socket) {
+                clients.delete(id);
                 console.log("Removing client ID:", id);
-                delete clients[id];
                 break;
             }
         }
-
-        console.log("Updated clients after disconnect:", Object.keys(clients));
+        
+        console.log("Updated clients after disconnect:", Array.from(clients.keys()));
     });
 });
 

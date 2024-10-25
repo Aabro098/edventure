@@ -20,16 +20,18 @@ class IndividualChat extends StatefulWidget {
 }
 
 class IndividualChatState extends State<IndividualChat> {
-  late io.Socket socket;
+late io.Socket socket;
   bool show = false;
   FocusNode focusNode = FocusNode();
   final TextEditingController messageController = TextEditingController();
   List<MessageModel> messages = [];
   ScrollController scrollController = ScrollController();
+  late String currentUserId;
 
   @override
   void initState() {
     super.initState();
+    currentUserId = Provider.of<UserProvider>(context, listen: false).user.id;
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         setState(() {
@@ -42,70 +44,89 @@ class IndividualChatState extends State<IndividualChat> {
   }
 
   Future<void> fetchMessages() async {
-    final currentUser = Provider.of<UserProvider>(context, listen: false).user;
-    String url =
-        '$uri/messages/${currentUser.id}/${widget.user.id}';
-
+    String url = '$uri/messages/$currentUserId/${widget.user.id}';
+    
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         List<dynamic> jsonMessages = json.decode(response.body);
-        List<MessageModel> fetchedMessages = jsonMessages
-            .map((json) => MessageModel.fromJson(json))
-            .toList();
+        List<MessageModel> fetchedMessages = jsonMessages.map((json) {
+          json['currentUserId'] = currentUserId;
+          return MessageModel.fromJson(json);
+        }).toList();
 
         setState(() {
           messages = fetchedMessages;
         });
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          scrollToBottom();
         });
-      } else {
-        throw Exception('No messages to Load');
       }
     } catch (error) {
-      throw Exception('Error fetching messages: $error');
+      print('Error fetching messages: $error');
     }
   }
 
   void connect() {
-    socket = io.io(uri, 
+    socket = io.io(
+      uri,
       io.OptionBuilder()
-      .setTransports(['websocket'])
-      .disableAutoConnect()
-      .build()
+          .setTransports(['websocket'])
+          .disableAutoConnect()
+          .build(),
     );
     socket.connect();
-    socket.emit("/test", widget.user.id);
+    socket.emit("/test", currentUserId);
 
     socket.on("message", (msg) {
-      setmessage("destination", msg["message"]);
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
+      MessageModel messageModel = MessageModel(
+        type: "destination",
+        message: msg["message"],
+        sourceId: msg["sourceId"],
+        targetId: msg["targetId"],
+        time: DateTime.now().toString().substring(11, 16),
       );
+      
+      setState(() {
+        messages.add(messageModel);
+      });
+      scrollToBottom();
     });
   }
 
   void sendMessage(String message, String sourceId, String targetId) {
-    setmessage("source", message);
+    if (message.trim().isEmpty) return;
+
+    MessageModel messageModel = MessageModel(
+      type: "source",
+      message: message,
+      sourceId: sourceId,
+      targetId: targetId,
+      time: DateTime.now().toString().substring(11, 16),
+    );
+
+    setState(() {
+      messages.add(messageModel);
+    });
+
     socket.emit("message", {
       "message": message,
       "sourceId": sourceId,
       "targetId": targetId,
     });
+
+    scrollToBottom();
   }
 
-  void setmessage(String type, String message) {
-    MessageModel messageModel = MessageModel(
-        type: type,
-        message: message,
-        time: DateTime.now().toString().substring(10, 16));
-    setState(() {
-      messages.add(messageModel);
-    });
+  void scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override
