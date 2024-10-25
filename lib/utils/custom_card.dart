@@ -1,10 +1,18 @@
 
-import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
+
+import 'package:edventure/models/user.dart';
 
 class CustomCard extends StatelessWidget {
   final User user;
-  const CustomCard({super.key, required this.user});
+  final String lastMessage;
+  final DateTime lastMessageTime;
+  const CustomCard({
+    super.key,
+    required this.user, 
+    required this.lastMessage, 
+    required this.lastMessageTime,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +33,12 @@ class CustomCard extends StatelessWidget {
           fontWeight: FontWeight.bold
         ),
       ),  
-      subtitle: Text('${user.name} has messaged you',
+      subtitle: Text(lastMessage,
         style: TextStyle(
           fontSize: 13
         ),
       ),
-      trailing: Text('6:00 PM'),
+      trailing: Text(lastMessageTime.toString()),
     );
   }
 }

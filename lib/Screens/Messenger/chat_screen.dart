@@ -1,73 +1,72 @@
-
 import 'package:edventure/Screens/Messenger/individual_chat.dart';
 import 'package:edventure/Screens/Messenger/select_contact.dart';
-import 'package:edventure/Services/api_services.dart';
-import 'package:edventure/models/user.dart';
+import 'package:edventure/models/user_message.dart';
 import 'package:edventure/utils/custom_card.dart';
 import 'package:flutter/material.dart';
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+class RecentChatScreen extends StatefulWidget {
+  const RecentChatScreen({super.key});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  State<RecentChatScreen> createState() => _RecentChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
-  late Future<List<User>> futureUsers;
+class _RecentChatScreenState extends State<RecentChatScreen> {
+  late Future<List<UserWithMessage>> futureUsersWithMessages;
 
   @override
   void initState() {
     super.initState();
-    futureUsers = ApiService().fetchAllUsers(context);
+    futureUsersWithMessages = fetchAllUsersWithMessages(context);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (builder)=>SelectContact()
-            )
+            context,
+            MaterialPageRoute(builder: (builder) => SelectContact()),
           );
         },
-        child: Icon(
-          Icons.chat_sharp
-        ),
+        child: Icon(Icons.chat_sharp),
       ),
-      body: FutureBuilder<List<User>>(
-      future: futureUsers,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No users found.'));
-        } else {
-          final users = snapshot.data!;
-          return ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context , index){
-              final user = users[index];
-              return InkWell(
-                onTap: (){
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(
-                      builder : (context)=>IndividualChat(user: user)
-                    )
-                  );
-                },
-                child : CustomCard(user: user),
-                );  
+      body: FutureBuilder<List<UserWithMessage>>(
+        future: futureUsersWithMessages,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No recent chats found.'));
+          } else {
+            final recentChats = snapshot.data!;
+            return ListView.builder(
+              itemCount: recentChats.length,
+              itemBuilder: (context, index) {
+                final chat = recentChats[index];
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => IndividualChat(user: chat.user),
+                      ),
+                    );
+                  },
+                  child: CustomCard(
+                    user: chat.user,
+                    lastMessage: chat.lastMessage,
+                    lastMessageTime: chat.lastMessageTime,
+                  ),
+                );
               },
             );
           }
-        }
-      )
+        },
+      ),
     );
   }
 }

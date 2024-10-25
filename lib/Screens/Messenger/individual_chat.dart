@@ -76,7 +76,7 @@ class IndividualChatState extends State<IndividualChat> {
         }).toList();
 
         setState(() {
-          messages = fetchedMessages;
+          messages = fetchedMessages.reversed.toList();
         });
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -109,7 +109,7 @@ class IndividualChatState extends State<IndividualChat> {
       );
       
       setState(() {
-        messages.add(messageModel);
+        messages.insert(0, messageModel); 
       });
       scrollToBottom();
     });
@@ -129,7 +129,7 @@ class IndividualChatState extends State<IndividualChat> {
     );
 
     setState(() {
-      messages.add(messageModel);
+      messages.insert(0, messageModel); 
     });
 
     socket.emit("message", {
@@ -142,11 +142,10 @@ class IndividualChatState extends State<IndividualChat> {
     scrollToBottom();
   }
 
-
   void scrollToBottom() {
     if (scrollController.hasClients) {
       scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
+        0, 
         duration: Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
@@ -185,6 +184,7 @@ class IndividualChatState extends State<IndividualChat> {
           children: [
             Expanded(
               child: ListView.builder(
+                reverse: true,
                 shrinkWrap: true,
                 controller: scrollController,
                 itemCount: messages.length + 1,

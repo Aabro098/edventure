@@ -63,6 +63,12 @@ class AuthService with ChangeNotifier{
             context,
             'Account has been created successfully',
           );
+          Navigator.pushNamedAndRemoveUntil(
+            // ignore: use_build_context_synchronously
+            context, 
+            AuthScreen.routeName, 
+            (route) => false
+          );
         },
       );
     } catch (e) {

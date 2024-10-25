@@ -20,7 +20,7 @@ class _NavScreenState extends State<NavScreen> {
   int selectedIndex = 2; 
 
   final List<Widget> _screens = [
-    const ChatScreen(),
+    const RecentChatScreen(),
     const ProfileScreen(),
     const MapScreen(),
     const SearchScreen(),
