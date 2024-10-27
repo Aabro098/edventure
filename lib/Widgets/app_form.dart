@@ -5,12 +5,14 @@ class AppForm extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final IconData? icon;
+  final String? Function(String?)? validator;
 
   const AppForm({
     super.key,
     required this.controller,
     required this.hintText,
-    this.icon,
+    this.icon, 
+    this.validator
   });
 
   @override

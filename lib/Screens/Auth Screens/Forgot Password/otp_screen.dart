@@ -1,3 +1,5 @@
+import 'package:edventure/Screens/Auth%20Screens/Forgot%20Password/enter_details.dart';
+import 'package:edventure/Screens/Auth%20Screens/Forgot%20Password/reset_password.dart';
 import 'package:edventure/utils/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
@@ -35,35 +37,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        leadingWidth: 250,
-        leading: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                }, 
-                icon: Icon(
-                  Icons.arrow_back
-                )
-              ),
-              const SizedBox(
-                width: 4.0,
-              ),
-              Text(
-                'Back',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+      appBar: FirstAppBar(),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -116,11 +90,18 @@ class _OtpScreenState extends State<OtpScreen> {
                     height: 10.0,
                   ),
                   AppElevatedButton(
-                    text: 'Verify', onTap: (){
+                    text: 'Verify', 
+                    onTap: (){
                       focusNode.unfocus();
-                      otpFormKey.currentState!.validate();
+                      if(otpFormKey.currentState!.validate()){
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(builder: (context)=>ChangePassword())
+                        );
+                      }
                     }, 
-                  color: Colors.blueAccent.shade400)
+                    color: Colors.blueAccent.shade400
+                  )
                 ],
               ),
             )
