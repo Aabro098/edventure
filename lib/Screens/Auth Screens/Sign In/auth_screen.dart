@@ -1,9 +1,11 @@
-import 'package:edventure/constants/variable.dart';
+import 'package:edventure/Screens/Auth%20Screens/Forgot%20Password/enter_details.dart';
+import 'package:edventure/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Widgets/app_form.dart';
 import 'package:edventure/constants/Colors/colors.dart';
+import 'package:edventure/constants/variable.dart';
 import 'package:edventure/utils/elevated_button.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -201,9 +203,26 @@ class _AuthScreenState extends State<AuthScreen> {
       child: Card(
         child: Column(
           children: [
-            Options(text: 'Email', icon: Icons.email),
+            Options(
+              text: 'Email', 
+              icon: Icons.email, 
+              onTap: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (context)=>EnterDetails()
+                  )
+                );
+              },
+            ),
             const SizedBox(height: 20),
-            Options(text: 'Phone', icon: Icons.phone),
+            Options(
+              text: 'Phone', 
+              icon: Icons.phone, 
+              onTap: () {
+                showSnackBar(context, 'Service currently unavailable');
+              },
+            ),
           ],
         ),
       ),
@@ -214,48 +233,53 @@ class _AuthScreenState extends State<AuthScreen> {
 class Options extends StatelessWidget {
   final String text;
   final IconData icon;
+  final VoidCallback onTap;
   const Options({
     super.key,
     required this.text,
     required this.icon,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          size: 40,
-          color: Colors.grey,
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        Column(
-          children: [
-            Text(
-              text,
-              style: TextStyle(
-                color: Colors.black54,
-                fontWeight: FontWeight.bold,
-                fontSize: 24
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 40,
+            color: Colors.grey,
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          Column(
+            children: [
+              Text(
+                text,
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 8.0,
-            ),
-            Text(
-              'Change via $text',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 16
+              const SizedBox(
+                height: 8.0,
               ),
-            )
-          ],
-        )
-      ],
+              Text(
+                'Change via $text',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16
+                ),
+              )
+            ],
+          )
+        ],
+      ),
     );
   }
 }

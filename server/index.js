@@ -1,14 +1,17 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
 const http = require("http");
 
-const DB = "mongodb+srv://arbinstha71:Aabro098@cluster0.m51ocmp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const DB = process.env.DB;
+
 const Message = require('./models/Message');
 
 const authRouter = require("./routes/auth");
 const profile = require("./routes/profile");
 const notification = require("./routes/notification");
+const resetPassword = require("./routes/resetPassword");
 const review = require("./routes/review");
 const messageRouter = require("./routes/messages");
 
@@ -30,6 +33,7 @@ app.use(profile);
 app.use(notification);
 app.use(review);
 app.use(messageRouter);  
+app.use(resetPassword);
 
 mongoose
     .connect(DB)
@@ -70,7 +74,6 @@ io.on("connection", (socket) => {
             await newMessage.save();
             console.log("Message saved to DB:", newMessage);
 
-            // Send to target client if online
             const targetSocket = clients.get(targetId);
             if (targetSocket) {
                 targetSocket.emit("message", {
