@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import 'package:edventure/models/user.dart';
 
 class CustomCard extends StatelessWidget {
@@ -16,6 +16,7 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formattedTime = DateFormat('hh:mm a').format(lastMessageTime);
     return ListTile(
       leading: CircleAvatar(
         radius : 25,
@@ -38,7 +39,7 @@ class CustomCard extends StatelessWidget {
           fontSize: 13
         ),
       ),
-      trailing: Text(lastMessageTime.toString()),
+      trailing: Text(formattedTime),
     );
   }
 }
