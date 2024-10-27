@@ -49,7 +49,7 @@ class _EnterDetailsState extends State<EnterDetails> {
                 ),
                 AppForm(
                   controller: emailController, 
-                  hintText: 'Enter Email',
+                  hintText: 'Email',
                 ),
                 const SizedBox(
                   height: 10.0,

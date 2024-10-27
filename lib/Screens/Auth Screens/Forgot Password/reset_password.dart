@@ -23,74 +23,77 @@ class _ChangePasswordState extends State<ChangePassword> {
       body: SingleChildScrollView(
         child: Form(
           key: changePasswordKey,
-          child: Column(
-            children: [
-              Text(
-                'Create new password',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24.0
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  'Create new password',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0
+                  ),
+                  textAlign: TextAlign.left,
+                ),    
+                const SizedBox(
+                  height: 8.0,
                 ),
-                textAlign: TextAlign.left,
-              ),    
-              const SizedBox(
-                height: 8.0,
-              ),
-              Text(
-                'Your Password must be\ndifferent from previous password.',
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 16,
-                  color: Colors.black54
+                Text(
+                  'Your Password must be\ndifferent from previous password.',
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16,
+                    color: Colors.black54
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-                textAlign: TextAlign.left,
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              AppForm(
-                controller: passwordController, 
-                hintText: 'Password',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Password is required';
-                  } else if (value.length < 8) {
-                    return 'Password must be at least 8 characters';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              AppForm(
-                controller: confirmPasswordController, 
-                hintText: 'Confirm Password',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Confirm password is required';
-                  } else if (value != passwordController.text) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              AppElevatedButton(
-                text: 'Change Password', 
-                onTap: (){
-                  if(changePasswordKey.currentState!.validate()){
-                    Navigator.pushNamedAndRemoveUntil(
-                      context, 
-                      AuthScreen.routeName, 
-                      (route) => false
-                    );
-                  }
-                }, 
-                color: Colors.blueAccent.shade400)
-            ],
+                const SizedBox(
+                  height: 20.0,
+                ),
+                AppForm(
+                  controller: passwordController, 
+                  hintText: 'Password',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Password is required';
+                    } else if (value.length < 8) {
+                      return 'Password must be at least 8 characters';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                AppForm(
+                  controller: confirmPasswordController, 
+                  hintText: 'Confirm Password',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Confirm password is required';
+                    } else if (value != passwordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                AppElevatedButton(
+                  text: 'Change Password', 
+                  onTap: (){
+                    if(changePasswordKey.currentState!.validate()){
+                      Navigator.pushNamedAndRemoveUntil(
+                        context, 
+                        AuthScreen.routeName, 
+                        (route) => false
+                      );
+                    }
+                  }, 
+                  color: Colors.blueAccent.shade400)
+              ],
+            ),
           ),
         ),
       ),

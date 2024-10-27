@@ -25,7 +25,7 @@ class _OtpScreenState extends State<OtpScreen> {
     ),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(19),
-      border: Border.all(color: Colors.transparent),
+      border: Border.all(color: Colors.blue.shade100),
     ),
   );
 
