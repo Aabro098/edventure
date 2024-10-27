@@ -98,6 +98,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           context, 
                           MaterialPageRoute(builder: (context)=>ChangePassword())
                         );
+                        pinputController.clear();
                       }
                     }, 
                     color: Colors.blueAccent.shade400

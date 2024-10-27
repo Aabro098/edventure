@@ -62,6 +62,7 @@ class _EnterDetailsState extends State<EnterDetails> {
                         context, 
                         MaterialPageRoute(builder: (context)=>OtpScreen())
                       );
+                      emailController.clear();
                     }
                   }, 
                   color: Colors.blueAccent.shade400

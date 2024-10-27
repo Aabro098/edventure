@@ -14,7 +14,7 @@ class ChangePassword extends StatefulWidget {
 
 class _ChangePasswordState extends State<ChangePassword> {
   final changePasswordKey = GlobalKey<FormState>();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController changePasswordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -51,8 +51,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                   height: 20.0,
                 ),
                 AppForm(
-                  controller: passwordController, 
+                  controller: changePasswordController, 
                   hintText: 'Password',
+                  icon: Icons.visibility,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password is required';
@@ -68,10 +69,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                 AppForm(
                   controller: confirmPasswordController, 
                   hintText: 'Confirm Password',
+                  icon: Icons.visibility,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Confirm password is required';
-                    } else if (value != passwordController.text) {
+                    } else if (value != changePasswordController.text) {
                       return 'Passwords do not match';
                     }
                     return null;
@@ -89,6 +91,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                         AuthScreen.routeName, 
                         (route) => false
                       );
+                      setState(() {
+                        changePasswordController.clear();
+                        confirmPasswordController.clear();
+                      });
                     }
                   }, 
                   color: Colors.blueAccent.shade400)
@@ -101,7 +107,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
   @override
   void dispose(){
-    passwordController.dispose();
+    changePasswordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
   }

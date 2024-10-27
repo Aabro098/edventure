@@ -248,8 +248,10 @@ class IndividualChatState extends State<IndividualChat> {
                   ),
                   IconButton(
                     onPressed: () {
-                      sendMessage(messageController.text, currentUser.id,
-                          widget.user.id);
+                      sendMessage(
+                        messageController.text, 
+                        currentUser.id,
+                        widget.user.id);
                       setState(() {
                         messageController.clear();
                       });
