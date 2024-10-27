@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Screens/Auth Screens/Sign In/auth_screen.dart';
+import '../Screens/Auth Screens/Auth/auth_screen.dart';
 
 class AuthService with ChangeNotifier{
   Future signUpUser({

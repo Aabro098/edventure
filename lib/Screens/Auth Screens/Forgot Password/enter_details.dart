@@ -10,7 +10,7 @@ class EnterDetails extends StatefulWidget {
 }
 
 class _EnterDetailsState extends State<EnterDetails> {
-  TextEditingController emailController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

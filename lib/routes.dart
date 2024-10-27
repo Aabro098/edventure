@@ -1,7 +1,7 @@
 
 import 'package:edventure/Navigation/nav_screen.dart';
 import 'package:flutter/material.dart';
-import 'Screens/Auth Screens/Sign In/auth_screen.dart';
+import 'Screens/Auth Screens/Auth/auth_screen.dart';
 import 'Screens/Profile Screen/profile_screen.dart';
 
 Route<dynamic>generateRoute(RouteSettings routeSettings){
