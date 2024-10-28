@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:edventure/constants/variable.dart';
 import 'package:http/http.dart' as http;
@@ -12,14 +13,19 @@ import 'package:edventure/models/user.dart';
 
 class IndividualChat extends StatefulWidget {
   final User user;
+  final VoidCallback? onMessageSent;
 
-  const IndividualChat({super.key, required this.user});
+  const IndividualChat({
+    super.key, 
+    required this.user,
+    this.onMessageSent,
+  });
 
   @override
   IndividualChatState createState() => IndividualChatState();
 }
 
-class IndividualChatState extends State<IndividualChat> {
+class IndividualChatState extends State<IndividualChat> with WidgetsBindingObserver {
   late io.Socket socket;
   bool show = false;
   FocusNode focusNode = FocusNode();
@@ -27,10 +33,15 @@ class IndividualChatState extends State<IndividualChat> {
   List<MessageModel> messages = [];
   ScrollController scrollController = ScrollController();
   late String currentUserId;
+  bool isConnected = false;
+  Timer? _reconnectionTimer;
+  bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     currentUserId = Provider.of<UserProvider>(context, listen: false).user.id;
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
@@ -39,22 +50,34 @@ class IndividualChatState extends State<IndividualChat> {
         });
       }
     });
-    connect();
-    fetchMessages();
+    _initialize();
   }
 
-  String formatMessageTime(dynamic timestamp) {
-    try {
-      if (timestamp is String) {
-        if (timestamp.length == 5 && timestamp.contains(':')) {
-          return timestamp;
-        }
-        return DateTime.parse(timestamp).toString().substring(11, 16);
-      } else {
-        return DateTime.now().toString().substring(11, 16);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (!isConnected) {
+        connect();
       }
+      fetchMessages();
+    } else if (state == AppLifecycleState.paused) {
+      socket.disconnect();
+      _reconnectionTimer?.cancel();
+    }
+  }
+
+  Future<void> _initialize() async {
+    try {
+      await connect();
+      await fetchMessages();
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
-      return DateTime.now().toString().substring(11, 16);
+      setState(() {
+        _isLoading = false;
+        _error = 'Failed to initialize chat: $e';
+      });
     }
   }
 
@@ -75,20 +98,27 @@ class IndividualChatState extends State<IndividualChat> {
           );
         }).toList();
 
-        setState(() {
-          messages = fetchedMessages.reversed.toList();
-        });
+        if (mounted) {
+          setState(() {
+            messages = fetchedMessages.reversed.toList();
+            _error = null;
+          });
+        }
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           scrollToBottom();
         });
       }
     } catch (error) {
-      throw Exception('Error fetching messages: $error');
+      if (mounted) {
+        setState(() {
+          _error = 'Error fetching messages: $error';
+        });
+      }
     }
   }
 
-  void connect() {
+  Future<void> connect() async {
     socket = io.io(
       uri,
       io.OptionBuilder()
@@ -96,22 +126,55 @@ class IndividualChatState extends State<IndividualChat> {
           .disableAutoConnect()
           .build(),
     );
+
     socket.connect();
     socket.emit("/test", currentUserId);
 
-    socket.on("message", (msg) {
-      MessageModel messageModel = MessageModel(
-        sourceId: msg["sourceId"],
-        targetId: msg["targetId"],
-        message: msg["message"],
-        time: DateTime.now().toString().substring(11, 16),
-        type: msg["sourceId"] == currentUserId ? 'source' : 'destination'
-      );
-      
+    socket.onConnect((_) {
       setState(() {
-        messages.insert(0, messageModel); 
+        isConnected = true;
       });
-      scrollToBottom();
+      _reconnectionTimer?.cancel();
+    });
+
+    socket.onDisconnect((_) {
+      setState(() {
+        isConnected = false;
+      });
+      _startReconnectionTimer();
+    });
+
+    socket.on("message", (msg) {
+      if (mounted) {
+        MessageModel messageModel = MessageModel(
+          sourceId: msg["sourceId"],
+          targetId: msg["targetId"],
+          message: msg["message"],
+          time: DateTime.now().toString().substring(11, 16),
+          type: msg["sourceId"] == currentUserId ? 'source' : 'destination'
+        );
+        
+        setState(() {
+          messages.insert(0, messageModel);
+        });
+        scrollToBottom();
+        
+        // If this is a received message, notify the parent
+        if (msg["sourceId"] != currentUserId) {
+          widget.onMessageSent?.call();
+        }
+      }
+    });
+  }
+
+  void _startReconnectionTimer() {
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (!isConnected) {
+        socket.connect();
+      } else {
+        timer.cancel();
+      }
     });
   }
 
@@ -129,7 +192,7 @@ class IndividualChatState extends State<IndividualChat> {
     );
 
     setState(() {
-      messages.insert(0, messageModel); 
+      messages.insert(0, messageModel);
     });
 
     socket.emit("message", {
@@ -139,14 +202,16 @@ class IndividualChatState extends State<IndividualChat> {
       "time": currentTime,
     });
 
+    // Notify parent about the sent message
+    widget.onMessageSent?.call();
     scrollToBottom();
   }
 
   void scrollToBottom() {
     if (scrollController.hasClients) {
       scrollController.animateTo(
-        0, 
-        duration: Duration(milliseconds: 300),
+        0,
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
     }
@@ -158,114 +223,141 @@ class IndividualChatState extends State<IndividualChat> {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.blue.shade50,
-      appBar: AppBar(
-        backgroundColor: Colors.blue.shade100,
-        elevation: 0.0,
-        leadingWidth: 250,
-        leading: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: UserCard(user: widget.user),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back),
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        widget.onMessageSent?.call();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.blue.shade50,
+        appBar: AppBar(
+          backgroundColor: Colors.blue.shade100,
+          elevation: 0.0,
+          leadingWidth: 250,
+          leading: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: UserCard(user: widget.user),
           ),
-        ],
-      ),
-      body: SizedBox(
-        height: screenHeight,
-        width: screenWidth,
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                reverse: true,
-                shrinkWrap: true,
-                controller: scrollController,
-                itemCount: messages.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == messages.length) {
-                    return Container(
-                      height: 70,
-                    );
-                  }
-                  if (messages[index].type == "source") {
-                    return OwnMessageCard(
-                      message: messages[index].message,
-                      time: messages[index].time,
-                    );
-                  } else {
-                    return ReplyCard(
-                      message: messages[index].message,
-                      time: messages[index].time,
-                    );
-                  }
-                },
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: screenWidth - 60,
-                    child: Card(
-                      margin: EdgeInsets.only(
-                          left: 12.0, right: 4.0, bottom: 8.0),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0)),
-                      child: TextFormField(
-                        controller: messageController,
-                        textAlignVertical: TextAlignVertical.center,
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: 4,
-                        decoration: InputDecoration(
-                          hintText: 'Type a message...',
-                          contentPadding: EdgeInsets.all(4.0),
-                          hintStyle: TextStyle(color: Colors.grey),
-                          prefixIcon: InkWell(
-                              onTap: () {
-                                showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => bottomsheet());
-                              },
-                              child: Icon(Icons.attachment_outlined)),
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 4.0,
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      sendMessage(
-                        messageController.text, 
-                        currentUser.id,
-                        widget.user.id);
-                      setState(() {
-                        messageController.clear();
-                      });
-                    },
-                    icon: Icon(
-                      Icons.send,
-                      size: 20,
-                    ),
-                  )
-                ],
-              ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                widget.onMessageSent?.call(); // Refresh parent when back button is pressed
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.arrow_back),
             ),
           ],
         ),
+        body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+            ? Center(child: Text(_error!))
+            : RefreshIndicator(
+                onRefresh: fetchMessages,
+                child: SizedBox(
+                  height: screenHeight,
+                  width: screenWidth,
+                  child: Column(
+                    children: [
+                      if (!isConnected)
+                        Container(
+                          color: Colors.red.shade100,
+                          padding: const EdgeInsets.all(8),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.wifi_off),
+                              SizedBox(width: 8),
+                              Text('Reconnecting...'),
+                            ],
+                          ),
+                        ),
+                      Expanded(
+                        child: ListView.builder(
+                          reverse: true,
+                          shrinkWrap: true,
+                          controller: scrollController,
+                          itemCount: messages.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == messages.length) {
+                              return Container(height: 70);
+                            }
+                            if (messages[index].type == "source") {
+                              return OwnMessageCard(
+                                message: messages[index].message,
+                                time: messages[index].time,
+                              );
+                            } else {
+                              return ReplyCard(
+                                message: messages[index].message,
+                                time: messages[index].time,
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: screenWidth - 60,
+                              child: Card(
+                                margin: const EdgeInsets.only(
+                                  left: 12.0,
+                                  right: 4.0,
+                                  bottom: 8.0
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0)
+                                ),
+                                child: TextFormField(
+                                  controller: messageController,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: 1,
+                                  maxLines: 4,
+                                  decoration: InputDecoration(
+                                    hintText: 'Type a message...',
+                                    contentPadding: const EdgeInsets.all(4.0),
+                                    hintStyle: const TextStyle(color: Colors.grey),
+                                    prefixIcon: InkWell(
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => bottomsheet()
+                                        );
+                                      },
+                                      child: const Icon(Icons.attachment_outlined)
+                                    ),
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 4.0),
+                            IconButton(
+                              onPressed: () {
+                                sendMessage(
+                                  messageController.text,
+                                  currentUser.id,
+                                  widget.user.id
+                                );
+                                setState(() {
+                                  messageController.clear();
+                                });
+                              },
+                              icon: const Icon(Icons.send, size: 20),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -337,9 +429,42 @@ class IndividualChatState extends State<IndividualChat> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _reconnectionTimer?.cancel();
     messageController.dispose();
     socket.disconnect();
     socket.dispose();
+    focusNode.dispose();
+    scrollController.dispose();
     super.dispose();
+  }
+
+  String formatMessageTime(dynamic timestamp) {
+    try {
+      // Handle if timestamp is already a formatted time string (HH:mm)
+      if (timestamp is String && timestamp.length == 5 && timestamp.contains(':')) {
+        return timestamp;
+      }
+
+      // Handle ISO 8601 string format
+      if (timestamp is String) {
+        final dateTime = DateTime.parse(timestamp);
+        return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+      }
+
+      // Handle Unix timestamp (milliseconds since epoch)
+      if (timestamp is int) {
+        final dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+        return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+      }
+
+      // If timestamp is null or invalid, return current time
+      final now = DateTime.now();
+      return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+    } catch (e) {
+      // In case of any parsing errors, return current time
+      final now = DateTime.now();
+      return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+    }
   }
 }

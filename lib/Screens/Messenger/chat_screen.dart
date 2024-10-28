@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
+import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/constants/variable.dart';
-import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:edventure/Screens/Messenger/individual_chat.dart';
 import 'package:edventure/Screens/Messenger/select_contact.dart';
 import 'package:edventure/models/user_message.dart';
-import 'package:edventure/models/user.dart';
 import 'package:edventure/utils/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,19 +17,37 @@ class RecentChatScreen extends StatefulWidget {
   State<RecentChatScreen> createState() => _RecentChatScreenState();
 }
 
-class _RecentChatScreenState extends State<RecentChatScreen> {
+class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBindingObserver {
   List<UserWithMessage> recentChats = [];
   bool isLoading = true;
   bool hasError = false;
   String? errorMessage;
   late io.Socket socket;
   late String currentUserId;
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     currentUserId = Provider.of<UserProvider>(context, listen: false).user.id;
     _initialize();
+    _startPeriodicRefresh();
+  }
+
+  void _startPeriodicRefresh() {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (mounted) {
+        loadInitialChats();
+      }
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      loadInitialChats();
+    }
   }
 
   Future<void> _initialize() async {
@@ -53,6 +69,8 @@ class _RecentChatScreenState extends State<RecentChatScreen> {
         setState(() {
           recentChats = chats;
           isLoading = false;
+          hasError = false;
+          errorMessage = null;
         });
       }
     } catch (e) {
@@ -87,26 +105,34 @@ class _RecentChatScreenState extends State<RecentChatScreen> {
           );
         }
       });
+
+      socket.on('disconnect', (_) async {
+        await Future.delayed(const Duration(seconds: 2));
+        if (mounted) {
+          socket.connect();
+        }
+      });
+
     } catch (e) {
       throw Exception('Failed to initialize socket: $e');
     }
   }
 
-  Future<User> fetchUserDetails(String userId) async {
-    final url = '$uri/user/$userId';
-    final response = await http.get(Uri.parse(url));
-    
-    if (response.statusCode == 200) {
-      try {
-        final jsonResponse = jsonDecode(response.body);
-        return User.fromMap(jsonResponse);
-      } catch (e) {
-        throw Exception('Error parsing user data');
-      }
-    } else if (response.statusCode == 404) {
-      throw Exception('User not found');
-    } else {
-      throw Exception('Failed to load user data');
+  Future<void> navigateToChat(UserWithMessage chat) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => IndividualChat(
+          user: chat.user,
+          onMessageSent: () {
+            loadInitialChats();
+          },
+        ),
+      ),
+    );
+
+    if (mounted) {
+      await loadInitialChats();
     }
   }
 
@@ -117,19 +143,21 @@ class _RecentChatScreenState extends State<RecentChatScreen> {
       );
 
       if (existingIndex != -1) {
-        setState(() {
-          UserWithMessage existingChat = recentChats[existingIndex];
-          UserWithMessage updatedChat = UserWithMessage(
-            user: existingChat.user,
-            lastMessage: message,
-            lastMessageTime: DateTime.now(),
-          );
-          
-          recentChats.removeAt(existingIndex);
-          recentChats.insert(0, updatedChat);
-        });
+        if (mounted) {
+          setState(() {
+            UserWithMessage existingChat = recentChats[existingIndex];
+            UserWithMessage updatedChat = UserWithMessage(
+              user: existingChat.user,
+              lastMessage: message,
+              lastMessageTime: DateTime.now(),
+            );
+            
+            recentChats.removeAt(existingIndex);
+            recentChats.insert(0, updatedChat);
+          });
+        }
       } else {
-        final user = await fetchUserDetails(otherUserId);
+        final user = await ApiService().fetchUserData(otherUserId);
         if (mounted) {
           setState(() {
             recentChats.insert(0, UserWithMessage(
@@ -141,23 +169,14 @@ class _RecentChatScreenState extends State<RecentChatScreen> {
         }
       }
     } catch (e) {
-      throw Exception('Error updating chat list: $e');
+      debugPrint('Error updating chat list: $e');
     }
-  }
-
-  void handleSentMessage(String targetId, String message) {
-    socket.emit('message', {
-      'sourceId': currentUserId,
-      'targetId': targetId,
-      'message': message,
-      'type': 'source',
-    });
-    
-    _updateChatList(targetId, message);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshTimer?.cancel();
     socket.disconnect();
     socket.dispose();
     super.dispose();
@@ -167,48 +186,45 @@ class _RecentChatScreenState extends State<RecentChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(builder: (builder) => SelectContact()),
-          ).then((_) => loadInitialChats()); 
+          );
+          if (mounted) {
+            await loadInitialChats();
+          }
         },
         child: const Icon(Icons.chat_sharp),
       ),
-      body: Builder(
-        builder: (context) {
-          if (isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (hasError) {
-            return Center(child: Text(errorMessage ?? 'An error occurred'));
-          } else if (recentChats.isEmpty) {
-            return const Center(child: Text('No recent chats found.'));
-          }
-          
-          return ListView.builder(
-            itemCount: recentChats.length,
-            itemBuilder: (context, index) {
-              final chat = recentChats[index];
-              return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => IndividualChat(
-                        user: chat.user,
-                      ),
-                    ),
-                  ).then((_) => loadInitialChats()); 
-                },
-                child: CustomCard(
-                  user: chat.user,
-                  lastMessage: chat.lastMessage,
-                  lastMessageTime: chat.lastMessageTime,
-                ),
-              );
-            },
-          );
-        },
+      body: RefreshIndicator(
+        onRefresh: loadInitialChats,
+        child: Builder(
+          builder: (context) {
+            if (isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (hasError) {
+              return Center(child: Text(errorMessage ?? 'An error occurred'));
+            } else if (recentChats.isEmpty) {
+              return const Center(child: Text('No recent chats found.'));
+            }
+            
+            return ListView.builder(
+              itemCount: recentChats.length,
+              itemBuilder: (context, index) {
+                final chat = recentChats[index];
+                return InkWell(
+                  onTap: () => navigateToChat(chat),
+                  child: CustomCard(
+                    user: chat.user,
+                    lastMessage: chat.lastMessage,
+                    lastMessageTime: chat.lastMessageTime,
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

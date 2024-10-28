@@ -16,7 +16,7 @@ const review = require("./routes/review");
 const messageRouter = require("./routes/messages");
 
 const PORT = process.env.PORT || 3000;
-const HOST = '192.168.1.5';
+const HOST = '192.168.1.6';
 
 const app = express();
 const server = http.createServer(app);
