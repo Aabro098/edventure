@@ -33,4 +33,33 @@ class UserProvider extends ChangeNotifier{
     _user = User.fromJson(user);
     notifyListeners();
    }
+
+  void clearUser() {
+    _user = User(
+      id: '', 
+      name: '', 
+      email: '', 
+      password: '', 
+      phone: '', 
+      profileImage: '', 
+      coverImage: '', 
+      address: '', 
+      bio: '', 
+      about : '',
+      rating: 0,
+      numberRating: 0,  
+      education: '', 
+      status: '', 
+      type: '', 
+      username: '', 
+      token: '',
+      isVerified : false, 
+      review : [], 
+      socketId: '',
+      isEmailVerified: false, 
+      isAvailable: false, 
+      notification: [],
+    );
+    notifyListeners();
+  }
 }

@@ -23,6 +23,7 @@ class _EnterDetailsState extends State<EnterDetails> {
           child: Form(
             key: emailKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Reset Password',
@@ -30,19 +31,17 @@ class _EnterDetailsState extends State<EnterDetails> {
                     fontWeight: FontWeight.bold,
                     fontSize: 26
                   ),
-                  textAlign: TextAlign.left,
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
                 Text(
-                  'Enter the email associated with your account\n and we will send an email with code\nto reset your password',
+                  'Enter the email associated with your account\nand we will send an email with code\nto reset your password',
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 16,
                     color: Colors.black54
                   ),
-                  textAlign: TextAlign.left,
                 ),
                 const SizedBox(
                   height: 20.0,

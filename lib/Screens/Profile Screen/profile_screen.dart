@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/api_services.dart';
@@ -35,6 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isEducation = false;
   bool _isBio = false;
   late bool isAvailable;
+  bool isLoading = false;
 
   final reviewService = ReviewService(baseUrl: uri);
 
@@ -133,140 +135,174 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Future<void> _getAddressFromLatLng(LatLng location) async {
-  //   if (!_mapInitialized) return;
-  //   final url = Uri.parse(
-  //       'https://nominatim.openstreetmap.org/reverse?lat=${location.latitude}&lon=${location.longitude}&format=json&addressdetails=1');
-  //   final response = await http.get(url);
-
-  //   if (response.statusCode == 200) {
-  //     final data = jsonDecode(response.body);
-
-  //     if (data != null && data['address'] != null) {
-  //       final address = data['address'];
-  //       final detailedAddress = [
-  //         if (address['house_number'] != null) address['house_number'],
-  //         if (address['road'] != null) address['road'],
-  //         if (address['city'] != null) address['city'],
-  //         if (address['state'] != null) address['state'],
-  //         if (address['country'] != null) address['country']
-  //       ].where((e) => e != null).join(', ');
-
-  //       addressController.text = detailedAddress;
-
-  //       // ignore: use_build_context_synchronously
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text('Detailed Address: $detailedAddress'),
-  //         ),
-  //       );
-  //     } else {
-  //       throw Exception('Address not found');
-  //     }
-  //   } else {
-  //     throw Exception('Error retrieving address');
-  //   }
-  // }
-
-  // void _onMapTap(TapPosition tapPosition, LatLng location) async {
-  //   if (!_mapInitialized) return;
-  //   setState(() {
-  //     _searchedLocation = location;
-  //     _markers = [
-  //       if (_currentLocation != null)
-  //         Marker(
-  //           width: 80.0,
-  //           height: 80.0,
-  //           point: _currentLocation!,
-  //           child: const Icon(
-  //             Icons.location_pin,
-  //             color: Colors.red,
-  //             size: 40,
-  //           ),
-  //         ),
-  //       if (_searchedLocation != null)
-  //         Marker(
-  //           width: 80.0,
-  //           height: 80.0,
-  //           point: _searchedLocation!,
-  //           child: const Icon(
-  //             Icons.location_pin,
-  //             color: Colors.blue,
-  //             size: 40,
-  //           ),
-  //         ),
-  //     ];
-  //   });
-
-  //   await _getAddressFromLatLng(location);
-  // }
-
   void _handleSearch(String value) {
     _searchLocation(addressController.text);
   }
 
-  Future<void> updateEmail() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (emailController.text.isNotEmpty && emailController.text != user.email) {
-      await authService.updateUser(context: context, email: emailController.text);
-    }
-  }
-
   Future<void> updateName() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (nameController.text.isNotEmpty && nameController.text != user.name) {
-      await authService.updateUser(context: context, name: nameController.text);
+    try{
+      await authService.updateUser(
+        context: context, 
+        name: nameController.text
+      );
+      if (mounted) {
+        setState(() {});
+      }
+    }catch(e){
+      if (mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 
   Future<void> updatePhone() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (phoneController.text != user.phone) {
-      await authService.updateUser(context: context, phone: phoneController.text);
+    try {
+      await authService.updateUser(
+        context: context,
+        phone: phoneController.text,
+      );
+      
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      if (mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 
   Future<void> updateAddress() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (addressController.text != user.address) {
-      await authService.updateUser(context: context, address: addressController.text);
+    try {
+      await authService.updateUser(
+        context: context,
+        address: addressController.text,
+      );
+      
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      if (mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
+
 
   Future<void> updateEducation() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (educationController.text != user.education) {
-      await authService.updateUser(context: context, education: educationController.text);
+    try {
+      await authService.updateUser(
+        context: context,
+        education: educationController.text,
+      );
+      
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      if (mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
+
 
   Future<void> updateBio() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (bioController.text != user.bio) {
-      await authService.updateUser(context: context, bio: bioController.text);
+    try {
+      await authService.updateUser(
+        context: context,
+        bio: bioController.text,
+      );
+      
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      if (mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
+
 
   Future<void> updateAbout() async {
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (aboutController.text != user.about) {
-      await authService.updateUser(context: context, about: aboutController.text);
+    try {
+      await authService.updateUser(
+        context: context,
+        about: aboutController.text,
+      );
+      
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      if (mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 
+
   Future<void> toggleAvailability() async {
+    if (isLoading) return;
+
     try {
+      setState(() {
+        isLoading = true;
+      });
+
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       final String token = userProvider.user.token;
-      User updatedUser = await ApiService().toggleAvailability(token);
-      setState(() {
-        isAvailable = updatedUser.isAvailable;
-      });
+      
+      if (token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
+
+      final User updatedUser = await ApiService().toggleAvailability(token).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException('Request timed out');
+        },
+      );
+
+      if (updatedUser.token.isEmpty) {
+        final userMap = updatedUser.toMap();
+        userMap['token'] = token;  
+        final String userJson = User.fromMap(userMap).toJson();
+        userProvider.setUser(userJson);
+      } else {
+        final String userJson = updatedUser.toJson();
+        userProvider.setUser(userJson);
+      }
+      
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      showSnackBar(context, 'Could not change the state!!!');
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+        
+        String errorMessage = 'Could not change the state!';
+        if (e is TimeoutException) {
+          errorMessage = 'Request timed out. Please try again.';
+        } else if (e.toString().contains('Authentication failed')) {
+          errorMessage = 'Session expired. Please login again.';
+        } else if (e.toString().contains('No authentication token')) {
+          errorMessage = 'Please login to continue.';
+        } else if (e.toString().contains('Failed to toggle availability')) {
+          errorMessage = 'Server error. Please try again later.';
+        }
+        
+        showSnackBar(context, errorMessage);
+      }
     }
   }
+
 
   @override
   void dispose() {
@@ -358,9 +394,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(width: 10,),
                       Expanded(
                         child: AppElevatedButton(
-                          text: user.isAvailable? 'Rest' : 'Active', 
-                          onTap: toggleAvailability,
-                          color: user.isAvailable ?  Colors.red.shade400 : Colors.green.shade400,
+                          text: isLoading 
+                            ? 'Updating...' 
+                            : user.isAvailable 
+                              ? 'Rest' 
+                              : 'Active',
+                          onTap: isLoading ? null : toggleAvailability,
+                          color: user.isAvailable 
+                            ? Colors.red.shade400 
+                            : Colors.green.shade400,
                         ),
                       )
                     ],
@@ -879,3 +921,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
             //     ],
             //   ),
             // ),
+
+
+// Future<void> _getAddressFromLatLng(LatLng location) async {
+  //   if (!_mapInitialized) return;
+  //   final url = Uri.parse(
+  //       'https://nominatim.openstreetmap.org/reverse?lat=${location.latitude}&lon=${location.longitude}&format=json&addressdetails=1');
+  //   final response = await http.get(url);
+
+  //   if (response.statusCode == 200) {
+  //     final data = jsonDecode(response.body);
+
+  //     if (data != null && data['address'] != null) {
+  //       final address = data['address'];
+  //       final detailedAddress = [
+  //         if (address['house_number'] != null) address['house_number'],
+  //         if (address['road'] != null) address['road'],
+  //         if (address['city'] != null) address['city'],
+  //         if (address['state'] != null) address['state'],
+  //         if (address['country'] != null) address['country']
+  //       ].where((e) => e != null).join(', ');
+
+  //       addressController.text = detailedAddress;
+
+  //       // ignore: use_build_context_synchronously
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('Detailed Address: $detailedAddress'),
+  //         ),
+  //       );
+  //     } else {
+  //       throw Exception('Address not found');
+  //     }
+  //   } else {
+  //     throw Exception('Error retrieving address');
+  //   }
+  // }
+
+  // void _onMapTap(TapPosition tapPosition, LatLng location) async {
+  //   if (!_mapInitialized) return;
+  //   setState(() {
+  //     _searchedLocation = location;
+  //     _markers = [
+  //       if (_currentLocation != null)
+  //         Marker(
+  //           width: 80.0,
+  //           height: 80.0,
+  //           point: _currentLocation!,
+  //           child: const Icon(
+  //             Icons.location_pin,
+  //             color: Colors.red,
+  //             size: 40,
+  //           ),
+  //         ),
+  //       if (_searchedLocation != null)
+  //         Marker(
+  //           width: 80.0,
+  //           height: 80.0,
+  //           point: _searchedLocation!,
+  //           child: const Icon(
+  //             Icons.location_pin,
+  //             color: Colors.blue,
+  //             size: 40,
+  //           ),
+  //         ),
+  //     ];
+  //   });
+
+  //   await _getAddressFromLatLng(location);
+  // }

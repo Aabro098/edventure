@@ -173,13 +173,13 @@ class AuthService with ChangeNotifier{
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('x-auth-token');
-
+      
       if (token == null) {
         throw Exception('No token found');
       }
 
       Map<String, dynamic> updates = {};
-
+      
       if (email != null) updates['email'] = email;
       if (name != null) updates['name'] = name;
       if (phone != null) updates['phone'] = phone;
@@ -202,32 +202,45 @@ class AuthService with ChangeNotifier{
         // ignore: use_build_context_synchronously
         context: context,
         onSuccess: () {
+          Map<String, dynamic> updatedUser = jsonDecode(res.body);
+          updatedUser['token'] = token; 
+          
+          String preservedUserJson = jsonEncode(updatedUser);
+          
+          Provider.of<UserProvider>(context, listen: false)
+              .setUser(preservedUserJson);
+          
+          prefs.setString('user', preservedUserJson);
+          
           showSnackBar(
             context,
             'User information updated successfully',
           );
-          Provider.of<UserProvider>(context, listen: false).setUser(res.body);
         },
       );
     } catch (e) {
-      Future.delayed(Duration.zero, () {
-        // ignore: use_build_context_synchronously
-        showSnackBar(context, e.toString());
-      });
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, e.toString());
     }
   }
 
+
   Future<void> logout(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('token');
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('token');
     
-    notifyListeners();
-    
-    Navigator.pushNamedAndRemoveUntil(
       // ignore: use_build_context_synchronously
-      context,
-      AuthScreen.routeName,  
-      (route) => false,
-    );
+      Provider.of<UserProvider>(context, listen: false).clearUser();
+
+      Navigator.pushNamedAndRemoveUntil(
+        // ignore: use_build_context_synchronously
+        context,
+        AuthScreen.routeName,
+        (route) => false,
+      );
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 }

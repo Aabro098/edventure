@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class AppElevatedButton extends StatelessWidget {
   final String text;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final Color color;
   const AppElevatedButton({
     super.key,
     required this.text,
-    required this.onTap,
+    this.onTap,
     required this.color,
   });
 

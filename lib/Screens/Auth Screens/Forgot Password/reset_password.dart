@@ -26,6 +26,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Create new password',
@@ -33,7 +34,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0
                   ),
-                  textAlign: TextAlign.left,
                 ),    
                 const SizedBox(
                   height: 8.0,
@@ -45,7 +45,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                     fontSize: 16,
                     color: Colors.black54
                   ),
-                  textAlign: TextAlign.left,
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -97,7 +96,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                       });
                     }
                   }, 
-                  color: Colors.blueAccent.shade400)
+                  color: Colors.lightGreen.shade400
+                )
               ],
             ),
           ),

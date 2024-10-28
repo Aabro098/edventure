@@ -41,6 +41,7 @@ class _OtpScreenState extends State<OtpScreen> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Verification',
@@ -48,7 +49,6 @@ class _OtpScreenState extends State<OtpScreen> {
                 fontWeight: FontWeight.bold,
                 fontSize: 24.0
               ),
-              textAlign: TextAlign.left,
             ),    
             const SizedBox(
               height: 8.0,
@@ -60,7 +60,6 @@ class _OtpScreenState extends State<OtpScreen> {
                 fontSize: 16.0,
                 color: Colors.black54
               ),
-              textAlign: TextAlign.left,
             ),  
             const SizedBox(
               height: 12.0,
@@ -101,7 +100,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         pinputController.clear();
                       }
                     }, 
-                    color: Colors.blueAccent.shade400
+                    color: Colors.lightGreen.shade400
                   )
                 ],
               ),

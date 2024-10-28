@@ -1,4 +1,5 @@
 import 'package:edventure/Providers/user_provider.dart';
+import 'package:edventure/Screens/Messenger/individual_chat.dart';
 import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/Services/notification_api.dart';
 import 'package:edventure/Services/review_services.dart';
@@ -123,21 +124,38 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                     child: Column(
                       children: [
                         UserDetails(user: user),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                          child: AppElevatedButton(
-                            text: 'Send Request',
-                            onTap: () {
-                              sendNotification(
-                                user.id,
-                                currentUser.id,
-                                ' wants to make a contact with you.',
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Request sent successfully!!!')),
-                              );
-                            },
-                            color: Colors.green.shade600,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width*0.6,
+                          child: Column(
+                            children: [
+                              AppElevatedButton(
+                                text: 'Send Message',
+                                onTap: () {
+                                  Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(builder: (context)=>IndividualChat(user: user))
+                                  );
+                                },
+                                color: Colors.lightGreen.shade600,
+                              ),
+                              const SizedBox(
+                                width: 4.0,
+                              ),
+                              AppElevatedButton(
+                                text: 'Send Request',
+                                onTap: () {
+                                  sendNotification(
+                                    user.id,
+                                    currentUser.id,
+                                    ' wants to make a contact with you.',
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Request sent successfully!!!')),
+                                  );
+                                },
+                                color: Colors.green.shade600,
+                              ),
+                            ],
                           ),
                         ),
                         const Padding(

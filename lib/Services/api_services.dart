@@ -49,19 +49,28 @@ class ApiService {
 
 
   Future<User> toggleAvailability(String token) async {
-    final response = await http.put(
-      Uri.parse('$uri/api/toggle-availability'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'x-auth-token': token,
-      },
-      body: jsonEncode({}),
-    );
+    try {
 
-    if (response.statusCode == 200) {
-      return User.fromJson(response.body);
-    } else {
-      throw Exception('Failed to toggle availability');
+      final response = await http.put(
+        Uri.parse('$uri/api/toggle-availability'),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        // Preserve the token in the response data
+        responseData['token'] = token;  // Add this line to preserve the token
+        return User.fromMap(responseData);
+      } else if (response.statusCode == 401) {
+        throw Exception('Authentication failed. Please login again.');
+      } else {
+        throw Exception('Server returned ${response.statusCode}: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Failed to toggle availability: $e');
     }
   }
 
