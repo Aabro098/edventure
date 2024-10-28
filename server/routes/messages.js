@@ -48,21 +48,30 @@ router.get('/messages/:sourceId/:targetId', async (req, res) => {
 
 router.get('/recent-chats/:userId', async (req, res) => {
     const { userId } = req.params;
-    
+
     try {
         const recentMessages = await Message.aggregate([
             {
                 $match: {
-                    targetId: userId  
+                    $or: [
+                        { targetId: userId },
+                        { sourceId: userId }
+                    ]
                 }
             },
             {
-                $sort: { timestamp: -1 }  
+                $sort: { timestamp: -1 }
             },
             {
                 $group: {
-                    _id: '$sourceId',  
-                    lastMessage: { $first: '$$ROOT' },
+                    _id: {
+                        $cond: [
+                            { $eq: ['$sourceId', userId] },
+                            '$targetId',
+                            '$sourceId'
+                        ]
+                    },
+                    lastMessage: { $first: '$$ROOT' }, 
                     lastMessageTime: { $first: '$timestamp' }
                 }
             },

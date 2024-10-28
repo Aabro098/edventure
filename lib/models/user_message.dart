@@ -34,7 +34,13 @@ Future<List<UserWithMessage>> fetchAllUsersWithMessages(BuildContext context) as
     
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      return data.map<UserWithMessage>((json) => UserWithMessage.fromJson(json)).toList();
+      final List<UserWithMessage> usersWithMessages = data
+          .map<UserWithMessage>((json) => UserWithMessage.fromJson(json))
+          .toList();
+
+      usersWithMessages.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+
+      return usersWithMessages;
     } else {
       throw Exception('Failed to load users with recent messages. Status code: ${response.statusCode}');
     }

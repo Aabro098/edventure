@@ -22,10 +22,11 @@ class UserCard extends StatelessWidget {
           ProfileAvatar(image: user.profileImage),
           const SizedBox(width: 8.0),
           Flexible(
-            child: Text(
+            child:Text(
               user.name,
               style: TextStyle(
-                fontSize: isNotification!=null ? 18.0 : 16.0,
+                fontSize: isNotification!=null ? 14.0 : 18.0,
+                fontWeight: FontWeight.normal
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -35,3 +36,4 @@ class UserCard extends StatelessWidget {
     );
   }
 }
+
