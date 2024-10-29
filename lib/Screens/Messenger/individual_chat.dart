@@ -223,6 +223,7 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
 
     return PopScope(
       canPop: true,
+      // ignore: deprecated_member_use
       onPopInvoked: (didPop) {
         widget.onMessageSent?.call();
       },

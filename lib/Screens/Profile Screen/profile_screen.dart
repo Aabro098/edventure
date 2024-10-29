@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/Services/auth_services.dart';
@@ -12,10 +10,7 @@ import 'package:edventure/utils/elevated_button.dart';
 import 'package:edventure/utils/snackbar.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import '../../Widgets/review_card.dart';
 import '../../Widgets/stars.dart';
@@ -51,12 +46,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late Future<List<Review>> _reviewsFuture;
 
   // static const LatLng _pKathmandu = LatLng(27.7172, 85.3240);
-  final MapController _mapController = MapController();
-  LatLng? _currentLocation;
-  final Location _locationService = Location();
-  bool _mapInitialized = false;
+  // final MapController _mapController = MapController();
+  // LatLng? _currentLocation;
+  // final Location _locationService = Location();
+  // bool _mapInitialized = false;
 
-  LatLng? _searchedLocation;
+  // LatLng? _searchedLocation;
   // List<Marker> _markers = [];
 
 
@@ -65,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _mapInitialized = true;
+        // _mapInitialized = true;
       });
     });
 
@@ -79,66 +74,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
     isAvailable = user.isAvailable;
-    _getLocationPermission();
+    // _getLocationPermission();
   }
 
-  Future<void> _getLocationPermission() async {
-    bool serviceEnabled;
-    PermissionStatus permissionGranted;
+  // Future<void> _getLocationPermission() async {
+  //   bool serviceEnabled;
+  //   PermissionStatus permissionGranted;
 
-    serviceEnabled = await _locationService.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await _locationService.requestService();
-      if (!serviceEnabled) {
-        return;
-      }
-    }
+  //   serviceEnabled = await _locationService.serviceEnabled();
+  //   if (!serviceEnabled) {
+  //     serviceEnabled = await _locationService.requestService();
+  //     if (!serviceEnabled) {
+  //       return;
+  //     }
+  //   }
 
-    permissionGranted = await _locationService.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await _locationService.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
+  //   permissionGranted = await _locationService.hasPermission();
+  //   if (permissionGranted == PermissionStatus.denied) {
+  //     permissionGranted = await _locationService.requestPermission();
+  //     if (permissionGranted != PermissionStatus.granted) {
+  //       return;
+  //     }
+  //   }
 
-    final locationData = await _locationService.getLocation();
-    if (mounted) {
-      setState(() {
-        _currentLocation = LatLng(locationData.latitude!, locationData.longitude!);
-      });
-    }
+  //   final locationData = await _locationService.getLocation();
+  //   if (mounted) {
+  //     setState(() {
+  //       _currentLocation = LatLng(locationData.latitude!, locationData.longitude!);
+  //     });
+  //   }
 
-    if (_currentLocation != null) {
-      _mapController.move(_currentLocation!, 19);
-    }
-  }
+  //   if (_currentLocation != null) {
+  //     _mapController.move(_currentLocation!, 19);
+  //   }
+  // }
 
-  Future<void> _searchLocation(String query) async {
-    if (!_mapInitialized) return;
-    final url = Uri.parse('https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=1');
-    final response = await http.get(url);
+  // Future<void> _searchLocation(String query) async {
+  //   if (!_mapInitialized) return;
+  //   final url = Uri.parse('https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=1');
+  //   final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+  //   if (response.statusCode == 200) {
+  //     final data = jsonDecode(response.body);
 
-      if (data.isNotEmpty) {
-        final lat = double.parse(data[0]['lat']);
-        final lon = double.parse(data[0]['lon']);
-        setState(() {
-          _searchedLocation = LatLng(lat, lon);
-        });
+  //     if (data.isNotEmpty) {
+  //       final lat = double.parse(data[0]['lat']);
+  //       final lon = double.parse(data[0]['lon']);
+  //       setState(() {
+  //         _searchedLocation = LatLng(lat, lon);
+  //       });
 
-        _mapController.move(_searchedLocation!, 17);
-      }
-    } else {
-      throw Exception('Error searching Location !!!');
-    }
-  }
+  //       _mapController.move(_searchedLocation!, 17);
+  //     }
+  //   } else {
+  //     throw Exception('Error searching Location !!!');
+  //   }
+  // }
 
-  void _handleSearch(String value) {
-    _searchLocation(addressController.text);
-  }
+  // void _handleSearch(String value) {
+  //   _searchLocation(addressController.text);
+  // }
 
   Future<void> updateName() async {
     try{
@@ -355,6 +350,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Profile Updated Successfully!!'))
         );
+
+        if (mounted) {
+          setState(() {});
+        }
       }catch(e){
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
@@ -695,7 +694,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _isAddress
                     ? TextField(
                     controller: addressController,
-                    onChanged: _handleSearch,
+                    // onChanged: _handleSearch,
                     decoration: InputDecoration(
                       hintText: 'Address',
                       hintStyle: const TextStyle(
@@ -920,119 +919,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-
-// !_isAddress ?
-            // Expanded(
-            //   flex: 2,
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(8.0),
-            //     child: Column(
-            //       children: [
-            //         const Padding(
-            //           padding: EdgeInsets.all(8.0),
-            //           child: Text(
-            //             'Recent Reviews',
-            //             style: TextStyle(
-            //               fontSize: 20,
-            //               color: Colors.grey,
-            //               fontWeight: FontWeight.bold,
-            //             ),
-            //           ),
-            //         ),
-            //         
-            //       ],
-            //     ),
-            //   ),
-            // )
-            // : 
-            // Expanded(
-            //   flex: 2,
-            //   child: FlutterMap(
-            //     mapController: _mapController,
-            //     options: MapOptions(
-            //       initialCenter: _currentLocation ?? _pKathmandu,
-            //       initialZoom: 18,
-            //       onTap: _onMapTap,
-            //     ),
-            //     children: [
-            //       TileLayer(
-            //         urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            //         userAgentPackageName: 'com.example.app',
-            //         tileProvider: CancellableNetworkTileProvider(),
-            //       ),
-            //       MarkerLayer(
-            //         markers: _markers
-            //       ),
-            //     ],
-            //   ),
-            // ),
-
-
-// Future<void> _getAddressFromLatLng(LatLng location) async {
-  //   if (!_mapInitialized) return;
-  //   final url = Uri.parse(
-  //       'https://nominatim.openstreetmap.org/reverse?lat=${location.latitude}&lon=${location.longitude}&format=json&addressdetails=1');
-  //   final response = await http.get(url);
-
-  //   if (response.statusCode == 200) {
-  //     final data = jsonDecode(response.body);
-
-  //     if (data != null && data['address'] != null) {
-  //       final address = data['address'];
-  //       final detailedAddress = [
-  //         if (address['house_number'] != null) address['house_number'],
-  //         if (address['road'] != null) address['road'],
-  //         if (address['city'] != null) address['city'],
-  //         if (address['state'] != null) address['state'],
-  //         if (address['country'] != null) address['country']
-  //       ].where((e) => e != null).join(', ');
-
-  //       addressController.text = detailedAddress;
-
-  //       // ignore: use_build_context_synchronously
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text('Detailed Address: $detailedAddress'),
-  //         ),
-  //       );
-  //     } else {
-  //       throw Exception('Address not found');
-  //     }
-  //   } else {
-  //     throw Exception('Error retrieving address');
-  //   }
-  // }
-
-  // void _onMapTap(TapPosition tapPosition, LatLng location) async {
-  //   if (!_mapInitialized) return;
-  //   setState(() {
-  //     _searchedLocation = location;
-  //     _markers = [
-  //       if (_currentLocation != null)
-  //         Marker(
-  //           width: 80.0,
-  //           height: 80.0,
-  //           point: _currentLocation!,
-  //           child: const Icon(
-  //             Icons.location_pin,
-  //             color: Colors.red,
-  //             size: 40,
-  //           ),
-  //         ),
-  //       if (_searchedLocation != null)
-  //         Marker(
-  //           width: 80.0,
-  //           height: 80.0,
-  //           point: _searchedLocation!,
-  //           child: const Icon(
-  //             Icons.location_pin,
-  //             color: Colors.blue,
-  //             size: 40,
-  //           ),
-  //         ),
-  //     ];
-  //   });
-
-  //   await _getAddressFromLatLng(location);
-  // }
