@@ -46,23 +46,25 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: FutureBuilder(
-        future: _initializeUserData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          } else if (snapshot.hasError) {
-            return Scaffold(
-              body: Center(child: Text('Error: ${snapshot.error}')),
-            );
-          } else {
-            return Provider.of<UserProvider>(context).user.token.isNotEmpty
-                ? const NavScreen()
-                : const AuthScreen();
-          }
-        },
+      home: ScaffoldMessenger( 
+        child: FutureBuilder(
+          future: _initializeUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            } else if (snapshot.hasError) {
+              return Scaffold(
+                body: Center(child: Text('Error: ${snapshot.error}')),
+              );
+            } else {
+              return Provider.of<UserProvider>(context).user.token.isNotEmpty
+                  ? const NavScreen()
+                  : const AuthScreen();
+            }
+          },
+        ),
       ),
     );
   }

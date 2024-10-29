@@ -13,6 +13,7 @@ import 'package:edventure/utils/snackbar.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isBio = false;
   late bool isAvailable;
   bool isLoading = false;
-
+  XFile? _image;
   final reviewService = ReviewService(baseUrl: uri);
 
   late TextEditingController aboutController;
@@ -340,6 +341,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  Future<void> pickImage() async{
+    final XFile? pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery , imageQuality: 25);
+    if(pickedFile !=null){
+      setState(() {
+        _image = pickedFile;
+      });
+      try{
+        // ignore: use_build_context_synchronously
+        await AuthService().updateUser(imageFile: _image, context : context);
+
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile Updated Successfully!!'))
+        );
+      }catch(e){
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString()))
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
@@ -367,29 +391,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color:  user.isAvailable 
-                              ? Colors.green.shade300 : Colors.red.shade200,
-                            width: 5.0,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              offset: const Offset(0, 4),
-                              blurRadius: 10,
-                              spreadRadius: 2,
+                      Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color:  user.isAvailable 
+                                  ? Colors.green.shade300 : Colors.red.shade200,
+                                width: 5.0,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  offset: const Offset(0, 4),
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: user.profileImage.isNotEmpty
-                        ? CircleAvatar(
-                          radius: 80,
-                          backgroundImage: AssetImage(user.profileImage),
-                        )
-                        : const Icon(Icons.person, size: 100),
+                            child: user.profileImage.isNotEmpty
+                            ? CircleAvatar(
+                              radius: 80,
+                              backgroundImage: NetworkImage('$uri${user.profileImage}'),
+                            )
+                            : const Icon(Icons.person, size: 100),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 4,
+                            child: ClipOval(
+                              child: GestureDetector(
+                                onTap: pickImage,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  color: Colors.grey[200],
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(width: 10,),
                       Expanded(

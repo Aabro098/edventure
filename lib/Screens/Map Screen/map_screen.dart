@@ -21,7 +21,7 @@ class _MapScreenState extends State<MapScreen> {
 
   final TextEditingController _searchController = TextEditingController();
   LatLng? _searchedLocation;
-  bool  _mapInitialized = false;
+  bool _mapInitialized = false;
 
   List<Map<String, dynamic>> _suggestions = [];
 
@@ -64,7 +64,11 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     if (_currentLocation != null) {
-      _mapController.move(_currentLocation!, 17);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_mapInitialized) {
+          _mapController.move(_currentLocation!, 17);
+        }
+      });
     }
   }
 
@@ -122,7 +126,6 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _handleSearch() {
-    
     _searchLocation(_searchController.text);
   }
 
@@ -137,9 +140,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final userProvider = Provider.of<UserProvider>(context);
-    // final user = userProvider.user;
-
     return Scaffold(
       body: Stack(
         children: [
@@ -216,7 +216,7 @@ class _MapScreenState extends State<MapScreen> {
                 if (_suggestions.isNotEmpty)
                   Container(
                     color: Colors.white,
-                    constraints: const BoxConstraints(maxHeight: 200), 
+                    constraints: const BoxConstraints(maxHeight: 200),
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: _suggestions.length,

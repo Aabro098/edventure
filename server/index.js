@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
 const http = require("http");
+const path = require("path");
 
 const DB = process.env.DB;
 
@@ -16,9 +17,11 @@ const review = require("./routes/review");
 const messageRouter = require("./routes/messages");
 
 const PORT = process.env.PORT || 3000;
-const HOST = '192.168.1.6';
+const HOST = '192.168.1.5';
 
 const app = express();
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
     cors: {
@@ -26,8 +29,6 @@ const io = require('socket.io')(server, {
     },
 });
 
-
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(cors());
 app.use(express.json());
 app.use(authRouter);
@@ -36,6 +37,8 @@ app.use(notification);
 app.use(review);
 app.use(messageRouter);  
 app.use(resetPassword);
+
+
 
 mongoose
     .connect(DB)

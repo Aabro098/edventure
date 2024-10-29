@@ -1,4 +1,5 @@
 import 'package:edventure/Widgets/stars.dart';
+import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,7 @@ class UserDetails extends StatelessWidget {
               child: user.profileImage.isNotEmpty
               ? CircleAvatar(
                 radius: 90,
-                backgroundImage: AssetImage(user.profileImage),
+                backgroundImage: NetworkImage('$uri${user.profileImage}'),
               )
               : const Icon(Icons.person, size: 100),
             ),

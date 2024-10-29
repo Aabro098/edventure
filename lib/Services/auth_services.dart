@@ -8,9 +8,10 @@ import 'package:edventure/models/user.dart';
 import 'package:edventure/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:dio/dio.dart';
 import '../Screens/Auth Screens/Auth/auth_screen.dart';
 
 class AuthService with ChangeNotifier{
@@ -158,7 +159,7 @@ class AuthService with ChangeNotifier{
           showSnackBar(context, e.toString());
       });
     }
-    }
+  }
 
   Future<void> updateUser({
     required BuildContext context,
@@ -169,8 +170,8 @@ class AuthService with ChangeNotifier{
     String? education,
     String? bio,
     String? about,
+    XFile? imageFile,
   }) async {
-    try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('x-auth-token');
       
@@ -178,49 +179,41 @@ class AuthService with ChangeNotifier{
         throw Exception('No token found');
       }
 
-      Map<String, dynamic> updates = {};
+      const url = '$uri/api/update';
+
+      var dio = Dio();
+      dio.options.headers['x-auth-token'] = token;
       
-      if (email != null) updates['email'] = email;
-      if (name != null) updates['name'] = name;
-      if (phone != null) updates['phone'] = phone;
-      if (address != null) updates['address'] = address;
-      if (education != null) updates['education'] = education;
-      if (bio != null) updates['bio'] = bio;
-      if (about != null) updates['about'] = about;
+      FormData formData = FormData.fromMap({
+        if (email != null) 'email': email,
+        if (name != null) 'name': name,
+        if (phone != null) 'phone': phone,
+        if (address != null) 'address': address,
+        if (education != null) 'education': education,
+        if (bio != null) 'bio': bio,
+        if (about != null) 'about': about,
+      });
 
-      http.Response res = await http.put(
-        Uri.parse('$uri/api/update'),
-        body: jsonEncode(updates),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'x-auth-token': token,
-        },
-      );
+      if (imageFile != null) {
+        formData.files.add(MapEntry(
+          "profileImage",
+          await MultipartFile.fromFile(imageFile.path, filename: imageFile.name),
+        ));
+      }
 
-      httpErrorHandle(
-        response: res,
+    try {
+      final response = await dio.put(url, data: formData);
+
+      if (response.statusCode == 200) {
         // ignore: use_build_context_synchronously
-        context: context,
-        onSuccess: () {
-          Map<String, dynamic> updatedUser = jsonDecode(res.body);
-          updatedUser['token'] = token; 
-          
-          String preservedUserJson = jsonEncode(updatedUser);
-          
-          Provider.of<UserProvider>(context, listen: false)
-              .setUser(preservedUserJson);
-          
-          prefs.setString('user', preservedUserJson);
-          
-          showSnackBar(
-            context,
-            'User information updated successfully',
-          );
-        },
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile Updated Successfully')),
+        );
+      } else {
+        throw Exception('Failed to update profile: ${response.data}');
+      }
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      showSnackBar(context, e.toString());
+      throw Exception('Error occurred: $e');
     }
   }
 

@@ -3,8 +3,15 @@ const express = require("express");
 const User = require("../models/user");
 const bcryptjs = require('bcryptjs');
 const jwt = require("jsonwebtoken");
+const multer = require('multer');
+const path = require('path');
 
 const authRouter = express.Router();
+const uploadsPath = path.join(__dirname, '..', 'uploads');
+
+const app = express();
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 const auth = require("../middleware/auth");
 
 authRouter.post('/api/signup' , async (req,res) =>{
@@ -91,24 +98,42 @@ authRouter.get('/', auth , async (req,res)=>{
     res.json({...user._doc , token : req.token});
 });
 
-authRouter.put('/api/update', auth, async (req, res) => {
-    try {
-      const updates = req.body;
-      const user = await User.findById(req.user);
-  
-      if (!user) {
-        return res.status(404).json({ msg: 'User not found' });
-      }
-      Object.keys(updates).forEach(key => {
-        user[key] = updates[key];
-      });
-  
-      await user.save();
-      res.json(user);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/'); 
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname)); 
     }
 });
+
+const upload = multer({ storage: storage });
+
+authRouter.put('/api/update', auth, upload.single('image'), async (req, res) => {
+    try {
+        const updates = req.body; 
+        const user = await User.findById(req.user);
+
+        if (!user) {
+        return res.status(404).json({ msg: 'User not found' });
+        }
+
+        Object.keys(updates).forEach(key => {
+        user[key] = updates[key];
+        });
+
+        if (req.file) {
+        user.profileImage = req.file.path; 
+        }
+
+        await user.save();
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 authRouter.put('/api/toggle-availability', auth, async (req, res) => {
     try {
