@@ -159,7 +159,6 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
         });
         scrollToBottom();
         
-        // If this is a received message, notify the parent
         if (msg["sourceId"] != currentUserId) {
           widget.onMessageSent?.call();
         }
@@ -202,7 +201,6 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
       "time": currentTime,
     });
 
-    // Notify parent about the sent message
     widget.onMessageSent?.call();
     scrollToBottom();
   }
@@ -241,7 +239,7 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
           actions: [
             IconButton(
               onPressed: () {
-                widget.onMessageSent?.call(); // Refresh parent when back button is pressed
+                widget.onMessageSent?.call();
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back),
@@ -365,9 +363,10 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
   Widget bottomsheet() {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16), topRight: Radius.circular(16))),
+        color: Colors.transparent,
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16), topRight: Radius.circular(16))
+      ),
       height: 280,
       width: MediaQuery.of(context).size.width,
       child: Card(
