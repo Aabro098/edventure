@@ -17,7 +17,7 @@ const review = require("./routes/review");
 const messageRouter = require("./routes/messages");
 
 const PORT = process.env.PORT || 3000;
-const HOST = '192.168.1.5';
+const HOST = '192.168.1.9';
 
 const app = express();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

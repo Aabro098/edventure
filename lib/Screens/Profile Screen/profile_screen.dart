@@ -27,7 +27,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final AuthService authService = AuthService();
   bool _isAbout = false;
   bool _isPhone = false;
-  bool _isName = false;
   bool _isAddress = false;
   bool _isEducation = false;
   bool _isBio = false;
@@ -37,7 +36,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final reviewService = ReviewService(baseUrl: uri);
 
   late TextEditingController aboutController;
-  late TextEditingController nameController;
   late TextEditingController addressController;
   late TextEditingController educationController;
   late TextEditingController phoneController;
@@ -55,30 +53,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     _reviewsFuture = reviewService.fetchReviewsByUserId(user.id);
     aboutController = TextEditingController(text: user.about);
-    nameController = TextEditingController(text: user.name);
     addressController = TextEditingController(text: user.address);
     educationController = TextEditingController(text: user.education);
     phoneController = TextEditingController(text : user.phone);
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
     isAvailable = user.isAvailable;
-  }
-
-
-  Future<void> updateName() async {
-    try{
-      await authService.updateUser(
-        context: context, 
-        name: nameController.text
-      );
-      if (mounted) {
-        setState(() {});
-      }
-    }catch(e){
-      if (mounted) {
-        showSnackBar(context, e.toString());
-      }
-    }
   }
 
   Future<void> updatePhone() async {
@@ -233,7 +213,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void dispose() {
     aboutController.dispose();
-    nameController.dispose();
     addressController.dispose();
     educationController.dispose();
     phoneController.dispose();
@@ -245,12 +224,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _changePhone() {
     setState(() {
       _isPhone = !_isPhone;
-    });
-  }
-
-  void _changeName() {
-    setState(() {
-      _isName = !_isName;
     });
   }
 
@@ -273,9 +246,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _image = pickedFile;
       });
       try{
-        // ignore: use_build_context_synchronously
-        await AuthService().updateUser(imageFile: _image, context : context);
-
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Profile Updated Successfully!!'))
@@ -306,7 +276,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _isAbout = false;
             _isAddress = false;
             _isEducation = false;
-            _isName = false;
           });
         },
         child: SingleChildScrollView(
@@ -391,39 +360,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _isName
-                        ? Expanded(
-                          child: TextField(
-                            controller: nameController,
-                            decoration: InputDecoration(
-                              hintText: 'Full Name',
-                              hintStyle: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600
-                              ),
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.check),
-                                onPressed: () {
-                                  setState(() {
-                                    _isName = false;
-                                    updateName();
-                                  });
-                                },
-                              ),
-                              border: InputBorder.none
-                            ),
+                        Text(
+                          user.name,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
                           ),
-                        )
-                        : GestureDetector(
-                            onDoubleTap: _changeName,
-                            child: Text(
-                              user.name,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
+                        ),
                         const SizedBox(width: 8.0),
                         Center(
                           child: user.isVerified
@@ -624,7 +567,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _isAddress
                     ? TextField(
                     controller: addressController,
-                    // onChanged: _handleSearch,
                     decoration: InputDecoration(
                       hintText: 'Address',
                       hintStyle: const TextStyle(

@@ -8,10 +8,8 @@ import 'package:edventure/models/user.dart';
 import 'package:edventure/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dio/dio.dart';
 import '../Screens/Auth Screens/Auth/auth_screen.dart';
 
 class AuthService with ChangeNotifier{
@@ -161,8 +159,7 @@ class AuthService with ChangeNotifier{
     }
   }
 
-
-  Future<void> updateUser({
+  Future updateUser({
     required BuildContext context,
     String? email,
     String? name,
@@ -171,7 +168,6 @@ class AuthService with ChangeNotifier{
     String? education,
     String? bio,
     String? about,
-    XFile? imageFile,
   }) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('x-auth-token');
@@ -180,11 +176,9 @@ class AuthService with ChangeNotifier{
       throw Exception('Authentication token not found');
     }
 
-    const url = '$uri/api/update';
-    final dio = Dio();
-    dio.options.headers['x-auth-token'] = token;
+    final String url = '$uri/api/update';
 
-    final formData = FormData.fromMap({
+    final Map<String, dynamic> data = {
       if (email != null) 'email': email,
       if (name != null) 'name': name,
       if (phone != null) 'phone': phone,
@@ -192,28 +186,28 @@ class AuthService with ChangeNotifier{
       if (education != null) 'education': education,
       if (bio != null) 'bio': bio,
       if (about != null) 'about': about,
-    });
-
-    if (imageFile != null) {
-      formData.files.add(MapEntry(
-        "profileImage",
-        await MultipartFile.fromFile(imageFile.path, filename: imageFile.name),
-      ));
-    }
+    };
 
     try {
-      final response = await dio.put(url, data: formData);
-
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+        body: jsonEncode(data),
+      );
+      
       if (response.statusCode == 200) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile Updated Successfully')),
         );
       } else {
-        throw Exception('Failed to update profile: ${response.data}');
+        throw Exception('Failed to update profile: ${response.body}');
       }
     } catch (e) {
-      throw Exception('Error occurred: $e');
+      throw Exception(e.toString());
     }
   }
 

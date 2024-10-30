@@ -5,10 +5,12 @@ const bcryptjs = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const multer = require('multer');
 const path = require('path');
+const cors = require('cors');
 
 const authRouter = express.Router();
 
 const app = express();
+app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const auth = require("../middleware/auth");
@@ -117,19 +119,26 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: {
-        fileSize: 25 * 1024 * 1024 
-    }
+    limits: { fileSize: 25 * 1024 * 1024 } 
 });
 
 
-authRouter.put('/api/update', auth, upload.single('profileImage'), async (req, res) => {
+authRouter.put('/api/update', auth, async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: 'No user ID found in request'
+            });
+        }
+
+        const user = await User.findById(req.user); 
+        console.log('Found user:', user);
+        
         if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'User not found' 
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
             });
         }
 
@@ -140,10 +149,6 @@ authRouter.put('/api/update', auth, upload.single('profileImage'), async (req, r
             }
         });
 
-        if (req.file) {
-            user.profileImage = req.file.path;
-        }
-
         await user.save();
 
         res.status(200).json({
@@ -153,6 +158,7 @@ authRouter.put('/api/update', auth, upload.single('profileImage'), async (req, r
         });
     } catch (err) {
         console.error('Update error:', err);
+        
         res.status(500).json({
             success: false,
             message: 'Error updating profile',
