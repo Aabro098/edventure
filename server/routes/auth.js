@@ -100,29 +100,6 @@ authRouter.get('/', auth , async (req,res)=>{
 });
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
-
-        if (mimetype && extname) {
-            cb(null, `${Date.now()}-${file.originalname}`);
-        } else {
-            cb(new Error('Invalid file type - only JPEG, JPG & PNG allowed'));
-        }
-    }
-});
-
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 25 * 1024 * 1024 } 
-});
-
-
 authRouter.put('/api/update', auth, async (req, res) => {
     try {
         if (!req.user) {
@@ -164,6 +141,72 @@ authRouter.put('/api/update', auth, async (req, res) => {
             message: 'Error updating profile',
             error: err.message
         });
+    }
+});
+
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+
+        if (mimetype && extname) {
+            cb(null, `${Date.now()}-${file.originalname}`);
+        } else {
+            cb(new Error('Invalid file type - only JPEG, JPG & PNG allowed'));
+        }
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 25 * 1024 * 1024 } 
+});
+
+
+app.put('/api/updateProfileImage', auth, upload.single('profileImage'), async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Handle old image deletion if a new one is uploaded
+        if (req.file && user.profileImage) {
+            try {
+                fs.unlinkSync(user.profileImage); // Deletes old image
+            } catch (error) {
+                console.log('Error deleting old profile image:', error.message);
+            }
+        }
+
+        // Update user's profileImage with new path
+        if (req.file) {
+            user.profileImage = req.file.path; // Save path to database
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile image updated successfully',
+            profileImageUrl: `${req.protocol}://${req.get('host')}/${user.profileImage}`
+        });
+    } catch (error) {
+        console.error('Error updating profile image:', error.message);
+        if (req.file) {
+            try {
+                fs.unlinkSync(req.file.path);
+            } catch (unlinkError) {
+                console.error('Error cleaning up file:', unlinkError);
+            }
+        }
+        res.status(500).json({ success: false, message: 'Error updating profile image', error: error.message });
     }
 });
 

@@ -10,7 +10,6 @@ import 'package:edventure/utils/elevated_button.dart';
 import 'package:edventure/utils/snackbar.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../Widgets/review_card.dart';
 import '../../Widgets/stars.dart';
@@ -32,7 +31,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isBio = false;
   late bool isAvailable;
   bool isLoading = false;
-  XFile? _image;
   final reviewService = ReviewService(baseUrl: uri);
 
   late TextEditingController aboutController;
@@ -239,29 +237,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  Future<void> pickImage() async{
-    final XFile? pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery , imageQuality: 25);
-    if(pickedFile !=null){
-      setState(() {
-        _image = pickedFile;
-      });
-      try{
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile Updated Successfully!!'))
-        );
-
-        if (mounted) {
-          setState(() {});
-        }
-      }catch(e){
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()))
-        );
+  void updateProfileImage() async {
+    try {
+      await AuthService().uploadProfileImage(context);
+      if (mounted) {
+        setState(() {});
       }
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to upload profile image: $e")),
+      );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -320,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             right: 4,
                             child: ClipOval(
                               child: GestureDetector(
-                                onTap: pickImage,
+                                onTap: updateProfileImage,
                                 child: Container(
                                   padding: const EdgeInsets.all(4),
                                   color: Colors.grey[200],

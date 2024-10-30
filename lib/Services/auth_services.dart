@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Navigation/nav_screen.dart';
 import 'package:edventure/constants/error_handling.dart';
@@ -8,6 +9,7 @@ import 'package:edventure/models/user.dart';
 import 'package:edventure/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Screens/Auth Screens/Auth/auth_screen.dart';
@@ -78,6 +80,7 @@ class AuthService with ChangeNotifier{
     }
   }
 
+
   Future signInUser({
     required BuildContext context,
     required String email,
@@ -119,6 +122,7 @@ class AuthService with ChangeNotifier{
     }
   }
 
+
   Future<void> getUserData({required BuildContext context}) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -158,6 +162,7 @@ class AuthService with ChangeNotifier{
       });
     }
   }
+
 
   Future updateUser({
     required BuildContext context,
@@ -226,6 +231,47 @@ class AuthService with ChangeNotifier{
         AuthScreen.routeName,
         (route) => false,
       );
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+
+  Future<void> uploadProfileImage(BuildContext context) async {
+    final String uploadUrl = '$uri/api/updateProfileImage';
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("No image selected")),
+      );
+      return;
+    }
+
+    try {
+      final formData = FormData.fromMap({
+        'profileImage': await MultipartFile.fromFile(
+          image.path,
+          filename: image.name,
+        ),
+      });
+
+      Dio dio = Dio();
+      final response = await dio.put(uploadUrl, data: formData);
+
+      if (response.statusCode == 200) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Profile image uploaded successfully!")),
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to upload profile image")),
+        );
+      }
     } catch (e) {
       throw Exception(e.toString());
     }
