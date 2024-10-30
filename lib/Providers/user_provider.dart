@@ -1,3 +1,4 @@
+import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,14 @@ class UserProvider extends ChangeNotifier{
     _user = User.fromJson(user);
     notifyListeners();
    }
+
+  Future<void> refreshUser(BuildContext context) async {
+    try {
+      await AuthService().getUserData(context: context);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 
   void clearUser() {
     _user = User(

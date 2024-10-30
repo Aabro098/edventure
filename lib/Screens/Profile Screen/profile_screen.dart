@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {});
     });
-
+    
     final user = Provider.of<UserProvider>(context, listen: false).user;
     _reviewsFuture = reviewService.fetchReviewsByUserId(user.id);
     aboutController = TextEditingController(text: user.about);
@@ -60,23 +60,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> updatePhone() async {
+    if (!mounted) return;  
+    
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       await authService.updateUser(
         context: context,
         phone: phoneController.text,
       );
-      
+
       if (mounted) {
-        setState(() {});
+        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        setState(() {
+          isLoading = false;
+        });
       }
+
     } catch (e) {
       if (mounted) {
         showSnackBar(context, e.toString());
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
 
   Future<void> updateAddress() async {
+    setState(() {
+        isLoading = true;
+    });
     try {
       await authService.updateUser(
         context: context,
@@ -84,8 +103,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
       
       if (mounted) {
-        setState(() {});
+        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        setState(() {
+          isLoading = false;
+        });
       }
+
     } catch (e) {
       if (mounted) {
         showSnackBar(context, e.toString());
@@ -95,6 +118,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
   Future<void> updateEducation() async {
+    setState(() {
+        isLoading = true;
+      });
     try {
       await authService.updateUser(
         context: context,
@@ -102,8 +128,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
       
       if (mounted) {
-        setState(() {});
+        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        setState(() {
+          isLoading = false;
+        });
       }
+
     } catch (e) {
       if (mounted) {
         showSnackBar(context, e.toString());
@@ -113,6 +143,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
   Future<void> updateBio() async {
+    setState(() {
+        isLoading = true;
+      });
     try {
       await authService.updateUser(
         context: context,
@@ -120,8 +153,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
       
       if (mounted) {
-        setState(() {});
+        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        setState(() {
+          isLoading = false;
+        });
       }
+
     } catch (e) {
       if (mounted) {
         showSnackBar(context, e.toString());
@@ -131,6 +168,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
   Future<void> updateAbout() async {
+    setState(() {
+          isLoading = true;
+    });
     try {
       await authService.updateUser(
         context: context,
@@ -138,8 +178,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
       
       if (mounted) {
-        setState(() {});
+        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        setState(() {
+          isLoading = false;
+        });
       }
+
     } catch (e) {
       if (mounted) {
         showSnackBar(context, e.toString());
@@ -239,9 +283,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void updateProfileImage() async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       await AuthService().uploadProfileImage(context);
       if (mounted) {
-        setState(() {});
+        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        setState(() {
+          isLoading = false;
+        });
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
@@ -250,7 +300,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -726,7 +775,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ],
                 ),
-
+    
                 const SizedBox(height: 8.0),
                 Text(
                   'Reviews',
