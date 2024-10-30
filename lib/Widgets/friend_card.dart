@@ -1,3 +1,4 @@
+import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
 import '../utils/profile_avatar.dart';
@@ -40,7 +41,7 @@ class _FriendCardState extends State<FriendCard> {
             onTap: () {},
             child: ProfileAvatar(
               image: widget.user.profileImage.isNotEmpty 
-                  ? widget.user.profileImage
+                  ? "$uri/${widget.user.profileImage}"
                   : '', 
             ),
           ),

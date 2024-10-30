@@ -89,11 +89,12 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
       if (response.statusCode == 200) {
         List<dynamic> jsonMessages = json.decode(response.body);
         List<MessageModel> fetchedMessages = jsonMessages.map((json) {
+          String timestamp = json['timestamp'] ?? json['time'];
           return MessageModel(
             sourceId: json['sourceId'],
             targetId: json['targetId'],
             message: json['message'],
-            time: formatMessageTime(json['timestamp'] ?? json['time']),
+            time: timestamp,
             type: json['sourceId'] == currentUserId ? 'source' : 'destination'
           );
         }).toList();
@@ -146,11 +147,12 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
 
     socket.on("message", (msg) {
       if (mounted) {
+        String timestamp = DateTime.now().toIso8601String();
         MessageModel messageModel = MessageModel(
           sourceId: msg["sourceId"],
           targetId: msg["targetId"],
           message: msg["message"],
-          time: DateTime.now().toString().substring(11, 16),
+          time: timestamp,
           type: msg["sourceId"] == currentUserId ? 'source' : 'destination'
         );
         
@@ -180,13 +182,13 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
   void sendMessage(String message, String sourceId, String targetId) {
     if (message.trim().isEmpty) return;
 
-    final currentTime = DateTime.now().toString().substring(11, 16);
+    final timestamp = DateTime.now().toIso8601String();
     
     MessageModel messageModel = MessageModel(
       sourceId: sourceId,
       targetId: targetId,
       message: message,
-      time: currentTime,
+      time: timestamp,
       type: 'source'
     );
 
@@ -198,7 +200,7 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
       "message": message,
       "sourceId": sourceId,
       "targetId": targetId,
-      "time": currentTime,
+      "time": timestamp,
     });
 
     widget.onMessageSent?.call();
@@ -220,7 +222,6 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
     final currentUser = Provider.of<UserProvider>(context).user;
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (bool didPop, Object? result) {
@@ -438,34 +439,5 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
     focusNode.dispose();
     scrollController.dispose();
     super.dispose();
-  }
-
-  String formatMessageTime(dynamic timestamp) {
-    try {
-      // Handle if timestamp is already a formatted time string (HH:mm)
-      if (timestamp is String && timestamp.length == 5 && timestamp.contains(':')) {
-        return timestamp;
-      }
-
-      // Handle ISO 8601 string format
-      if (timestamp is String) {
-        final dateTime = DateTime.parse(timestamp);
-        return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-      }
-
-      // Handle Unix timestamp (milliseconds since epoch)
-      if (timestamp is int) {
-        final dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
-        return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-      }
-
-      // If timestamp is null or invalid, return current time
-      final now = DateTime.now();
-      return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-    } catch (e) {
-      // In case of any parsing errors, return current time
-      final now = DateTime.now();
-      return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-    }
   }
 }

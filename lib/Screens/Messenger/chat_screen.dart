@@ -208,7 +208,7 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
             } else if (recentChats.isEmpty) {
               return const Center(child: Text('No recent chats found.'));
             }
-            
+
             return ListView.builder(
               itemCount: recentChats.length,
               itemBuilder: (context, index) {

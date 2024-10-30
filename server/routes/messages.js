@@ -84,7 +84,7 @@ router.get('/recent-chats/:userId', async (req, res) => {
 
         const users = await User.find({
             _id: { $in: senderIds }
-        }).select('name email username bio address about rating numberRating education status type isVerified isAvailable');  
+        }).select('-password');  
 
         const recentChats = users.map(user => {
             const recentMessage = recentMessages.find(msg => msg._id.toString() === user._id.toString());
@@ -103,7 +103,8 @@ router.get('/recent-chats/:userId', async (req, res) => {
                     status: user.status,
                     type: user.type,
                     isVerified: user.isVerified,
-                    isAvailable: user.isAvailable
+                    isAvailable: user.isAvailable,
+                    profileImage: user.profileImage
                 },
                 lastMessage: recentMessage?.lastMessage?.message || '',
                 lastMessageTime: recentMessage?.lastMessageTime || null,

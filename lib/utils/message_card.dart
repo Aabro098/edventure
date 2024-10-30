@@ -19,7 +19,7 @@ class OwnMessageCard extends StatelessWidget {
           elevation: 1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           color: Colors.lime.shade100,
-          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
               Padding(
@@ -31,7 +31,7 @@ class OwnMessageCard extends StatelessWidget {
                 ),
                 child: Text(
                   message,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -48,8 +48,8 @@ class OwnMessageCard extends StatelessWidget {
                         color: Colors.grey[600],
                       ),
                     ),
-                    SizedBox(width: 5),
-                    Icon(
+                    const SizedBox(width: 5),
+                    const Icon(
                       Icons.done_all,
                       size: 20,
                     ),
@@ -82,7 +82,7 @@ class ReplyCard extends StatelessWidget {
           elevation: 1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           color: Colors.lightGreen.shade100,
-          margin: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+          margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
           child: Stack(
             children: [
               Padding(
@@ -94,7 +94,7 @@ class ReplyCard extends StatelessWidget {
                 ),
                 child: Text(
                   message,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -118,22 +118,49 @@ class ReplyCard extends StatelessWidget {
   }
 }
 
-String _getTimeAgo(String time) {
-  final DateTime now = DateTime.now();
-  final DateTime messageTimeUtc = DateTime.utc(
-    now.year,
-    now.month,
-    now.day,
-    int.parse(time.split(':')[0]),
-    int.parse(time.split(':')[1]),
-  );
+String _getTimeAgo(String timestamp) {
+  try {
+    final DateTime messageTime = DateTime.parse(timestamp).toLocal();
+    final DateTime now = DateTime.now();
+    final Duration diff = now.difference(messageTime);
 
-  final DateTime messageTimeLocal = messageTimeUtc.toLocal();
-  Duration diff = DateTime.now().difference(messageTimeLocal);
+    if (diff.inMinutes < 1) {
+      return 'Just now';
+    }
+    if (diff.inMinutes < 60) {
+      return '${diff.inMinutes} mins ago';
+    }
+    if (diff.inHours < 24) {
+      return '${diff.inHours} hours ago';
+    }
+    if (diff.inDays < 7) {
+      return '${diff.inDays} days ago';
+    }
+    if (messageTime.year == now.year) {
+      return DateFormat('MMM d, HH:mm').format(messageTime);
+    }
+    return DateFormat('MMM d, yyyy').format(messageTime);
+  } catch (e) {
+    try {
+      final DateTime now = DateTime.now();
+      final DateTime messageTimeUtc = DateTime.utc(
+        now.year,
+        now.month,
+        now.day,
+        int.parse(timestamp.split(':')[0]),
+        int.parse(timestamp.split(':')[1]),
+      );
 
-  if (diff.inMinutes < 1) return 'Just now';
-  if (diff.inMinutes < 60) return '${diff.inMinutes} mins ago';
-  if (diff.inHours < 24) return '${diff.inHours} hours ago';
+      final DateTime messageTimeLocal = messageTimeUtc.toLocal();
+      final Duration diff = now.difference(messageTimeLocal);
 
-  return DateFormat('yyyy-MM-dd').format(messageTimeLocal); 
+      if (diff.inMinutes < 1) return 'Just now';
+      if (diff.inMinutes < 60) return '${diff.inMinutes} mins ago';
+      if (diff.inHours < 24) return '${diff.inHours} hours ago';
+
+      return DateFormat('HH:mm').format(messageTimeLocal);
+    } catch (e) {
+      return timestamp;
+    }
+  }
 }

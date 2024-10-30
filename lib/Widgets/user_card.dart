@@ -1,4 +1,5 @@
 
+import 'package:edventure/Screens/Profile%20Screen/view_profile.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +16,18 @@ class UserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageUrl = "$uri/${user.profileImage}";
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context)=>ProfileViewScreen(userId: user.id))
+        );
+      },
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ProfileAvatar(image: '$uri/${user.profileImage}'),
+          ProfileAvatar(image: imageUrl),
           const SizedBox(width: 8.0),
           Flexible(
             child:Text(

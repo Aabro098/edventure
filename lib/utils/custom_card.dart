@@ -1,3 +1,4 @@
+import 'package:edventure/constants/variable.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:edventure/models/user.dart';
@@ -40,7 +41,7 @@ class CustomCard extends StatelessWidget {
       leading: CircleAvatar(
         radius: 25,
         backgroundImage: user.profileImage.isNotEmpty
-            ? NetworkImage(user.profileImage)
+            ? NetworkImage('$uri/${user.profileImage}')
             : null,
         child: user.profileImage.isEmpty
             ? const Icon(Icons.person, size: 30)
