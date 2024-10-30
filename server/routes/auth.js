@@ -7,7 +7,6 @@ const multer = require('multer');
 const path = require('path');
 
 const authRouter = express.Router();
-const uploadsPath = path.join(__dirname, '..', 'uploads');
 
 const app = express();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -100,37 +99,65 @@ authRouter.get('/', auth , async (req,res)=>{
 
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/'); 
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
     },
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + path.extname(file.originalname)); 
+    filename: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+
+        if (mimetype && extname) {
+            cb(null, `${Date.now()}-${file.originalname}`);
+        } else {
+            cb(new Error('Invalid file type - only JPEG, JPG & PNG allowed'));
+        }
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 25 * 1024 * 1024 
+    }
+});
 
-authRouter.put('/api/update', auth, upload.single('image'), async (req, res) => {
+
+authRouter.put('/api/update', auth, upload.single('profileImage'), async (req, res) => {
     try {
-        const updates = req.body; 
-        const user = await User.findById(req.user);
-
+        const user = await User.findById(req.user.id);
         if (!user) {
-        return res.status(404).json({ msg: 'User not found' });
+            return res.status(404).json({ 
+                success: false, 
+                message: 'User not found' 
+            });
         }
 
-        Object.keys(updates).forEach(key => {
-        user[key] = updates[key];
+        const allowedUpdates = ['email', 'name', 'phone', 'address', 'education', 'bio', 'about'];
+        Object.keys(req.body).forEach(key => {
+            if (allowedUpdates.includes(key)) {
+                user[key] = req.body[key];
+            }
         });
 
         if (req.file) {
-        user.profileImage = req.file.path; 
+            user.profileImage = req.file.path;
         }
 
         await user.save();
-        res.json(user);
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: user
+        });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Update error:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating profile',
+            error: err.message
+        });
     }
 });
 

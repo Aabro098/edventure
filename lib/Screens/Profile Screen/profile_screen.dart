@@ -45,23 +45,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late TextEditingController bioController;
   late Future<List<Review>> _reviewsFuture;
 
-  // static const LatLng _pKathmandu = LatLng(27.7172, 85.3240);
-  // final MapController _mapController = MapController();
-  // LatLng? _currentLocation;
-  // final Location _locationService = Location();
-  // bool _mapInitialized = false;
-
-  // LatLng? _searchedLocation;
-  // List<Marker> _markers = [];
-
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        // _mapInitialized = true;
-      });
+      setState(() {});
     });
 
     final user = Provider.of<UserProvider>(context, listen: false).user;
@@ -74,66 +62,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
     isAvailable = user.isAvailable;
-    // _getLocationPermission();
   }
 
-  // Future<void> _getLocationPermission() async {
-  //   bool serviceEnabled;
-  //   PermissionStatus permissionGranted;
-
-  //   serviceEnabled = await _locationService.serviceEnabled();
-  //   if (!serviceEnabled) {
-  //     serviceEnabled = await _locationService.requestService();
-  //     if (!serviceEnabled) {
-  //       return;
-  //     }
-  //   }
-
-  //   permissionGranted = await _locationService.hasPermission();
-  //   if (permissionGranted == PermissionStatus.denied) {
-  //     permissionGranted = await _locationService.requestPermission();
-  //     if (permissionGranted != PermissionStatus.granted) {
-  //       return;
-  //     }
-  //   }
-
-  //   final locationData = await _locationService.getLocation();
-  //   if (mounted) {
-  //     setState(() {
-  //       _currentLocation = LatLng(locationData.latitude!, locationData.longitude!);
-  //     });
-  //   }
-
-  //   if (_currentLocation != null) {
-  //     _mapController.move(_currentLocation!, 19);
-  //   }
-  // }
-
-  // Future<void> _searchLocation(String query) async {
-  //   if (!_mapInitialized) return;
-  //   final url = Uri.parse('https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=1');
-  //   final response = await http.get(url);
-
-  //   if (response.statusCode == 200) {
-  //     final data = jsonDecode(response.body);
-
-  //     if (data.isNotEmpty) {
-  //       final lat = double.parse(data[0]['lat']);
-  //       final lon = double.parse(data[0]['lon']);
-  //       setState(() {
-  //         _searchedLocation = LatLng(lat, lon);
-  //       });
-
-  //       _mapController.move(_searchedLocation!, 17);
-  //     }
-  //   } else {
-  //     throw Exception('Error searching Location !!!');
-  //   }
-  // }
-
-  // void _handleSearch(String value) {
-  //   _searchLocation(addressController.text);
-  // }
 
   Future<void> updateName() async {
     try{
@@ -919,3 +849,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+
+

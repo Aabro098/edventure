@@ -161,6 +161,7 @@ class AuthService with ChangeNotifier{
     }
   }
 
+
   Future<void> updateUser({
     required BuildContext context,
     String? email,
@@ -172,34 +173,33 @@ class AuthService with ChangeNotifier{
     String? about,
     XFile? imageFile,
   }) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('x-auth-token');
-      
-      if (token == null) {
-        throw Exception('No token found');
-      }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('x-auth-token');
+    
+    if (token == null) {
+      throw Exception('Authentication token not found');
+    }
 
-      const url = '$uri/api/update';
+    const url = '$uri/api/update';
+    final dio = Dio();
+    dio.options.headers['x-auth-token'] = token;
 
-      var dio = Dio();
-      dio.options.headers['x-auth-token'] = token;
-      
-      FormData formData = FormData.fromMap({
-        if (email != null) 'email': email,
-        if (name != null) 'name': name,
-        if (phone != null) 'phone': phone,
-        if (address != null) 'address': address,
-        if (education != null) 'education': education,
-        if (bio != null) 'bio': bio,
-        if (about != null) 'about': about,
-      });
+    final formData = FormData.fromMap({
+      if (email != null) 'email': email,
+      if (name != null) 'name': name,
+      if (phone != null) 'phone': phone,
+      if (address != null) 'address': address,
+      if (education != null) 'education': education,
+      if (bio != null) 'bio': bio,
+      if (about != null) 'about': about,
+    });
 
-      if (imageFile != null) {
-        formData.files.add(MapEntry(
-          "profileImage",
-          await MultipartFile.fromFile(imageFile.path, filename: imageFile.name),
-        ));
-      }
+    if (imageFile != null) {
+      formData.files.add(MapEntry(
+        "profileImage",
+        await MultipartFile.fromFile(imageFile.path, filename: imageFile.name),
+      ));
+    }
 
     try {
       final response = await dio.put(url, data: formData);
