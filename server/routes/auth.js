@@ -1,4 +1,3 @@
-
 const express = require("express");
 const User = require("../models/user");
 const bcryptjs = require('bcryptjs');
@@ -11,10 +10,10 @@ const authRouter = express.Router();
 
 const app = express();
 app.use(cors());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 const auth = require("../middleware/auth");
-
 authRouter.post('/api/signup' , async (req,res) =>{
     try{
         const {name , email , password} = req.body;
@@ -149,45 +148,39 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
     },
-    filename: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
-
-        if (mimetype && extname) {
-            cb(null, `${Date.now()}-${file.originalname}`);
-        } else {
-            cb(new Error('Invalid file type - only JPEG, JPG & PNG allowed'));
-        }
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)) 
     }
 });
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 25 * 1024 * 1024 } 
 });
 
 
-app.put('/api/updateProfileImage', auth, upload.single('profileImage'), async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id);
-        
-        if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found' });
+authRouter.put('/api/updateProfile', auth , upload.single('profileImage'), async (req, res) => {
+    try {      
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: 'No user ID found in request'
+            });
         }
 
-        // Handle old image deletion if a new one is uploaded
+        const user = await User.findById(req.user); 
+        console.log('Found user:', user);
+        
+
         if (req.file && user.profileImage) {
             try {
-                fs.unlinkSync(user.profileImage); // Deletes old image
+                fs.unlinkSync(user.profileImage); 
             } catch (error) {
                 console.log('Error deleting old profile image:', error.message);
             }
         }
 
-        // Update user's profileImage with new path
         if (req.file) {
-            user.profileImage = req.file.path; // Save path to database
+            user.profileImage = req.file.path.replace(/\\/g, '/'); 
         }
 
         await user.save();

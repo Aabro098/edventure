@@ -17,10 +17,10 @@ const review = require("./routes/review");
 const messageRouter = require("./routes/messages");
 
 const PORT = process.env.PORT || 3000;
-const HOST = '192.168.1.9';
+const HOST = '192.168.1.6';
 
 const app = express();
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static('uploads'));
 
 const server = http.createServer(app);
 const io = require('socket.io')(server, {

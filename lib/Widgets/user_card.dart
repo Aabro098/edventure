@@ -20,7 +20,7 @@ class UserCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ProfileAvatar(image: '$uri${user.profileImage}'),
+          ProfileAvatar(image: '$uri/${user.profileImage}'),
           const SizedBox(width: 8.0),
           Flexible(
             child:Text(

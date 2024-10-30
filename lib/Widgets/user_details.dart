@@ -40,7 +40,7 @@ class UserDetails extends StatelessWidget {
               child: user.profileImage.isNotEmpty
               ? CircleAvatar(
                 radius: 90,
-                backgroundImage: NetworkImage('$uri${user.profileImage}'),
+                backgroundImage: NetworkImage('$uri/${user.profileImage}'),
               )
               : const Icon(Icons.person, size: 100),
             ),

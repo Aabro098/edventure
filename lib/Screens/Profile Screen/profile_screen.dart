@@ -300,7 +300,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: user.profileImage.isNotEmpty
                             ? CircleAvatar(
                               radius: 80,
-                              backgroundImage: NetworkImage('$uri${user.profileImage}'),
+                              backgroundImage: NetworkImage('$uri/${user.profileImage}'),
                             )
                             : const Icon(Icons.person, size: 100),
                           ),

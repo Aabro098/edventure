@@ -238,9 +238,11 @@ class AuthService with ChangeNotifier{
 
 
   Future<void> uploadProfileImage(BuildContext context) async {
-    final String uploadUrl = '$uri/api/updateProfileImage';
+    final String uploadUrl = '$uri/api/updateProfile';
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('x-auth-token');
 
     if (image == null) {
       // ignore: use_build_context_synchronously
@@ -259,8 +261,10 @@ class AuthService with ChangeNotifier{
       });
 
       Dio dio = Dio();
-      final response = await dio.put(uploadUrl, data: formData);
+      dio.options.headers["x-auth-token"] = token ?? ''; 
 
+      final response = await dio.put(uploadUrl, data: formData);
+      
       if (response.statusCode == 200) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
@@ -269,7 +273,7 @@ class AuthService with ChangeNotifier{
       } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to upload profile image")),
+          SnackBar(content: Text("Failed to upload profile image: ${response.data}")),
         );
       }
     } catch (e) {
