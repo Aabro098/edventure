@@ -108,6 +108,7 @@ router.get('/recent-chats/:userId', async (req, res) => {
                 },
                 lastMessage: recentMessage?.lastMessage?.message || '',
                 lastMessageTime: recentMessage?.lastMessageTime || null,
+                isLastMessageFromMe: recentMessage?.lastMessage?.sourceId === userId
             };
         });
 

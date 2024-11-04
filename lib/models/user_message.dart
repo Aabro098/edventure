@@ -10,11 +10,13 @@ class UserWithMessage {
   final User user;
   final String lastMessage;
   final DateTime lastMessageTime;
+  final bool isLastMessageFromMe;
 
   UserWithMessage({
     required this.user,
     required this.lastMessage,
     required this.lastMessageTime,
+    required this.isLastMessageFromMe,
   });
 
   factory UserWithMessage.fromJson(Map<String, dynamic> json) {
@@ -22,7 +24,16 @@ class UserWithMessage {
       user: User.fromMap(json['user']),
       lastMessage: json['lastMessage'] ?? '',
       lastMessageTime: DateTime.parse(json['lastMessageTime'] ?? DateTime.now().toIso8601String()),
+      isLastMessageFromMe: json['isLastMessageFromMe'] ?? false,
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'user': user.toJson(),
+      'lastMessage': lastMessage,
+      'lastMessageTime': lastMessageTime.toIso8601String(),
+      'isLastMessageFromMe': isLastMessageFromMe,
+    };
   }
 }
 

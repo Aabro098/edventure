@@ -7,12 +7,14 @@ class CustomCard extends StatelessWidget {
   final User user;
   final String lastMessage;
   final DateTime lastMessageTime;
+  final bool isLastMessageFromMe;
 
   const CustomCard({
     super.key,
     required this.user,
     required this.lastMessage,
-    required this.lastMessageTime,
+    required this.lastMessageTime, 
+    required this.isLastMessageFromMe, 
   });
 
   String getRelativeTime() {
@@ -54,10 +56,25 @@ class CustomCard extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      subtitle: Text(
-        lastMessage,
-        style: const TextStyle(
-          fontSize: 13,
+      subtitle: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: isLastMessageFromMe ? "You : " : "Replied : ",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: Colors.black,
+              ),
+            ),
+            TextSpan(
+              text: lastMessage,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Colors.black, 
+              ),
+            ),
+          ],
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,

@@ -102,6 +102,13 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
           _updateChatList(
             data['sourceId'],
             data['message'],
+            isLastMessageFromMe: false,
+          );
+        } else {
+          _updateChatList(
+            data['targetId'],
+            data['message'],
+            isLastMessageFromMe: true, 
           );
         }
       });
@@ -125,6 +132,11 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
         builder: (context) => IndividualChat(
           user: chat.user,
           onMessageSent: () {
+            _updateChatList(
+              chat.user.id,
+              "New message",
+              isLastMessageFromMe: true, 
+            );
             loadInitialChats();
           },
         ),
@@ -136,7 +148,8 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
     }
   }
 
-  void _updateChatList(String otherUserId, String message) async {
+  void _updateChatList(String otherUserId, String message , {required bool isLastMessageFromMe}) async {
+    
     try {
       int existingIndex = recentChats.indexWhere(
         (chat) => chat.user.id == otherUserId
@@ -149,7 +162,8 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
             UserWithMessage updatedChat = UserWithMessage(
               user: existingChat.user,
               lastMessage: message,
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now(), 
+              isLastMessageFromMe: isLastMessageFromMe,
             );
             
             recentChats.removeAt(existingIndex);
@@ -163,7 +177,8 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
             recentChats.insert(0, UserWithMessage(
               user: user,
               lastMessage: message,
-              lastMessageTime: DateTime.now(),
+              lastMessageTime: DateTime.now(), 
+              isLastMessageFromMe: isLastMessageFromMe,
             ));
           });
         }
@@ -219,6 +234,7 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
                     user: chat.user,
                     lastMessage: chat.lastMessage,
                     lastMessageTime: chat.lastMessageTime,
+                    isLastMessageFromMe : chat.isLastMessageFromMe
                   ),
                 );
               },
