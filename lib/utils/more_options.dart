@@ -1,14 +1,12 @@
 
 import 'package:edventure/Screens/Auth%20Screens/Forgot%20Password/reset_password.dart';
 import 'package:edventure/Screens/Friends/friend_screen.dart';
-import 'package:edventure/Screens/Notifications/notification_screen.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/utils/options.dart';
 import 'package:flutter/material.dart';
 
 class MoreOptionList extends StatefulWidget {
   final List<List> moreOptionList = const [
-    [Icons.notifications , Colors.grey, 'Notification', NotificationScreen()],
     [Icons.group , Colors.grey, 'Contacts', FriendScreen()],
     [Icons.school , Colors.grey, 'Institution'],
     [Icons.edit , Colors.grey, 'Change Password',ChangePassword()],

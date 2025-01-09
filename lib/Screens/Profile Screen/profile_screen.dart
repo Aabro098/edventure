@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'package:edventure/Providers/user_provider.dart';
-import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Services/review_services.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/review.dart';
-import 'package:edventure/models/user.dart';
-import 'package:edventure/utils/elevated_button.dart';
 import 'package:edventure/utils/snackbar.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
@@ -192,66 +189,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 
-  Future<void> toggleAvailability() async {
-    if (isLoading) return;
-
-    try {
-      setState(() {
-        isLoading = true;
-      });
-
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
-      final String token = userProvider.user.token;
-      
-      if (token.isEmpty) {
-        throw Exception('No authentication token found');
-      }
-
-      final User updatedUser = await ApiService().toggleAvailability(token).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          throw TimeoutException('Request timed out');
-        },
-      );
-
-      if (updatedUser.token.isEmpty) {
-        final userMap = updatedUser.toMap();
-        userMap['token'] = token;  
-        final String userJson = User.fromMap(userMap).toJson();
-        userProvider.setUser(userJson);
-      } else {
-        final String userJson = updatedUser.toJson();
-        userProvider.setUser(userJson);
-      }
-      
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-        
-        String errorMessage = 'Could not change the state!';
-        if (e is TimeoutException) {
-          errorMessage = 'Request timed out. Please try again.';
-        } else if (e.toString().contains('Authentication failed')) {
-          errorMessage = 'Session expired. Please login again.';
-        } else if (e.toString().contains('No authentication token')) {
-          errorMessage = 'Please login to continue.';
-        } else if (e.toString().contains('Failed to toggle availability')) {
-          errorMessage = 'Server error. Please try again later.';
-        }
-        
-        showSnackBar(context, errorMessage);
-      }
-    }
-  }
-
-
   @override
   void dispose() {
     aboutController.dispose();
@@ -326,6 +263,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Stack(
                         children: [
@@ -333,8 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color:  user.isAvailable 
-                                  ? Colors.green.shade300 : Colors.red.shade200,
+                                color:  Colors.green.shade300,
                                 width: 5.0,
                               ),
                               boxShadow: [
@@ -373,122 +310,107 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                        child: AppElevatedButton(
-                          text: isLoading 
-                            ? 'Updating...' 
-                            : user.isAvailable 
-                              ? 'Rest' 
-                              : 'Active',
-                          onTap: isLoading ? null : toggleAvailability,
-                          color: user.isAvailable 
-                            ? Colors.red.shade400 
-                            : Colors.green.shade400,
-                        ),
-                      )
                     ],
                   ),
                 ),
-                const SizedBox(width: 10.0,),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
                           user.name,
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(width: 8.0),
-                        Center(
-                          child: user.isVerified
-                              ? Row(
-                                children: [
-                                  Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        const CircleAvatar(
-                                          radius: 8,
-                                          backgroundColor: Colors.blue,
-                                        ),
-                                        const Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                          size: 10,
-                                        ),
-                                        Positioned(
-                                          bottom: 0,
-                                          right: 0,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              
-                                            },
-                                            child: const Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 10,
-                                                  backgroundColor: Colors.blue,
-                                                ),
-                                                Icon(
-                                                  Icons.check,
-                                                  color: Colors.white,
-                                                  size: 12,
-                                                ),
-                                              ],
-                                            ),
+                      ),
+                      const SizedBox(width: 8.0),
+                      Center(
+                        child: user.isVerified
+                            ? Row(
+                              children: [
+                                Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      const CircleAvatar(
+                                        radius: 8,
+                                        backgroundColor: Colors.blue,
+                                      ),
+                                      const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 10,
+                                      ),
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            
+                                          },
+                                          child: const Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 10,
+                                                backgroundColor: Colors.blue,
+                                              ),
+                                              Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                                size: 12,
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  const Text('Verified',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.blue
                                     ),
-                                    const SizedBox(width: 4.0),
-                                    const Text('Verified',
+                                  )
+                              ],
+                            ) 
+                              : Row(
+                                children: [
+                                  const Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 8,
+                                        backgroundColor: Colors.grey,
+                                      ),
+                                      Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 10,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  GestureDetector(
+                                    onTap: (){
+                                  
+                                    },
+                                    child: const Text('Verify Now',
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.blue
                                       ),
-                                    )
-                                ],
-                              ) 
-                                : Row(
-                                  children: [
-                                    const Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 8,
-                                          backgroundColor: Colors.grey,
-                                        ),
-                                        Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                          size: 10,
-                                        ),
-                                      ],
                                     ),
-                                    const SizedBox(width: 4.0),
-                                    GestureDetector(
-                                      onTap: (){
-                                    
-                                      },
-                                      child: const Text('Verify Now',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.blue
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                )
-                        ),
-                      ],
-                    ),
+                                  )
+                                ],
+                              )
+                      ),
+                    ],
                   ),
                 ),
                 !_isBio
@@ -555,19 +477,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             fontSize: 14,
                             fontWeight: FontWeight.normal
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        !user.isEmailVerified 
-                        ? GestureDetector(
-                            onTap: (){},
-                            child: const Text('Verify Email',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.blue
-                              ),
-                            ),
-                          )
-                          : const SizedBox.shrink()
+                        ),                      
                       ],
                     ),
                   ),  

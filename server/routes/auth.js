@@ -14,6 +14,7 @@ app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 const auth = require("../middleware/auth");
+
 authRouter.post('/api/signup' , async (req,res) =>{
     try{
         const {name , email , password} = req.body;

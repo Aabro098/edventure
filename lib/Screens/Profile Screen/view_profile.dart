@@ -1,7 +1,6 @@
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Screens/Messenger/individual_chat.dart';
 import 'package:edventure/Services/api_services.dart';
-import 'package:edventure/Services/notification_api.dart';
 import 'package:edventure/Services/review_services.dart';
 import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/Widgets/review_card.dart';
@@ -31,17 +30,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   int _selectedStars = 0;
   final reviewService = ReviewService(baseUrl: uri);
   final TextEditingController _reviewController = TextEditingController();
-
-  void sendNotification(String userId, String senderId, String message) async {
-    final NotificationServices notificationServices = NotificationServices();
-    await notificationServices.addNotification(
-      userId: userId,
-      senderId: senderId,
-      message: message,
-      notificationStatus: false,
-      responseStatus: false,
-    );
-  }
   
   void _submitReview(String userId, String senderId) async {
     final review = Review(
@@ -140,20 +128,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                               ),
                               const SizedBox(
                                 width: 4.0,
-                              ),
-                              AppElevatedButton(
-                                text: 'Send Request',
-                                onTap: () {
-                                  sendNotification(
-                                    user.id,
-                                    currentUser.id,
-                                    ' wants to make a contact with you.',
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Request sent successfully!!!')),
-                                  );
-                                },
-                                color: Colors.green.shade600,
                               ),
                             ],
                           ),

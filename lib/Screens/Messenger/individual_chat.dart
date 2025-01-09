@@ -37,6 +37,7 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
   Timer? _reconnectionTimer;
   bool _isLoading = true;
   String? _error;
+  bool _disposed = false; 
 
   @override
   void initState() {
@@ -44,7 +45,7 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
     WidgetsBinding.instance.addObserver(this);
     currentUserId = Provider.of<UserProvider>(context, listen: false).user.id;
     focusNode.addListener(() {
-      if (focusNode.hasFocus) {
+      if (focusNode.hasFocus && !_disposed) {
         setState(() {
           show = false;
         });
@@ -53,39 +54,34 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
     _initialize();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      if (!isConnected) {
-        connect();
-      }
-      fetchMessages();
-    } else if (state == AppLifecycleState.paused) {
-      socket.disconnect();
-      _reconnectionTimer?.cancel();
-    }
-  }
-
   Future<void> _initialize() async {
+    if (_disposed) return;
     try {
       await connect();
       await fetchMessages();
-      setState(() {
-        _isLoading = false;
-      });
+      if (!_disposed) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _error = 'Failed to initialize chat: $e';
-      });
+      if (!_disposed) {
+        setState(() {
+          _isLoading = false;
+          _error = 'Failed to initialize chat: $e';
+        });
+      }
     }
   }
 
   Future<void> fetchMessages() async {
+    if (_disposed) return;
     String url = '$uri/messages/$currentUserId/${widget.user.id}';
     
     try {
       final response = await http.get(Uri.parse(url));
+      if (_disposed) return;
+      
       if (response.statusCode == 200) {
         List<dynamic> jsonMessages = json.decode(response.body);
         List<MessageModel> fetchedMessages = jsonMessages.map((json) {
@@ -99,19 +95,21 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
           );
         }).toList();
 
-        if (mounted) {
+        if (!_disposed) {
           setState(() {
             messages = fetchedMessages.reversed.toList();
             _error = null;
           });
+          
+          Future.microtask(() {
+            if (!_disposed) {
+              scrollToBottom();
+            }
+          });
         }
-
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          scrollToBottom();
-        });
       }
     } catch (error) {
-      if (mounted) {
+      if (!_disposed) {
         setState(() {
           _error = 'Error fetching messages: $error';
         });
@@ -120,6 +118,8 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
   }
 
   Future<void> connect() async {
+    if (_disposed) return;
+    
     socket = io.io(
       uri,
       io.OptionBuilder()
@@ -132,21 +132,25 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
     socket.emit("/test", currentUserId);
 
     socket.onConnect((_) {
-      setState(() {
-        isConnected = true;
-      });
-      _reconnectionTimer?.cancel();
+      if (!_disposed) {
+        setState(() {
+          isConnected = true;
+        });
+        _reconnectionTimer?.cancel();
+      }
     });
 
     socket.onDisconnect((_) {
-      setState(() {
-        isConnected = false;
-      });
-      _startReconnectionTimer();
+      if (!_disposed) {
+        setState(() {
+          isConnected = false;
+        });
+        _startReconnectionTimer();
+      }
     });
 
     socket.on("message", (msg) {
-      if (mounted) {
+      if (!_disposed) {
         String timestamp = DateTime.now().toIso8601String();
         MessageModel messageModel = MessageModel(
           sourceId: msg["sourceId"],
@@ -159,7 +163,12 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
         setState(() {
           messages.insert(0, messageModel);
         });
-        scrollToBottom();
+        
+        Future.microtask(() {
+          if (!_disposed) {
+            scrollToBottom();
+          }
+        });
         
         if (msg["sourceId"] != currentUserId) {
           widget.onMessageSent?.call();
@@ -171,12 +180,30 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
   void _startReconnectionTimer() {
     _reconnectionTimer?.cancel();
     _reconnectionTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (_disposed) {
+        timer.cancel();
+        return;
+      }
+      
       if (!isConnected) {
         socket.connect();
       } else {
         timer.cancel();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    WidgetsBinding.instance.removeObserver(this);
+    _reconnectionTimer?.cancel();
+    messageController.dispose();
+    socket.disconnect();
+    socket.dispose();
+    focusNode.dispose();
+    scrollController.dispose();
+    super.dispose();
   }
 
   void sendMessage(String message, String sourceId, String targetId) {
@@ -260,19 +287,6 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
                   width: screenWidth,
                   child: Column(
                     children: [
-                      if (!isConnected)
-                        Container(
-                          color: Colors.red.shade100,
-                          padding: const EdgeInsets.all(8),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.wifi_off),
-                              SizedBox(width: 8),
-                              Text('Reconnecting...'),
-                            ],
-                          ),
-                        ),
                       Expanded(
                         child: ListView.builder(
                           reverse: true,
@@ -427,17 +441,5 @@ class IndividualChatState extends State<IndividualChat> with WidgetsBindingObser
         )
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _reconnectionTimer?.cancel();
-    messageController.dispose();
-    socket.disconnect();
-    socket.dispose();
-    focusNode.dispose();
-    scrollController.dispose();
-    super.dispose();
   }
 }
