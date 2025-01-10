@@ -17,7 +17,13 @@ with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose(); 
+    super.dispose();
   }
 
   @override
@@ -25,22 +31,27 @@ with SingleTickerProviderStateMixin {
     final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        toolbarHeight: 4,
-        bottom: user.isVerified ? TabBar(
+        elevation: 1.0,
+        toolbarHeight: 3,
+        bottom: 
+        user.isVerified ? 
+        TabBar(
           controller: _tabController,
           tabs: const [
-            Tab(text: 'Unerified'),
+            Tab(text: 'Unverified'),
             Tab(text: 'Verified')
           ]
-        ):PreferredSize(preferredSize: Size(double.infinity, 20),
-        child: Text(
-          'Verified Users Near You'
-        )),
+        )
+        : PreferredSize(preferredSize: Size(double.infinity, 20),
+            child: Text(
+            'Verified Users Near You'
+          )
+        ),
       ),
       body: user.isVerified
         ? Text('User Needs to verify')
         : TabBarView(
+            controller: _tabController,
             children: [
               _unverified(),
               _verified(),

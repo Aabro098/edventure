@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:edventure/Providers/user_provider.dart';
+import 'package:edventure/Screens/address_selection.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Services/review_services.dart';
 import 'package:edventure/constants/variable.dart';
@@ -23,7 +24,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final AuthService authService = AuthService();
   bool _isAbout = false;
   bool _isPhone = false;
-  bool _isAddress = false;
   bool _isEducation = false;
   bool _isBio = false;
   late bool isAvailable;
@@ -48,7 +48,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     _reviewsFuture = reviewService.fetchReviewsByUserId(user.id);
     aboutController = TextEditingController(text: user.about);
-    addressController = TextEditingController(text: user.address);
     educationController = TextEditingController(text: user.education);
     phoneController = TextEditingController(text : user.phone);
     emailController = TextEditingController(text: user.email);
@@ -89,29 +88,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> updateAddress() async {
-    setState(() {
-        isLoading = true;
-    });
-    try {
-      await authService.updateUser(
-        context: context,
-        address: addressController.text,
-      );
+  // Future<void> updateAddress() async {
+  //   setState(() {
+  //       isLoading = true;
+  //   });
+  //   try {
+  //     await authService.updateUser(
+  //       context: context,
+  //       address: addressController.text,
+  //     );
       
-      if (mounted) {
-        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
-        setState(() {
-          isLoading = false;
-        });
-      }
+  //     if (mounted) {
+  //       await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+  //       setState(() {
+  //         isLoading = false;
+  //       });
+  //     }
 
-    } catch (e) {
-      if (mounted) {
-        showSnackBar(context, e.toString());
-      }
-    }
-  }
+  //   } catch (e) {
+  //     if (mounted) {
+  //       showSnackBar(context, e.toString());
+  //     }
+  //   }
+  // }
 
 
   Future<void> updateEducation() async {
@@ -212,12 +211,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void _changeAddress() {
-    setState(() {
-      _isAddress = !_isAddress;
-    });
-  }
-
   void updateProfileImage() async {
     try {
       setState(() {
@@ -249,7 +242,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _isBio = false;
             _isPhone = false;
             _isAbout = false;
-            _isAddress = false;
             _isEducation = false;
           });
         },
@@ -443,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : TextField(
                       controller: bioController,
                       decoration: InputDecoration(
-                        hintText: 'Write what describes you the most...',
+                        hintText: 'What describes you the most...',
                         hintStyle: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.normal
@@ -512,35 +504,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               : 'Enter Phone',
                         ),
                   const SizedBox(height: 5.0),
-                  _isAddress
-                    ? TextField(
-                    controller: addressController,
-                    decoration: InputDecoration(
-                      hintText: 'Address',
-                      hintStyle: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal
-                      ),
-                      prefixIcon: const Icon(Icons.home),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.check),
-                        onPressed: () {
-                          setState(() {
-                            _isAddress = false;
-                            updateAddress();
-                          });
-                        },
-                      ),
-                      border: InputBorder.none
-                    ),
-                  )
-                  : TTextButton(
-                      iconData: Icons.home,
-                      onPressed: _changeAddress,
-                      labelText: user.address.isNotEmpty
-                        ? user.address
-                        : 'Enter Address',
-                    ),
+                  TTextButton(
+                    iconData: Icons.home,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddressSelection()),
+                      );
+                    },
+                    labelText: user.address.isNotEmpty
+                      ? user.address
+                      : 'Enter Address',
+                  ),
                   const SizedBox(height: 5.0),
                   _isEducation
                   ? TextField(
