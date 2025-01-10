@@ -31,7 +31,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final reviewService = ReviewService(baseUrl: uri);
 
   late TextEditingController aboutController;
-  late TextEditingController addressController;
   late TextEditingController educationController;
   late TextEditingController phoneController;
   late TextEditingController emailController;
@@ -87,30 +86,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
   }
-
-  // Future<void> updateAddress() async {
-  //   setState(() {
-  //       isLoading = true;
-  //   });
-  //   try {
-  //     await authService.updateUser(
-  //       context: context,
-  //       address: addressController.text,
-  //     );
-      
-  //     if (mounted) {
-  //       await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
-  //       setState(() {
-  //         isLoading = false;
-  //       });
-  //     }
-
-  //   } catch (e) {
-  //     if (mounted) {
-  //       showSnackBar(context, e.toString());
-  //     }
-  //   }
-  // }
 
 
   Future<void> updateEducation() async {
@@ -191,7 +166,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void dispose() {
     aboutController.dispose();
-    addressController.dispose();
     educationController.dispose();
     phoneController.dispose();
     emailController.dispose();
