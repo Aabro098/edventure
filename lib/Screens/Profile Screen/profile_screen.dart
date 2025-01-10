@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Screens/address_selection.dart';
+import 'package:edventure/Screens/verification_screen.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Services/review_services.dart';
 import 'package:edventure/constants/variable.dart';
@@ -363,7 +364,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   const SizedBox(width: 4.0),
                                   GestureDetector(
                                     onTap: (){
-                                  
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => VerificationScreen()),
+                                      );
                                     },
                                     child: const Text('Verify Now',
                                       style: TextStyle(

@@ -95,13 +95,7 @@ const userSchema = mongoose.Schema({
     },
     teachingAddress: {
         type: [String],
-        default: [],
-        validate: {
-            validator: function () {
-                return this.isVerified;
-            },
-            message: 'Teaching address can only be added if the user is verified',
-        },
+        default: []
     },
 });
 

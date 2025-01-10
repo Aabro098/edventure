@@ -11,7 +11,6 @@ const Message = require('./models/Message');
 
 const authRouter = require("./routes/auth");
 const profile = require("./routes/profile");
-const notification = require("./routes/notification");
 const resetPassword = require("./routes/resetPassword");
 const review = require("./routes/review");
 const messageRouter = require("./routes/messages");
@@ -33,7 +32,6 @@ app.use(cors());
 app.use(express.json());
 app.use(authRouter);
 app.use(profile);
-app.use(notification);
 app.use(review);
 app.use(messageRouter);  
 app.use(resetPassword);
