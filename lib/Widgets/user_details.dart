@@ -24,8 +24,7 @@ class UserDetails extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: user.isAvailable 
-                    ? Colors.green.shade300 : Colors.red.shade200,
+                  color:Colors.green.shade300 ,
                   width: 5.0,
                 ),
                 boxShadow: [

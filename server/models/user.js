@@ -43,10 +43,6 @@ const userSchema = mongoose.Schema({
         required: false,
         type: String
     },
-    coverImage: {
-        required: false,
-        type: String
-    },
     address: {
         type: String,
         default: ''
@@ -71,10 +67,6 @@ const userSchema = mongoose.Schema({
         type: String,
         default: ''
     },
-    status: {
-        type: String,
-        default: ''
-    },
     type: {
         type: String,
         default: "user",
@@ -92,14 +84,6 @@ const userSchema = mongoose.Schema({
         type : Boolean,
         default : false
     },
-    isEmailVerified : {
-        type : Boolean,
-        default : false
-    },
-    isAvailable : {
-        type : Boolean,
-        default : false
-    },
     review: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'
@@ -109,11 +93,16 @@ const userSchema = mongoose.Schema({
         type: String,
         required: false, 
     },
-    
-    notifications: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Notification' 
-    }],
+    teachingAddress: {
+        type: [String],
+        default: [],
+        validate: {
+            validator: function () {
+                return this.isVerified;
+            },
+            message: 'Teaching address can only be added if the user is verified',
+        },
+    },
 });
 
 userSchema.pre('save', async function (next) {

@@ -7,23 +7,19 @@ class User {
   final String password;
   final String phone;
   final String profileImage;
-  final String coverImage;
   final String address;
   final String bio;
   final String about;
   final int rating;
   final int numberRating;
   final String education;
-  final String status;
   final String type;
   final String username;
   final bool isVerified;
-  final bool isEmailVerified;
-  final bool isAvailable;
   final List<String> review;
   final String socketId;
-  final List<String> notification;
   final String token;
+  final List<String> teachingAddress;
 
   User({
     required this.id,
@@ -32,23 +28,19 @@ class User {
     required this.password,
     required this.phone,
     required this.profileImage,
-    required this.coverImage,
     required this.address,
     required this.bio,
     required this.about,
     required this.rating,
     required this.numberRating,
     required this.education,
-    required this.status,
     required this.type,
     required this.username,
     required this.isVerified,
-    required this.isEmailVerified,
-    required this.isAvailable,
     required this.review,
     required this.socketId,
-    required this.notification,
     required this.token,
+    required this.teachingAddress,
   });
 
   factory User.fromMap(Map<String, dynamic> map) {
@@ -59,23 +51,19 @@ class User {
       password: map['password'] ?? '',
       phone: map['phone'] ?? '',
       profileImage: map['profileImage'] ?? '',
-      coverImage: map['coverImage'] ?? '',
       address: map['address'] ?? '',
       bio: map['bio'] ?? '',
       about: map['about'] ?? '',
       rating: map['rating']?.toInt() ?? 0,
       numberRating: map['numberRating']?.toInt() ?? 0,
       education: map['education'] ?? '',
-      status: map['status'] ?? '',
       type: map['type'] ?? '',
       username: map['username'] ?? '',
       isVerified: map['isVerified'] ?? false,
-      isEmailVerified: map['isEmailVerified'] ?? false,
-      isAvailable: map['isAvailable'] ?? false,
       review: List<String>.from(map['review'] ?? []),
       socketId: map['socketId'] ?? '',
-      notification: List<String>.from(map['notification'] ?? []),
       token: map['token'] ?? '',
+      teachingAddress: List<String>.from(map['teachingAddress'] ?? []),
     );
   }
 
@@ -87,23 +75,19 @@ class User {
       'password': password,
       'phone': phone,
       'profileImage': profileImage,
-      'coverImage': coverImage,
       'address': address,
       'bio': bio,
       'about': about,
       'rating': rating,
       'numberRating': numberRating,
       'education': education,
-      'status': status,
       'type': type,
       'username': username,
       'isVerified': isVerified,
-      'isEmailVerified': isEmailVerified,
-      'isAvailable': isAvailable,
       'review': review,
       'socketId': socketId,
-      'notification' : notification,
       'token': token,
+      'teachingAddress':teachingAddress,
     };
   }
 

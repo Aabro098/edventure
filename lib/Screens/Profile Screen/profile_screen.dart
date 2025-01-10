@@ -51,7 +51,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     phoneController = TextEditingController(text : user.phone);
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
-    isAvailable = user.isAvailable;
   }
 
   Future<void> updatePhone() async {
