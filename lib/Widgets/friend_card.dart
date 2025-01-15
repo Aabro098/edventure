@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import '../utils/profile_avatar.dart';
 
 class FriendCard extends StatefulWidget {
-  final bool suggested;
   final User user; 
   final VoidCallback? onTap;
 
   const FriendCard({
     super.key,
-    required this.suggested, 
     required this.user, 
     this.onTap,
   });
@@ -68,7 +66,7 @@ class _FriendCardState extends State<FriendCard> {
           trailing: InkWell(
             onTap: () {},
             child: Icon(
-              widget.suggested ? Icons.notification_important : Icons.message,
+              Icons.message,
               size: 24.0,
             ),
           ),

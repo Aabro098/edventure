@@ -111,7 +111,6 @@ class _SearchScreenState extends State<SearchScreen> {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: FriendCard(
-                              suggested: false,
                               user: user,
                               onTap: () {
                                 Navigator.push(

@@ -1,6 +1,9 @@
 import 'package:edventure/Address/teaching_address.dart';
 import 'package:edventure/Providers/user_provider.dart';
+import 'package:edventure/Screens/Profile%20Screen/view_profile.dart';
 import 'package:edventure/Services/teaching_services.dart';
+import 'package:edventure/Widgets/friend_card.dart';
+import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +16,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  List<User> verifiedUsers = [];
 
   @override
   void initState() {
@@ -79,7 +83,22 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [],
+                        children: [
+                          if (verifiedUsers.isNotEmpty)
+                            ...verifiedUsers.map((user) {
+                              return FriendCard(
+                                user: user,
+                                onTap: () {
+                                   Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProfileViewScreen(userId: user.id),
+                                    ),
+                                  );
+                                },
+                              );
+                            }),
+                        ],
                       ),
                     ),
             ),
@@ -92,6 +111,30 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   void _showOptionsDialog(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final teachingAddresses = userProvider.user.teachingAddress;
+
+    Future<void> fetchVerifiedUsers(String address) async {
+      try {
+        final response = await TeachingService.getVerifiedUsers(userProvider.user.id, address);
+
+        if (response['users']?.isNotEmpty ?? false) {
+          setState(() {
+            verifiedUsers = List<User>.from(
+              response['users'].map((userData) => User.fromMap(userData)) 
+            );
+          });
+        } else {
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('No verified users found with this address.')),
+          );
+        }
+      } catch (e) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error fetching users: $e')),
+        );
+      }
+    }
 
     showDialog<void>(
       context: context,
@@ -128,6 +171,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                         },
                       ),
                       onTap: () {
+                        fetchVerifiedUsers(address);
                         Navigator.pop(context); 
                       },
                     );
@@ -148,8 +192,6 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                           userProvider.user.id,
                           newAddress,
                         );
-
-                        // Update the user's teaching addresses
                         userProvider.addTeachingAddress(newAddress);
 
                         // ignore: use_build_context_synchronously
@@ -186,10 +228,27 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   }
 
   Widget _verified() {
-    return const Scaffold(
-      body: Center(
-        child: Text('Verified Content'),
-      ),
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (verifiedUsers.isNotEmpty)
+          ...verifiedUsers.map((user) {
+            return FriendCard(
+              user: user,
+              onTap: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileViewScreen(userId: user.id),
+                  ),
+                );
+              },
+            );
+          }),
+        ],
+      )
     );
   }
 }

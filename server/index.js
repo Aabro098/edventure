@@ -14,6 +14,7 @@ const profile = require("./routes/profile");
 const resetPassword = require("./routes/resetPassword");
 const review = require("./routes/review");
 const messageRouter = require("./routes/messages");
+const addressRouter = require("./routes/teaching");
 
 const PORT = process.env.PORT || 3000;
 const HOST = '192.168.1.12';
@@ -35,6 +36,7 @@ app.use(profile);
 app.use(review);
 app.use(messageRouter);  
 app.use(resetPassword);
+app.use(addressRouter);
 
 
 

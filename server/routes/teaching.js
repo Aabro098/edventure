@@ -62,4 +62,26 @@ router.delete('/deleteTeachingAddress', async (req, res) => {
 });
 
 
+router.post('/getVerifiedUsers', async (req, res) => {
+  const { userId, address } = req.body;
+
+  try {
+    const users = await User.find({
+      isVerified: true, 
+      userId: { $ne: userId }, 
+      teachingAddress: address, 
+    });
+
+    if (users.length > 0) {
+      return res.status(200).json({ users });
+    } else {
+      return res.status(404).json({ message: 'No verified users found with the provided address.' });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 module.exports = router;
