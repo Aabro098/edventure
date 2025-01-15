@@ -6,7 +6,7 @@ class User {
   final String email;
   final String password;
   final String phone;
-  final String profileImage;
+  String profileImage;
   final String address;
   final String bio;
   final String about;

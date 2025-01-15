@@ -90,7 +90,6 @@ class AddressSelectionState extends State<AddressSelection> {
               ),
               const SizedBox(height: 16.0),
 
-              // District Dropdown
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Select District'),
                 value: selectedDistrict,
@@ -112,7 +111,6 @@ class AddressSelectionState extends State<AddressSelection> {
               ),
               const SizedBox(height: 16.0),
 
-              // Municipality Dropdown
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Select Municipality'),
                 value: selectedMunicipality,
@@ -132,7 +130,6 @@ class AddressSelectionState extends State<AddressSelection> {
               ),
               const SizedBox(height: 16.0),
 
-              // Ward Number TextField
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Ward No'),
                 keyboardType: TextInputType.number,
@@ -152,7 +149,6 @@ class AddressSelectionState extends State<AddressSelection> {
               ),
               const SizedBox(height: 16.0),
 
-              // Save Button
               isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : AppElevatedButton(

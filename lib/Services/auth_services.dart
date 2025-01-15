@@ -262,6 +262,11 @@ class AuthService with ChangeNotifier{
       final response = await dio.put(uploadUrl, data: formData);
       
       if (response.statusCode == 200) {
+
+        String newProfileImage = response.data['profileImage'];  
+
+        // ignore: use_build_context_synchronously
+        Provider.of<UserProvider>(context, listen: false).updateProfileImage(newProfileImage);
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Profile image uploaded successfully!")),

@@ -34,9 +34,25 @@ class UserProvider extends ChangeNotifier{
   Future<void> refreshUser(BuildContext context) async {
     try {
       await AuthService().getUserData(context: context);
+      notifyListeners();
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  void addTeachingAddress(String address) {
+    _user.teachingAddress.add(address);
+    notifyListeners(); 
+  }
+
+  void deleteTeachingAddress(String address) {
+    _user.teachingAddress.remove(address);
+    notifyListeners(); 
+  }
+
+  void updateProfileImage(String newProfileImage) {
+    _user.profileImage = newProfileImage;
+    notifyListeners();  
   }
 
   void clearUser() {
