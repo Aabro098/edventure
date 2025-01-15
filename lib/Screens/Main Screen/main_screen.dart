@@ -1,5 +1,5 @@
+import 'package:edventure/Address/teaching_address.dart';
 import 'package:edventure/Providers/user_provider.dart';
-import 'package:edventure/Screens/address_selection.dart';
 import 'package:edventure/Services/teaching_services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -138,16 +138,24 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                     final newAddress = await Navigator.push<String>(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AddressSelection(),
+                        builder: (context) => const TeachingAddressSelection(),
                       ),
                     );
+
                     if (newAddress != null) {
                       try {
                         await TeachingService.addTeachingAddress(
                           userProvider.user.id,
                           newAddress,
                         );
+
+                        // Update the user's teaching addresses
                         userProvider.addTeachingAddress(newAddress);
+
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Address added successfully!')),
+                        );
                       } catch (e) {
                         // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -160,7 +168,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                   },
                   label: const Text('Add Address'),
                   icon: const Icon(Icons.add),
-                ),
+                )
               ],
             ),
           ),

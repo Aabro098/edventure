@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:edventure/Providers/user_provider.dart';
-import 'package:edventure/Screens/address_selection.dart';
+import 'package:edventure/Address/address_selection.dart';
 import 'package:edventure/Screens/verification_screen.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Services/review_services.dart';
