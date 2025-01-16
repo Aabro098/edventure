@@ -9,7 +9,7 @@ class OptionsBottom extends StatelessWidget {
     super.key,
     required this.text,
     required this.icon,
-    this.color = Colors.grey,
+    this.color = Colors.black54,
     required this.onTap,
   });
 
@@ -34,20 +34,10 @@ class OptionsBottom extends StatelessWidget {
                 text,
                 style: TextStyle(
                   color: color,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24
+                  fontWeight: FontWeight.w400,
+                  fontSize: 20
                 ),
               ),
-              const SizedBox(
-                height: 8.0,
-              ),
-              Text(
-                text,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 16
-                ),
-              )
             ],
           )
         ],

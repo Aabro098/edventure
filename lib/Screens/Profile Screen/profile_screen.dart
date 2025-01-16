@@ -701,13 +701,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         color: Colors.transparent
       ),
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 160,
       child: Card(
         child: Column(
           children: [
             OptionsBottom(
               text: 'Update Profile Image', 
-              icon: Icons.browse_gallery, 
+              icon: Icons.image, 
               onTap: updateProfileImage
             ),
             const SizedBox(height: 20),

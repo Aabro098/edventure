@@ -17,6 +17,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<User> verifiedUsers = [];
+  bool _isFirstBuild = true;
+  String? _currentAddress;
 
   @override
   void initState() {
@@ -25,9 +27,191 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_isFirstBuild) {
+      _isFirstBuild = false;
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final teachingAddresses = userProvider.user.teachingAddress;
+
+      if (teachingAddresses.isNotEmpty) {
+        _currentAddress = teachingAddresses[0]; 
+        _fetchVerifiedUsers(_currentAddress!);
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchVerifiedUsers(String address) async {
+    if (!mounted) return;
+    
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final response = await TeachingService.getVerifiedUsers(userProvider.user.id, address);
+
+      if (!mounted) return;
+
+      setState(() {
+        verifiedUsers = (response['users'] ?? []).map<User>((userData) => User.fromMap(userData)).toList();
+      });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          verifiedUsers = [];
+        });
+      }
+    }
+  }
+
+  Future<void> _handleAddressDelete(UserProvider userProvider, String address, BuildContext dialogContext) async {
+    try {
+      await TeachingService.deleteTeachingAddress(
+        userProvider.user.id,
+        address,
+      );
+      userProvider.deleteTeachingAddress(address);
+      
+      if (!mounted) return;
+      
+      if (_currentAddress == address) {
+        final addresses = userProvider.user.teachingAddress;
+        if (addresses.isNotEmpty) {
+          _currentAddress = addresses[0];
+          _fetchVerifiedUsers(_currentAddress!);
+        } else {
+          _currentAddress = null;
+          setState(() {
+            verifiedUsers = [];
+          });
+        }
+      }
+      
+      // ignore: use_build_context_synchronously
+      Navigator.pop(dialogContext);
+    } catch (e) {
+      if (mounted) {
+        // ignore: use_build_context_synchronously
+        Navigator.pop(dialogContext);
+      }
+    }
+  }
+
+  Future<void> _handleAddNewAddress(UserProvider userProvider, BuildContext dialogContext) async {
+    final newAddress = await Navigator.push<String>(
+      dialogContext,
+      MaterialPageRoute(
+        builder: (context) => const TeachingAddressSelection(),
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (newAddress != null) {
+      try {
+        await TeachingService.addTeachingAddress(
+          userProvider.user.id,
+          newAddress,
+        );
+        userProvider.addTeachingAddress(newAddress);
+        
+        if (_currentAddress == null) {
+          _currentAddress = newAddress;
+          _fetchVerifiedUsers(newAddress);
+        }
+      } catch (e) {
+        // Silent error handling
+      }
+    }
+    if (mounted) {
+      // ignore: use_build_context_synchronously
+      Navigator.pop(dialogContext);
+    }
+  }
+
+  void _showOptionsDialog(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final teachingAddresses = userProvider.user.teachingAddress;
+
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Select Address'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (teachingAddresses.isEmpty)
+                  const Center(
+                    child: Text('No addresses available.'),
+                  )
+                else
+                  ...teachingAddresses.map((address) {
+                    return ListTile(
+                      title: Text(address),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _handleAddressDelete(userProvider, address, dialogContext),
+                      ),
+                      onTap: () {
+                        _currentAddress = address;
+                        _fetchVerifiedUsers(address);
+                        Navigator.pop(dialogContext);
+                      },
+                      selected: _currentAddress == address,
+                    );
+                  }),
+                const SizedBox(height: 10),
+                FloatingActionButton.extended(
+                  onPressed: () => _handleAddNewAddress(userProvider, dialogContext),
+                  label: const Text('Add Address'),
+                  icon: const Icon(Icons.add),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _unverified() {
+    return const Scaffold(
+      body: Center(
+        child: Text('Unverified Content'),
+      ),
+    );
+  }
+
+  Widget _verified() {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (verifiedUsers.isNotEmpty)
+            ...verifiedUsers.map((user) {
+              return FriendCard(
+                user: user,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfileViewScreen(userId: user.id),
+                    ),
+                  );
+                },
+              );
+            }),
+        ],
+      ),
+    );
   }
 
   @override
@@ -60,18 +244,20 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  onPressed: () {
-                    _showOptionsDialog(context);
-                  },
+                  onPressed: () => _showOptionsDialog(context),
                   icon: const Icon(Icons.more_vert),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Expanded(
-              child: user.isVerified
+              child: user.teachingAddress.isEmpty 
+              ? Center(
+                child: Text(
+                  'No address available'
+                ),
+              )
+              : user.isVerified
                   ? TabBarView(
                       controller: _tabController,
                       children: [
@@ -80,7 +266,8 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       ],
                     )
                   : SingleChildScrollView(
-                      child: Column(
+                      child: 
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -89,7 +276,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                               return FriendCard(
                                 user: user,
                                 onTap: () {
-                                   Navigator.push(
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ProfileViewScreen(userId: user.id),
@@ -105,150 +292,6 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
           ],
         ),
       ),
-    );
-  }
-
-  void _showOptionsDialog(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final teachingAddresses = userProvider.user.teachingAddress;
-
-    Future<void> fetchVerifiedUsers(String address) async {
-      try {
-        final response = await TeachingService.getVerifiedUsers(userProvider.user.id, address);
-
-        if (response['users']?.isNotEmpty ?? false) {
-          setState(() {
-            verifiedUsers = List<User>.from(
-              response['users'].map((userData) => User.fromMap(userData)) 
-            );
-          });
-        } else {
-          // ignore: use_build_context_synchronously
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('No verified users found with this address.')),
-          );
-        }
-      } catch (e) {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error fetching users: $e')),
-        );
-      }
-    }
-
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Address'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (teachingAddresses.isEmpty)
-                  const Center(
-                    child: Text('No addresses available.'),
-                  )
-                else
-                  ...teachingAddresses.map((address) {
-                    return ListTile(
-                      title: Text(address),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () async {
-                          try {
-                            await TeachingService.deleteTeachingAddress(
-                              userProvider.user.id, 
-                              address,
-                            );
-                            userProvider.deleteTeachingAddress(address);
-                          } catch (e) {
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: $e')),
-                            );
-                          }
-                        },
-                      ),
-                      onTap: () {
-                        fetchVerifiedUsers(address);
-                        Navigator.pop(context); 
-                      },
-                    );
-                  }),
-                const SizedBox(height: 10),
-                FloatingActionButton.extended(
-                  onPressed: () async {
-                    final newAddress = await Navigator.push<String>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TeachingAddressSelection(),
-                      ),
-                    );
-
-                    if (newAddress != null) {
-                      try {
-                        await TeachingService.addTeachingAddress(
-                          userProvider.user.id,
-                          newAddress,
-                        );
-                        userProvider.addTeachingAddress(newAddress);
-
-                        // ignore: use_build_context_synchronously
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Address added successfully!')),
-                        );
-                      } catch (e) {
-                        // ignore: use_build_context_synchronously
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: $e')),
-                        );
-                      }
-                    }
-                    // ignore: use_build_context_synchronously
-                    Navigator.pop(context);
-                  },
-                  label: const Text('Add Address'),
-                  icon: const Icon(Icons.add),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _unverified() {
-    return const Scaffold(
-      body: Center(
-        child: Text('Unverified Content'),
-      ),
-    );
-  }
-
-  Widget _verified() {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (verifiedUsers.isNotEmpty)
-          ...verifiedUsers.map((user) {
-            return FriendCard(
-              user: user,
-              onTap: () {
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfileViewScreen(userId: user.id),
-                  ),
-                );
-              },
-            );
-          }),
-        ],
-      )
     );
   }
 }

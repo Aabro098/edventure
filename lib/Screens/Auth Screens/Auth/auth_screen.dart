@@ -201,7 +201,7 @@ class _AuthScreenState extends State<AuthScreen> {
         color: Colors.transparent
       ),
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 160,
       child: Card(
         child: Column(
           children: [
