@@ -205,22 +205,64 @@ authRouter.put('/api/updateProfile', auth , upload.single('profileImage'), async
 });
 
 
-authRouter.put('/api/toggle-availability', auth, async (req, res) => {
+authRouter.delete('/deleteProfileImage', auth, async (req, res) => {
     try {
-        const user = await User.findById(req.user);
-        
-        if (!user) {
-            return res.status(404).json({ msg: 'User not found' });
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: 'No user ID found in request',
+            });
         }
 
-        user.isAvailable = !user.isAvailable;
+        const user = await User.findById(req.user);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
 
-        await user.save();
+        if (user.profileImage) {
+            const imagePath = user.profileImage;
+            console.log('Attempting to delete profile image:', imagePath);
 
-        res.json(user);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+            if (fs.existsSync(imagePath)) {
+                try {
+                    fs.unlinkSync(imagePath); 
+                    console.log('Profile image deleted successfully from server.');
+                } catch (error) {
+                    console.error('Error deleting profile image from server:', error.message);
+                    return res.status(500).json({
+                        success: false,
+                        message: 'Error deleting profile image from server',
+                    });
+                }
+            } else {
+                console.warn('Profile image file does not exist on server:', imagePath);
+            }
+
+            user.profileImage = undefined; 
+            await user.save();
+
+            return res.status(200).json({
+                success: true,
+                message: 'Profile image deleted successfully',
+            });
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: 'No profile image to delete',
+            });
+        }
+    } catch (error) {
+        console.error('Error deleting profile image:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting profile image',
+            error: error.message,
+        });
     }
 });
+
 
 module.exports = authRouter;

@@ -206,6 +206,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void deleteProfileImage() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      await AuthService().deleteProfileImage(context);
+
+      if (mounted) {
+        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        setState(() {
+          isLoading = false;
+        });
+
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Profile image deleted successfully")),
+        );
+      }
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to delete profile image: $e")),
+      );
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
@@ -715,9 +746,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               text: 'Remove Profile Image', 
               icon: Icons.delete,
               color: Colors.red, 
-              onTap: () {
-
-              },
+              onTap: deleteProfileImage
             ),
           ],
         ),

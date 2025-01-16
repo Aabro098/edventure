@@ -15,11 +15,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Screens/Auth Screens/Auth/auth_screen.dart';
 
 class AuthService with ChangeNotifier{
+  bool _isDeleting = false;
+  bool get isDeleting => _isDeleting;
+
+  String _errorMessage = '';
+  String get errorMessage => _errorMessage;
+
+  bool _isSuccess = false;
+  bool get isSuccess => _isSuccess;
+
+  final String deleteProfileImageUrl = '$uri/deleteProfileImage';
+
   Future signUpUser({
     required BuildContext context,
     required String email,
     required String name,
     required String password,
+    
   }) async {
     try {
       User user = User(
@@ -247,7 +259,7 @@ class AuthService with ChangeNotifier{
       );
       return;
     }
-
+    notifyListeners();
     try {
       final formData = FormData.fromMap({
         'profileImage': await MultipartFile.fromFile(
@@ -271,6 +283,7 @@ class AuthService with ChangeNotifier{
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Profile image uploaded successfully!")),
         );
+        notifyListeners();
       } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
@@ -281,4 +294,44 @@ class AuthService with ChangeNotifier{
       throw Exception(e.toString());
     }
   }
+
+   Future<void> deleteProfileImage(BuildContext context) async {
+    _isDeleting = true;
+    _errorMessage = '';
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('x-auth-token');
+
+    if (token == null) {
+      _errorMessage = 'No token found. Please log in again.';
+      _isDeleting = false;
+      notifyListeners();
+      return;
+    }
+
+    notifyListeners();
+
+    try {
+      final response = await http.delete(
+        Uri.parse(deleteProfileImageUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,  
+        },
+      );
+
+      if (response.statusCode == 200) {
+        _isSuccess = true;
+        _errorMessage = '';
+      } else {
+        final responseBody = jsonDecode(response.body);
+        _errorMessage = responseBody['message'] ?? 'An unknown error occurred';
+      }
+    } catch (e) {
+      _errorMessage = 'Failed to delete profile image: $e';
+    } finally {
+      _isDeleting = false;
+      notifyListeners();
+    }
+  }
+
 }
