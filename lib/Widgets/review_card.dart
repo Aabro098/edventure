@@ -1,7 +1,7 @@
 import 'package:edventure/Services/api_services.dart'; 
 import 'package:edventure/Widgets/stars.dart';
 import 'package:edventure/Widgets/user_card.dart';
-import 'package:edventure/constants/Colors/colors.dart';
+import 'package:edventure/constants/colors.dart';
 import 'package:edventure/models/user.dart'; 
 import 'package:flutter/material.dart';
 

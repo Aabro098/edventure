@@ -4,6 +4,7 @@ import 'package:edventure/Address/address_selection.dart';
 import 'package:edventure/Screens/verification_screen.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Services/review_services.dart';
+import 'package:edventure/Widgets/options_bottomsheet.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/review.dart';
 import 'package:edventure/utils/snackbar.dart';
@@ -261,7 +262,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             right: 4,
                             child: ClipOval(
                               child: GestureDetector(
-                                onTap: updateProfileImage,
+                                onTap: (){
+                                  showModalBottomSheet(context: context, builder: (context)=>bottomSheet());
+                                },
                                 child: Container(
                                   padding: const EdgeInsets.all(4),
                                   color: Colors.grey[200],
@@ -686,6 +689,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget bottomSheet(){
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.transparent
+      ),
+      width: MediaQuery.of(context).size.width,
+      height: 200,
+      child: Card(
+        child: Column(
+          children: [
+            OptionsBottom(
+              text: 'Update Profile Image', 
+              icon: Icons.browse_gallery, 
+              onTap: updateProfileImage
+            ),
+            const SizedBox(height: 20),
+            OptionsBottom(
+              text: 'Remove Profile Image', 
+              icon: Icons.delete,
+              color: Colors.red, 
+              onTap: () {
+
+              },
+            ),
+          ],
         ),
       ),
     );

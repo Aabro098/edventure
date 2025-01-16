@@ -2,7 +2,7 @@ import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Screens/Auth%20Screens/Auth/auth_screen.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Navigation/nav_screen.dart';
-import 'package:edventure/constants/Colors/colors.dart';
+import 'package:edventure/constants/colors.dart';
 import 'package:edventure/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
