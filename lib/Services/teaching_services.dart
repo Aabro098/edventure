@@ -48,4 +48,19 @@ class TeachingService {
     }
   }
 
+    static Future<Map<String, dynamic>> getUnverifiedUsers(String userId, String address) async {
+    final url = Uri.parse('$uri/getUnverifiedUsers');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'userId': userId, 'address': address}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to fetch verified users: ${response.body}');
+    }
+  }
+
 }

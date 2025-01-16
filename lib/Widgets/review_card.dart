@@ -61,7 +61,6 @@ class _ReviewCardState extends State<ReviewCard> {
                 } else if (snapshot.hasData) {
                   final user = snapshot.data!;
                   return UserCard(
-                    isNotification: false,
                     user: user, 
                   );
                 } else {

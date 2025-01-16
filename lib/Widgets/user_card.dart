@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import '../utils/profile_avatar.dart';
 
 class UserCard extends StatelessWidget {
-  final bool? isNotification;
   final User user;
   const UserCard({
     super.key,
-    this.isNotification, 
     required this.user,
   });
 
@@ -33,7 +31,7 @@ class UserCard extends StatelessWidget {
             child:Text(
               user.name,
               style: TextStyle(
-                fontSize: isNotification!=null ? 14.0 : 18.0,
+                fontSize: 14.0,
                 fontWeight: FontWeight.normal
               ),
               overflow: TextOverflow.ellipsis,

@@ -83,5 +83,26 @@ router.post('/getVerifiedUsers', async (req, res) => {
   }
 });
 
+router.post('/getUnverifiedUsers', async (req, res) => {
+  const { userId, address } = req.body;
+
+  try {
+    const users = await User.find({
+      isVerified: false, 
+      userId: { $ne: userId }, 
+      teachingAddress: address, 
+    });
+
+    if (users.length > 0) {
+      return res.status(200).json({ users });
+    } else {
+      return res.status(404).json({ message: 'No users found with the provided address.' });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;

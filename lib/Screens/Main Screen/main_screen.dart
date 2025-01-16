@@ -1,11 +1,12 @@
 import 'package:edventure/Address/teaching_address.dart';
 import 'package:edventure/Providers/user_provider.dart';
-import 'package:edventure/Screens/Profile%20Screen/view_profile.dart';
 import 'package:edventure/Services/teaching_services.dart';
 import 'package:edventure/Widgets/friend_card.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../Profile Screen/view_profile.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -17,6 +18,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<User> verifiedUsers = [];
+  List<User> unverifiedUsers = [];
   bool _isFirstBuild = true;
   String? _currentAddress;
 
@@ -38,6 +40,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
       if (teachingAddresses.isNotEmpty) {
         _currentAddress = teachingAddresses[0]; 
         _fetchVerifiedUsers(_currentAddress!);
+        _fetchUnverifiedUsers(_currentAddress!);
       }
     }
   }
@@ -69,6 +72,28 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     }
   }
 
+    Future<void> _fetchUnverifiedUsers(String address) async {
+    if (!mounted) return;
+    
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final response = await TeachingService.getUnverifiedUsers(userProvider.user.id, address);
+
+      if (!mounted) return;
+
+      setState(() {
+        unverifiedUsers = (response['users'] ?? []).map<User>((userData) => User.fromMap(userData)).toList();
+      });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          unverifiedUsers = [];
+        });
+      }
+    }
+  }
+
+
   Future<void> _handleAddressDelete(UserProvider userProvider, String address, BuildContext dialogContext) async {
     try {
       await TeachingService.deleteTeachingAddress(
@@ -84,10 +109,12 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         if (addresses.isNotEmpty) {
           _currentAddress = addresses[0];
           _fetchVerifiedUsers(_currentAddress!);
+          _fetchUnverifiedUsers(_currentAddress!);
         } else {
           _currentAddress = null;
           setState(() {
             verifiedUsers = [];
+            unverifiedUsers = [];
           });
         }
       }
@@ -123,6 +150,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         if (_currentAddress == null) {
           _currentAddress = newAddress;
           _fetchVerifiedUsers(newAddress);
+          _fetchUnverifiedUsers(newAddress);
         }
       } catch (e) {
         // Silent error handling
@@ -162,6 +190,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       onTap: () {
                         _currentAddress = address;
                         _fetchVerifiedUsers(address);
+                        _fetchUnverifiedUsers(address);
                         Navigator.pop(dialogContext);
                       },
                       selected: _currentAddress == address,
@@ -182,9 +211,26 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   }
 
   Widget _unverified() {
-    return const Scaffold(
-      body: Center(
-        child: Text('Unverified Content'),
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (unverifiedUsers.isNotEmpty)
+            ...unverifiedUsers.map((user) {
+              return FriendCard(
+                user: user,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfileViewScreen(userId: user.id),
+                    ),
+                  );
+                },
+              );
+            }),
+        ],
       ),
     );
   }
