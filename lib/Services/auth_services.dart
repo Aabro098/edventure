@@ -130,7 +130,6 @@ class AuthService with ChangeNotifier{
     }
   }
 
-
   Future<void> getUserData({required BuildContext context}) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -138,7 +137,7 @@ class AuthService with ChangeNotifier{
 
       if (token == null) {
         prefs.setString('x-auth-token', '');
-        token = ''; 
+        return;
       }
 
       var tokenRes = await http.post(
@@ -159,15 +158,16 @@ class AuthService with ChangeNotifier{
             'x-auth-token': token,
           },
         );
-        // ignore: use_build_context_synchronously
-        var userProvider = Provider.of<UserProvider>(context, listen: false);
-        userProvider.setUser(userRes.body);
+        
+        if (context.mounted) {
+          var userProvider = Provider.of<UserProvider>(context, listen: false);
+          userProvider.setUser(userRes.body);
+        }
       }
     } catch (e) {
-        Future.microtask(() {
-          // ignore: use_build_context_synchronously
-          showSnackBar(context, e.toString());
-      });
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 

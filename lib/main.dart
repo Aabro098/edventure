@@ -38,6 +38,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final AuthService authService = AuthService();
   final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+  // Create a single future to be used by FutureBuilder
+  late Future<void> _userDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the future once
+    _userDataFuture = _initializeUserData(context);
+  }
 
   Future<void> _initializeUserData(BuildContext context) async {
     try {
@@ -48,6 +57,7 @@ class _MyAppState extends State<MyApp> {
           SnackBar(content: Text(e.toString())),
         );
       }
+      rethrow;
     }
   }
 
@@ -69,12 +79,13 @@ class _MyAppState extends State<MyApp> {
           body: Consumer<UserProvider>(
             builder: (context, userProvider, _) {
               return FutureBuilder(
-                future: _initializeUserData(context),
+                // Use the stored future instead of creating a new one
+                future: _userDataFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  
+
                   if (snapshot.hasError) {
                     return Center(
                       child: Column(
@@ -87,7 +98,7 @@ class _MyAppState extends State<MyApp> {
                       ),
                     );
                   }
-                  
+
                   return userProvider.user.token.isNotEmpty
                       ? const NavScreen()
                       : const AuthScreen();

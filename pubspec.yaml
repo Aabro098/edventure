@@ -41,10 +41,10 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/images/logo.png
+  background_image: assets/images/logo.png
 
   android_12:
-    image: assets/images/logo.png
+    background_image: "assets/images/logo.png"
     color: "#FFFFFF"  
 
   android: true

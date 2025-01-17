@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
-const http = require("http");
+const http = require("http"); 
 const path = require("path");
 
 const DB = process.env.DB;
@@ -115,6 +115,6 @@ io.on("connection", (socket) => {
     });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT,'0.0.0.0', () => {
     console.log(`Server is running on http://${HOST}:${PORT}`);
 });

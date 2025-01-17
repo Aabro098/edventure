@@ -206,33 +206,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void deleteProfileImage() async {
+  Future<void> deleteProfileImage() async {
+    if (!mounted) return;
+
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final currentContext = context;
+    
     try {
       setState(() {
         isLoading = true;
       });
 
-      await AuthService().deleteProfileImage(context);
+      await AuthService().deleteProfileImage(currentContext);
 
-      if (mounted) {
-        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
-        setState(() {
-          isLoading = false;
-        });
+      if (!mounted) return;
 
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Profile image deleted successfully")),
-        );
-      }
-    } catch (e) {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to delete profile image: $e")),
-      );
+      await Provider.of<UserProvider>(currentContext, listen: false)
+          // ignore: use_build_context_synchronously
+          .refreshUser(currentContext);
+
+      if (!mounted) return;
+
       setState(() {
         isLoading = false;
       });
+
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text("Profile image deleted successfully")),
+      );
+
+    } catch (e) {
+      if (!mounted) return;
+      
+      setState(() {
+        isLoading = false;
+      });
+
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text("Failed to delete profile image: $e")),
+      );
     }
   }
 
