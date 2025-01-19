@@ -1,4 +1,3 @@
-
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
@@ -39,11 +38,11 @@ class UserProvider extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('x-auth-token');
-      
+
       if (token == null || token.isEmpty) return;
 
       final response = await http.get(
-        Uri.parse('$uri/'), 
+        Uri.parse('$uri/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': token,
@@ -68,13 +67,15 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateProfileImage(String newProfileImage) {
-    print("Updating profile image to: $newProfileImage"); // Debug print
+  Future<void> updateProfileImageAndRefresh(
+      String newProfileImage, BuildContext context) async {
     _user.profileImage = newProfileImage;
-    print("Updated user profile image: ${_user.profileImage}"); // Verify update
+    notifyListeners();
+
+    await refreshUser(context);
     notifyListeners();
   }
-  
+
   void clearUser() {
     _user = User(
       id: '',

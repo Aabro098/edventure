@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:edventure/Providers/user_provider.dart';
@@ -14,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Screens/Auth Screens/Auth/auth_screen.dart';
 
-class AuthService with ChangeNotifier{
+class AuthService with ChangeNotifier {
   bool _isDeleting = false;
   bool get isDeleting => _isDeleting;
 
@@ -31,7 +30,6 @@ class AuthService with ChangeNotifier{
     required String email,
     required String name,
     required String password,
-    
   }) async {
     try {
       User user = User(
@@ -42,23 +40,23 @@ class AuthService with ChangeNotifier{
         phone: '',
         profileImage: '',
         address: '',
-        bio : '',
-        about : '',
-        rating:0,
+        bio: '',
+        about: '',
+        rating: 0,
         numberRating: 0,
         education: '',
         type: '',
         username: '',
         token: '',
-        isVerified: false, 
-        review: [], 
+        isVerified: false,
+        review: [],
         socketId: '',
         teachingAddress: [],
       );
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),
-        body: user.toJson(), 
+        body: user.toJson(),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -73,11 +71,10 @@ class AuthService with ChangeNotifier{
             'Account has been created successfully',
           );
           Navigator.pushNamedAndRemoveUntil(
-            // ignore: use_build_context_synchronously
-            context, 
-            AuthScreen.routeName, 
-            (route) => false
-          );
+              // ignore: use_build_context_synchronously
+              context,
+              AuthScreen.routeName,
+              (route) => false);
         },
       );
     } catch (e) {
@@ -88,7 +85,6 @@ class AuthService with ChangeNotifier{
     }
   }
 
-
   Future signInUser({
     required BuildContext context,
     required String email,
@@ -97,10 +93,7 @@ class AuthService with ChangeNotifier{
     try {
       http.Response res = await http.post(
         Uri.parse('$uri/api/signin'),
-        body: jsonEncode({
-          'email' : email,
-          'password' : password
-        }),
+        body: jsonEncode({'email': email, 'password': password}),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -112,14 +105,13 @@ class AuthService with ChangeNotifier{
         onSuccess: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           // ignore: use_build_context_synchronously
-          Provider.of<UserProvider>(context , listen : false).setUser(res.body);
+          Provider.of<UserProvider>(context, listen: false).setUser(res.body);
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
           Navigator.pushNamedAndRemoveUntil(
-            // ignore: use_build_context_synchronously
-            context, 
-            NavScreen.routeName, 
-            (route) => false
-          );
+              // ignore: use_build_context_synchronously
+              context,
+              NavScreen.routeName,
+              (route) => false);
         },
       );
     } catch (e) {
@@ -158,7 +150,7 @@ class AuthService with ChangeNotifier{
             'x-auth-token': token,
           },
         );
-        
+
         if (context.mounted) {
           var userProvider = Provider.of<UserProvider>(context, listen: false);
           userProvider.setUser(userRes.body);
@@ -170,7 +162,6 @@ class AuthService with ChangeNotifier{
       }
     }
   }
-
 
   Future updateUser({
     required BuildContext context,
@@ -184,7 +175,7 @@ class AuthService with ChangeNotifier{
   }) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('x-auth-token');
-    
+
     if (token == null) {
       throw Exception('Authentication token not found');
     }
@@ -210,7 +201,7 @@ class AuthService with ChangeNotifier{
         },
         body: jsonEncode(data),
       );
-      
+
       if (response.statusCode == 200) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
@@ -224,12 +215,11 @@ class AuthService with ChangeNotifier{
     }
   }
 
-
   Future<void> logout(BuildContext context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
-    
+
       // ignore: use_build_context_synchronously
       Provider.of<UserProvider>(context, listen: false).clearUser();
 
@@ -244,71 +234,72 @@ class AuthService with ChangeNotifier{
     }
   }
 
+  Future<void> uploadProfileImage(BuildContext context) async {
+    final String uploadUrl = '$uri/api/updateProfile';
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('x-auth-token');
 
-Future<void> uploadProfileImage(BuildContext context) async {
-  print("Starting upload process");
-
-  final String uploadUrl = '$uri/api/updateProfile';
-  final ImagePicker picker = ImagePicker();
-  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? token = prefs.getString('x-auth-token');
-
-  if (image == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("No image selected")),
-    );
-    return;
-  }
-
-  if (token == null || token.isEmpty) {
-    throw Exception("Authentication token is missing");
-  }
-
-  try {
-    final formData = FormData.fromMap({
-      'profileImage': await MultipartFile.fromFile(
-        image.path,
-        filename: image.name,
-      ),
-    });
-
-    Dio dio = Dio();
-    dio.options.headers["x-auth-token"] = token;
-
-    print("Making API request");
-    final response = await dio.put(uploadUrl, data: formData);
-
-    if (response.statusCode == 200 && response.data != null) {
-      final profileImage = response.data['profileImage'];
-      if (profileImage == null) {
-        throw Exception("Invalid response: 'profileImage' is null");
-      }
-
-      print("Got new profile image URL: $profileImage");
-
+    if (image == null) {
       if (context.mounted) {
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        userProvider.updateProfileImage(profileImage);
-
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Profile image uploaded successfully!")),
+          const SnackBar(content: Text("No image selected")),
         );
       }
-    } else {
-      print("Non-200 response: ${response.statusCode}");
-      throw Exception("Failed to upload: ${response.data}");
+      return;
     }
-  } catch (e) {
-    print("Upload error: $e");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Error uploading image: $e")),
-    );
+
+    if (token == null || token.isEmpty) {
+      throw Exception("Authentication token is missing");
+    }
+
+    try {
+      final formData = FormData.fromMap({
+        'profileImage': await MultipartFile.fromFile(
+          image.path,
+          filename: image.name,
+        ),
+      });
+
+      Dio dio = Dio();
+      dio.options.headers["x-auth-token"] = token;
+
+      final response = await dio.put(uploadUrl, data: formData);
+
+      if (response.statusCode == 200 && response.data != null) {
+        final profileImageUrl = response.data['profileImageUrl'];
+
+        if (profileImageUrl == null) {
+          throw Exception(
+              "Invalid response: Unable to extract profile image URL");
+        }
+
+        if (context.mounted) {
+          final userProvider =
+              Provider.of<UserProvider>(context, listen: false);
+          await userProvider.updateProfileImageAndRefresh(
+              profileImageUrl, context);
+
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("Profile image uploaded successfully!")),
+          );
+        }
+      } else {
+        throw Exception("Failed to upload: ${response.data}");
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error uploading image: $e")),
+        );
+      }
+    }
   }
-}
 
-
-   Future<void> deleteProfileImage(BuildContext context) async {
+  Future<void> deleteProfileImage(BuildContext context) async {
     _isDeleting = true;
     _errorMessage = '';
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -328,7 +319,7 @@ Future<void> uploadProfileImage(BuildContext context) async {
         Uri.parse(deleteProfileImageUrl),
         headers: {
           'Content-Type': 'application/json',
-          'x-auth-token': token,  
+          'x-auth-token': token,
         },
       );
 
@@ -346,5 +337,4 @@ Future<void> uploadProfileImage(BuildContext context) async {
       notifyListeners();
     }
   }
-
 }
