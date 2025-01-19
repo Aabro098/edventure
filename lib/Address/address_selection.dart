@@ -30,31 +30,57 @@ class AddressSelectionState extends State<AddressSelection> {
   Future<void> updateAddress() async {
     if (!mounted) return;
 
+    print('1. Starting update process');
     setState(() {
       isLoading = true;
     });
 
     try {
-      await AuthService().updateUser(
-        context: context,
+      // Store context in local variable to ensure it's valid
+      final currentContext = context;
+
+      print('2. About to call AuthService.updateUser');
+      final authService = AuthService();
+      await authService.updateUser(
+        context: currentContext,
         address: addressController.text,
       );
+      print('3. AuthService.updateUser completed');
 
-      if (mounted) {
-        Provider.of<UserProvider>(context, listen: false)
-            .updateUserAddress(addressController.text);
+      if (!mounted) return;
 
-        await Provider.of<UserProvider>(context, listen: false)
-            .refreshUser(context);
+      print('4. Adding delay');
+      await Future.delayed(const Duration(milliseconds: 500));
+      print('5. Delay completed');
 
-        setState(() {
-          isLoading = false;
-        });
-      }
+      if (!mounted) return;
+
+      print('6. Widget is still mounted');
+      // Get provider without using context
+      final userProvider =
+          Provider.of<UserProvider>(currentContext, listen: false);
+      print('7. Got userProvider');
+
+      print('8. About to call refreshUser');
+      await userProvider.refreshUser(currentContext);
+      print('9. refreshUser completed');
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+      print('10. setState completed');
+
+      print('11. Updated address: ${userProvider.user.address}');
     } catch (e) {
-      if (mounted) {
-        showSnackBar(context, e.toString());
-      }
+      print('Error occurred: $e');
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+      showSnackBar(context, e.toString());
     }
   }
 

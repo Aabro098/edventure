@@ -689,6 +689,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     senderId: reviews[index].senderId,
                                     description: reviews[index].description,
                                     rating: reviews[index].rating,
+                                    currentUser: user.id,
                                   ),
                                 ),
                               ],

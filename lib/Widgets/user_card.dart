@@ -1,4 +1,3 @@
-
 import 'package:edventure/Screens/Profile%20Screen/view_profile.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
@@ -18,9 +17,9 @@ class UserCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context)=>ProfileViewScreen(userId: user.id))
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileViewScreen(userId: user.id)));
       },
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -28,12 +27,9 @@ class UserCard extends StatelessWidget {
           ProfileAvatar(image: imageUrl),
           const SizedBox(width: 8.0),
           Flexible(
-            child:Text(
+            child: Text(
               user.name,
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.normal
-              ),
+              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -42,4 +38,3 @@ class UserCard extends StatelessWidget {
     );
   }
 }
-

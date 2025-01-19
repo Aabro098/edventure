@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import '../utils/profile_avatar.dart';
 
 class FriendCard extends StatefulWidget {
-  final User user; 
+  final User user;
   final VoidCallback? onTap;
 
   const FriendCard({
     super.key,
-    required this.user, 
+    required this.user,
     this.onTap,
   });
 
@@ -24,7 +24,7 @@ class _FriendCardState extends State<FriendCard> {
       onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(16.0),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.08),
@@ -38,15 +38,15 @@ class _FriendCardState extends State<FriendCard> {
           leading: InkWell(
             onTap: () {},
             child: ProfileAvatar(
-              image: widget.user.profileImage.isNotEmpty 
+              image: widget.user.profileImage.isNotEmpty
                   ? "$uri/${widget.user.profileImage}"
-                  : '', 
+                  : '',
             ),
           ),
           title: InkWell(
             onTap: () {},
             child: Text(
-              widget.user.name, 
+              widget.user.name,
               style: const TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,

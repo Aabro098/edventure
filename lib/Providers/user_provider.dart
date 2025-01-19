@@ -39,11 +39,13 @@ class UserProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('x-auth-token');
 
-      if (token == null || token.isEmpty) return;
+      if (token == null || token.isEmpty) {
+        throw Exception('No auth token found');
+      }
 
       final response = await http.get(
         Uri.parse('$uri/'),
-        headers: <String, String>{
+        headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': token,
         },
@@ -51,9 +53,12 @@ class UserProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         setUser(response.body);
+      } else {
+        throw Exception('Failed to refresh user: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception(e.toString());
+      print('Error in refreshUser: $e');
+      throw Exception('Failed to refresh user: $e');
     }
   }
 
