@@ -1,22 +1,26 @@
+import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/Widgets/stars.dart';
 import 'package:edventure/constants/colors.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ReviewCard extends StatefulWidget {
+  final String reviewId;
   final String senderId;
   final String description;
   final int rating;
   final String currentUser;
 
   const ReviewCard({
+    super.key,
+    required this.reviewId,
     required this.senderId,
     required this.description,
     required this.rating,
     required this.currentUser,
-    super.key,
   });
 
   @override
@@ -84,7 +88,27 @@ class _ReviewCardState extends State<ReviewCard> {
               trailing: widget.senderId == widget.currentUser
                   ? IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {},
+                      onPressed: () async {
+                        try {
+                          await Provider.of<UserProvider>(context,
+                                  listen: false)
+                              .deleteReview(
+                            reviewId: widget.reviewId,
+                            senderId: widget.senderId,
+                            rating: widget.rating,
+                          );
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Review deleted successfully')),
+                          );
+                        } catch (e) {
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(e.toString())),
+                          );
+                        }
+                      },
                     )
                   : null,
             );

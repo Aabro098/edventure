@@ -1,3 +1,4 @@
+import 'package:edventure/Services/review_services.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,6 @@ class UserProvider extends ChangeNotifier {
         throw Exception('Failed to refresh user: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error in refreshUser: $e');
       throw Exception('Failed to refresh user: $e');
     }
   }
@@ -84,6 +84,32 @@ class UserProvider extends ChangeNotifier {
 
     await refreshUser(context);
     notifyListeners();
+  }
+
+  Future<void> deleteReview({
+    required String reviewId,
+    required String senderId,
+    required int rating,
+  }) async {
+    try {
+      final response = await ReviewService(baseUrl: uri).deleteReview(
+        reviewId: reviewId,
+        userId: _user.id,
+        senderId: senderId,
+        rating: rating,
+      );
+
+      if (response['success']) {
+        _user.review.remove(reviewId);
+        _user.rating -= rating;
+        _user.numberRating -= 1;
+        notifyListeners();
+      } else {
+        throw Exception(response['message']);
+      }
+    } catch (e) {
+      throw Exception('Error deleting review: $e');
+    }
   }
 
   void clearUser() {

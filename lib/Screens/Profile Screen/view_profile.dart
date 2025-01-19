@@ -288,6 +288,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                                           children: [
                                             Expanded(
                                               child: ReviewCard(
+                                                  reviewId: reviews[index].id,
                                                   senderId:
                                                       reviews[index].senderId,
                                                   description: reviews[index]

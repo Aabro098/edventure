@@ -10,8 +10,8 @@ class User {
   String address;
   final String bio;
   final String about;
-  final int rating;
-  final int numberRating;
+  int rating;
+  int numberRating;
   final String education;
   final String type;
   final String username;
