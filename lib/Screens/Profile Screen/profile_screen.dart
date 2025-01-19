@@ -691,6 +691,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     rating: reviews[index].rating,
                                     currentUser: user.id,
                                     reviewId: reviews[index].id,
+                                    profileUser: user.id,
                                   ),
                                 ),
                               ],

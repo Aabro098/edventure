@@ -201,13 +201,12 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                           ],
                         ),
                         isAddReview
-                            ? SizedBox(
-                                height: 200,
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: TextFormField(
+                            ? SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      TextFormField(
                                         controller: _reviewController,
                                         maxLines: null,
                                         keyboardType: TextInputType.multiline,
@@ -225,37 +224,37 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                                               top: 4.0, left: 8.0),
                                         ),
                                       ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: List.generate(5, (index) {
-                                            return IconButton(
-                                              icon: Icon(
-                                                Icons.star,
-                                                color: index < _selectedStars
-                                                    ? Colors.yellow
-                                                    : Colors.grey,
-                                              ),
-                                              onPressed: () =>
-                                                  _handleStarTap(index + 1),
-                                            );
-                                          }),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            _submitReview(
-                                              user.id,
-                                              currentUser.id,
-                                            );
-                                          },
-                                          child: const Icon(Icons.check),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: List.generate(5, (index) {
+                                              return IconButton(
+                                                icon: Icon(
+                                                  Icons.star,
+                                                  color: index < _selectedStars
+                                                      ? Colors.yellow
+                                                      : Colors.grey,
+                                                ),
+                                                onPressed: () =>
+                                                    _handleStarTap(index + 1),
+                                              );
+                                            }),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              _submitReview(
+                                                user.id,
+                                                currentUser.id,
+                                              );
+                                            },
+                                            child: const Icon(Icons.check),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               )
                             : FutureBuilder<List<Review>>(
@@ -294,7 +293,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                                                   description: reviews[index]
                                                       .description,
                                                   rating: reviews[index].rating,
-                                                  currentUser: currentUser.id),
+                                                  currentUser: currentUser.id,
+                                                  profileUser: user.id),
                                             ),
                                           ],
                                         ),

@@ -13,6 +13,7 @@ class ReviewCard extends StatefulWidget {
   final String description;
   final int rating;
   final String currentUser;
+  final String profileUser;
 
   const ReviewCard({
     super.key,
@@ -21,6 +22,7 @@ class ReviewCard extends StatefulWidget {
     required this.description,
     required this.rating,
     required this.currentUser,
+    required this.profileUser,
   });
 
   @override
@@ -60,7 +62,6 @@ class _ReviewCardState extends State<ReviewCard> {
             return const Icon(Icons.error, color: Colors.red);
           } else if (snapshot.hasData) {
             final user = snapshot.data!;
-
             return ListTile(
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
@@ -96,6 +97,7 @@ class _ReviewCardState extends State<ReviewCard> {
                             reviewId: widget.reviewId,
                             senderId: widget.senderId,
                             rating: widget.rating,
+                            profileUser: widget.profileUser,
                           );
                           // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(

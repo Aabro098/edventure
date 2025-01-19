@@ -90,11 +90,12 @@ class UserProvider extends ChangeNotifier {
     required String reviewId,
     required String senderId,
     required int rating,
+    required String profileUser,
   }) async {
     try {
       final response = await ReviewService(baseUrl: uri).deleteReview(
         reviewId: reviewId,
-        userId: _user.id,
+        userId: profileUser,
         senderId: senderId,
         rating: rating,
       );
