@@ -245,55 +245,68 @@ class AuthService with ChangeNotifier{
   }
 
 
-  Future<void> uploadProfileImage(BuildContext context) async {
-    final String uploadUrl = '$uri/api/updateProfile';
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('x-auth-token');
+Future<void> uploadProfileImage(BuildContext context) async {
+  print("Starting upload process");
 
-    if (image == null) {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("No image selected")),
-      );
-      return;
-    }
-    notifyListeners();
-    try {
-      final formData = FormData.fromMap({
-        'profileImage': await MultipartFile.fromFile(
-          image.path,
-          filename: image.name,
-        ),
-      });
+  final String uploadUrl = '$uri/api/updateProfile';
+  final ImagePicker picker = ImagePicker();
+  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString('x-auth-token');
 
-      Dio dio = Dio();
-      dio.options.headers["x-auth-token"] = token ?? ''; 
+  if (image == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("No image selected")),
+    );
+    return;
+  }
 
-      final response = await dio.put(uploadUrl, data: formData);
-      
-      if (response.statusCode == 200) {
+  if (token == null || token.isEmpty) {
+    throw Exception("Authentication token is missing");
+  }
 
-        String newProfileImage = response.data['profileImage'];  
+  try {
+    final formData = FormData.fromMap({
+      'profileImage': await MultipartFile.fromFile(
+        image.path,
+        filename: image.name,
+      ),
+    });
 
-        // ignore: use_build_context_synchronously
-        Provider.of<UserProvider>(context, listen: false).updateProfileImage(newProfileImage);
-        // ignore: use_build_context_synchronously
+    Dio dio = Dio();
+    dio.options.headers["x-auth-token"] = token;
+
+    print("Making API request");
+    final response = await dio.put(uploadUrl, data: formData);
+
+    if (response.statusCode == 200 && response.data != null) {
+      final profileImage = response.data['profileImage'];
+      if (profileImage == null) {
+        throw Exception("Invalid response: 'profileImage' is null");
+      }
+
+      print("Got new profile image URL: $profileImage");
+
+      if (context.mounted) {
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.updateProfileImage(profileImage);
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Profile image uploaded successfully!")),
-        );
-        notifyListeners();
-      } else {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to upload profile image: ${response.data}")),
+          const SnackBar(content: Text("Profile image uploaded successfully!")),
         );
       }
-    } catch (e) {
-      throw Exception(e.toString());
+    } else {
+      print("Non-200 response: ${response.statusCode}");
+      throw Exception("Failed to upload: ${response.data}");
     }
+  } catch (e) {
+    print("Upload error: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Error uploading image: $e")),
+    );
   }
+}
+
 
    Future<void> deleteProfileImage(BuildContext context) async {
     _isDeleting = true;

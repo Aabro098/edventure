@@ -35,17 +35,15 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Remove the AuthService call from here
   Future<void> refreshUser(BuildContext context) async {
     try {
-      // Instead of calling AuthService, update user directly with new data
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('x-auth-token');
       
       if (token == null || token.isEmpty) return;
 
       final response = await http.get(
-        Uri.parse('$uri/'), // Make sure to define uri
+        Uri.parse('$uri/'), 
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': token,
@@ -60,7 +58,6 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  // Rest of your methods remain the same
   void addTeachingAddress(String address) {
     _user.teachingAddress.add(address);
     notifyListeners();
@@ -72,10 +69,12 @@ class UserProvider extends ChangeNotifier {
   }
 
   void updateProfileImage(String newProfileImage) {
+    print("Updating profile image to: $newProfileImage"); // Debug print
     _user.profileImage = newProfileImage;
+    print("Updated user profile image: ${_user.profileImage}"); // Verify update
     notifyListeners();
   }
-
+  
   void clearUser() {
     _user = User(
       id: '',

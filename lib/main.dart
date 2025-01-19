@@ -38,13 +38,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final AuthService authService = AuthService();
   final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
-  // Create a single future to be used by FutureBuilder
   late Future<void> _userDataFuture;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the future once
     _userDataFuture = _initializeUserData(context);
   }
 
