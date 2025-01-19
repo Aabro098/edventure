@@ -332,7 +332,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -360,28 +359,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             Icons.check,
                                             color: Colors.white,
                                             size: 10,
-                                          ),
-                                          Positioned(
-                                            bottom: 0,
-                                            right: 0,
-                                            child: GestureDetector(
-                                              onTap: () {},
-                                              child: const Stack(
-                                                alignment: Alignment.center,
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 10,
-                                                    backgroundColor:
-                                                        Colors.blue,
-                                                  ),
-                                                  Icon(
-                                                    Icons.check,
-                                                    color: Colors.white,
-                                                    size: 12,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
                                           ),
                                         ],
                                       ),

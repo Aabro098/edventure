@@ -7,7 +7,7 @@ class User {
   final String password;
   final String phone;
   String profileImage;
-  final String address;
+  String address;
   final String bio;
   final String about;
   final int rating;
@@ -87,7 +87,7 @@ class User {
       'review': review,
       'socketId': socketId,
       'token': token,
-      'teachingAddress':teachingAddress,
+      'teachingAddress': teachingAddress,
     };
   }
 

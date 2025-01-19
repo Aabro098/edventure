@@ -28,9 +28,12 @@ class AddressSelectionState extends State<AddressSelection> {
   final TextEditingController addressController = TextEditingController();
 
   Future<void> updateAddress() async {
+    if (!mounted) return;
+
     setState(() {
       isLoading = true;
     });
+
     try {
       await AuthService().updateUser(
         context: context,
@@ -38,12 +41,12 @@ class AddressSelectionState extends State<AddressSelection> {
       );
 
       if (mounted) {
-        Consumer<UserProvider>(
-          builder: (context, userProvider, child) {
-            userProvider.refreshUser(context);
-            return const SizedBox.shrink();
-          },
-        );
+        Provider.of<UserProvider>(context, listen: false)
+            .updateUserAddress(addressController.text);
+
+        await Provider.of<UserProvider>(context, listen: false)
+            .refreshUser(context);
+
         setState(() {
           isLoading = false;
         });
@@ -89,7 +92,6 @@ class AddressSelectionState extends State<AddressSelection> {
                 },
               ),
               const SizedBox(height: 16.0),
-
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Select District'),
                 value: selectedDistrict,
@@ -110,9 +112,9 @@ class AddressSelectionState extends State<AddressSelection> {
                 disabledHint: const Text('Select Province first'),
               ),
               const SizedBox(height: 16.0),
-
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Select Municipality'),
+                decoration:
+                    const InputDecoration(labelText: 'Select Municipality'),
                 value: selectedMunicipality,
                 items: municipalityOptions.map((municipality) {
                   return DropdownMenuItem(
@@ -129,7 +131,6 @@ class AddressSelectionState extends State<AddressSelection> {
                 disabledHint: const Text('Select District first'),
               ),
               const SizedBox(height: 16.0),
-
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Ward No'),
                 keyboardType: TextInputType.number,
@@ -148,7 +149,6 @@ class AddressSelectionState extends State<AddressSelection> {
                 },
               ),
               const SizedBox(height: 16.0),
-
               isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : AppElevatedButton(

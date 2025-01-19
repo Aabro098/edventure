@@ -67,6 +67,11 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateUserAddress(String newAddress) {
+    _user.address = newAddress;
+    notifyListeners();
+  }
+
   Future<void> updateProfileImageAndRefresh(
       String newProfileImage, BuildContext context) async {
     _user.profileImage = newProfileImage;
