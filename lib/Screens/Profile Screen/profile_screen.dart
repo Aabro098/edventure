@@ -45,19 +45,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {});
     });
-    
+
     final user = Provider.of<UserProvider>(context, listen: false).user;
     _reviewsFuture = reviewService.fetchReviewsByUserId(user.id);
     aboutController = TextEditingController(text: user.about);
     educationController = TextEditingController(text: user.education);
-    phoneController = TextEditingController(text : user.phone);
+    phoneController = TextEditingController(text: user.phone);
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
   }
 
   Future<void> updatePhone() async {
-    if (!mounted) return;  
-    
+    if (!mounted) return;
+
     setState(() {
       isLoading = true;
     });
@@ -69,12 +69,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
 
       if (mounted) {
-        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        await Provider.of<UserProvider>(context, listen: false)
+            .refreshUser(context);
         setState(() {
           isLoading = false;
         });
       }
-
     } catch (e) {
       if (mounted) {
         showSnackBar(context, e.toString());
@@ -88,24 +88,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-
   Future<void> updateEducation() async {
     setState(() {
-        isLoading = true;
-      });
+      isLoading = true;
+    });
     try {
       await authService.updateUser(
         context: context,
         education: educationController.text,
       );
-      
+
       if (mounted) {
-        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        await Provider.of<UserProvider>(context, listen: false)
+            .refreshUser(context);
         setState(() {
           isLoading = false;
         });
       }
-
     } catch (e) {
       if (mounted) {
         showSnackBar(context, e.toString());
@@ -113,24 +112,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-
   Future<void> updateBio() async {
     setState(() {
-        isLoading = true;
-      });
+      isLoading = true;
+    });
     try {
       await authService.updateUser(
         context: context,
         bio: bioController.text,
       );
-      
+
       if (mounted) {
-        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        await Provider.of<UserProvider>(context, listen: false)
+            .refreshUser(context);
         setState(() {
           isLoading = false;
         });
       }
-
     } catch (e) {
       if (mounted) {
         showSnackBar(context, e.toString());
@@ -138,31 +136,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-
   Future<void> updateAbout() async {
     setState(() {
-          isLoading = true;
+      isLoading = true;
     });
     try {
       await authService.updateUser(
         context: context,
         about: aboutController.text,
       );
-      
+
       if (mounted) {
-        await Provider.of<UserProvider>(context, listen: false).refreshUser(context);
+        await Provider.of<UserProvider>(context, listen: false)
+            .refreshUser(context);
         setState(() {
           isLoading = false;
         });
       }
-
     } catch (e) {
       if (mounted) {
         showSnackBar(context, e.toString());
       }
     }
   }
-
 
   @override
   void dispose() {
@@ -191,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         isLoading = true;
       });
-      
+
       if (mounted) {
         await AuthService().uploadProfileImage(context);
         setState(() {
@@ -215,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final currentContext = context;
-    
+
     try {
       setState(() {
         isLoading = true;
@@ -239,10 +235,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       scaffoldMessenger.showSnackBar(
         const SnackBar(content: Text("Profile image deleted successfully")),
       );
-
     } catch (e) {
       if (!mounted) return;
-      
+
       setState(() {
         isLoading = false;
       });
@@ -253,14 +248,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
 
     return Scaffold(
       body: GestureDetector(
-        onTap: (){
+        onTap: () {
           setState(() {
             _isBio = false;
             _isPhone = false;
@@ -269,91 +263,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
           });
         },
         child: SingleChildScrollView(
-          child: Consumer<UserProvider>(
-            builder: (context,userProvider,_) {
-              return Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color:  Colors.green.shade300,
-                                    width: 5.0,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.3),
-                                      offset: const Offset(0, 4),
-                                      blurRadius: 10,
-                                      spreadRadius: 2,
-                                    ),
-                                  ],
+          child: Consumer<UserProvider>(builder: (context, userProvider, _) {
+            return Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.green.shade300,
+                                  width: 5.0,
                                 ),
-                                child: user.profileImage.isNotEmpty
-                                ? CircleAvatar(
-                                  radius: 80,
-                                  backgroundImage: NetworkImage('$uri/${user.profileImage}'),
-                                )
-                                : const Icon(Icons.person, size: 100),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: const Offset(0, 4),
+                                    blurRadius: 10,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
                               ),
-                              Positioned(
-                                bottom: 0,
-                                right: 4,
-                                child: ClipOval(
-                                  child: GestureDetector(
-                                    onTap: (){
-                                      showModalBottomSheet(context: context, builder: (context)=>bottomSheet());
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(4),
-                                      color: Colors.grey[200],
-                                      child: const Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.black,
-                                        size: 20,
-                                      ),
+                              child: user.profileImage.isNotEmpty
+                                  ? CircleAvatar(
+                                      radius: 80,
+                                      backgroundImage: NetworkImage(
+                                          '$uri/${user.profileImage}'),
+                                    )
+                                  : const Icon(Icons.person, size: 100),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 4,
+                              child: ClipOval(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) => bottomSheet());
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    color: Colors.grey[200],
+                                    child: const Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.black,
+                                      size: 20,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              user.name,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
                               ),
                             ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            user.name,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          const SizedBox(width: 8.0),
-                          Center(
+                        ),
+                        const SizedBox(width: 8.0),
+                        Center(
                             child: user.isVerified
                                 ? Row(
-                                  children: [
-                                    Stack(
+                                    children: [
+                                      Stack(
                                         alignment: Alignment.center,
                                         children: [
                                           const CircleAvatar(
@@ -369,15 +365,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             bottom: 0,
                                             right: 0,
                                             child: GestureDetector(
-                                              onTap: () {
-                                                
-                                              },
+                                              onTap: () {},
                                               child: const Stack(
                                                 alignment: Alignment.center,
                                                 children: [
                                                   CircleAvatar(
                                                     radius: 10,
-                                                    backgroundColor: Colors.blue,
+                                                    backgroundColor:
+                                                        Colors.blue,
                                                   ),
                                                   Icon(
                                                     Icons.check,
@@ -391,15 +386,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ],
                                       ),
                                       const SizedBox(width: 4.0),
-                                      const Text('Verified',
+                                      const Text(
+                                        'Verified',
                                         style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.blue
-                                        ),
+                                            fontSize: 12, color: Colors.blue),
                                       )
-                                  ],
-                                ) 
-                                  : Row(
+                                    ],
+                                  )
+                                : Row(
                                     children: [
                                       const Stack(
                                         alignment: Alignment.center,
@@ -417,158 +411,148 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       const SizedBox(width: 4.0),
                                       GestureDetector(
-                                        onTap: (){
+                                        onTap: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => VerificationScreen()),
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    VerificationScreen()),
                                           );
                                         },
-                                        child: const Text('Verify Now',
+                                        child: const Text(
+                                          'Verify Now',
                                           style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.blue
-                                          ),
+                                              fontSize: 12, color: Colors.blue),
                                         ),
                                       )
                                     ],
-                                  )
-                          ),
-                        ],
-                      ),
+                                  )),
+                      ],
                     ),
-                    !_isBio
+                  ),
+                  !_isBio
                       ? user.bio.isNotEmpty
-                        ? GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              _isBio = true;
-                            });
-                          },
-                          child: Text(
-                            user.bio,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w300,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        )
-                        : TTextButton(
-                          iconData: Icons.person, 
-                          onPressed: (){
-                            setState(() {
-                              _isBio = true;
-                            });
-                          }, 
-                          labelText: 'Edit Bio'
-                        )
+                          ? GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _isBio = true;
+                                });
+                              },
+                              child: Text(
+                                user.bio,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            )
+                          : TTextButton(
+                              iconData: Icons.person,
+                              onPressed: () {
+                                setState(() {
+                                  _isBio = true;
+                                });
+                              },
+                              labelText: 'Edit Bio')
                       : TextField(
                           controller: bioController,
                           decoration: InputDecoration(
-                            hintText: 'What describes you the most...',
-                            hintStyle: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal
-                            ),
-                            prefixIcon: const Icon(Icons.person_outlined),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.check),
-                              onPressed: () {
-                                setState(() {
-                                  _isBio = false;
-                                  updateBio();
-                                });
-                              },
-                            ),
-                            border: InputBorder.none
-                          ),
-                        ),
-                      const SizedBox(height: 5.0),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12,0,0,0),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.email,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              user.email,
-                              style:  const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal
+                              hintText: 'What describes you the most...',
+                              hintStyle: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.normal),
+                              prefixIcon: const Icon(Icons.person_outlined),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.check),
+                                onPressed: () {
+                                  setState(() {
+                                    _isBio = false;
+                                    updateBio();
+                                  });
+                                },
                               ),
-                            ),                      
-                          ],
+                              border: InputBorder.none),
                         ),
-                      ),  
-                      const SizedBox(height: 5.0),
-                        _isPhone
-                            ? TextField(
+                  const SizedBox(height: 5.0),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.email,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          user.email,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.normal),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 5.0),
+                  _isPhone
+                      ? TextField(
                           controller: phoneController,
                           decoration: InputDecoration(
-                            hintText: 'Phone',
-                            hintStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.normal
-                            ),
-                            prefixIcon: const Icon(Icons.phone_android_outlined),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.check),
-                              onPressed: () {
-                                setState(() {
-                                  _isPhone = false;
-                                  updatePhone();
-                                });
-                              },
-                            ),
-                            border: InputBorder.none
-                          ),
+                              hintText: 'Phone',
+                              hintStyle: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.normal),
+                              prefixIcon:
+                                  const Icon(Icons.phone_android_outlined),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.check),
+                                onPressed: () {
+                                  setState(() {
+                                    _isPhone = false;
+                                    updatePhone();
+                                  });
+                                },
+                              ),
+                              border: InputBorder.none),
                         )
-                          : TTextButton(
-                              iconData: Icons.phone_android,
-                              onPressed: _changePhone,
-                              labelText: user.phone.isNotEmpty
-                                  ? user.phone
-                                  : 'Enter Phone',
-                            ),
-                      const SizedBox(height: 5.0),
-                      TTextButton(
-                        iconData: Icons.home,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AddressSelection()),
-                          );
-                        },
-                        labelText: user.address.isNotEmpty
-                          ? user.address
-                          : 'Enter Address',
-                      ),
-                      const SizedBox(height: 5.0),
-                      _isEducation
+                      : TTextButton(
+                          iconData: Icons.phone_android,
+                          onPressed: _changePhone,
+                          labelText: user.phone.isNotEmpty
+                              ? user.phone
+                              : 'Enter Phone',
+                        ),
+                  const SizedBox(height: 5.0),
+                  TTextButton(
+                    iconData: Icons.home,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddressSelection()),
+                      );
+                    },
+                    labelText: user.address.isNotEmpty
+                        ? user.address
+                        : 'Enter Address',
+                  ),
+                  const SizedBox(height: 5.0),
+                  _isEducation
                       ? TextField(
                           controller: educationController,
                           decoration: InputDecoration(
-                            hintText: 'Education',
-                            hintStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.normal
-                            ),
-                            prefixIcon: const Icon(Icons.school),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.check),
-                              onPressed: () {
-                                setState(() {
-                                  _isEducation = false;
-                                  updateEducation();
-                                });
-                              },
-                            ),
-                            border: InputBorder.none
-                          ),
+                              hintText: 'Education',
+                              hintStyle: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.normal),
+                              prefixIcon: const Icon(Icons.school),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.check),
+                                onPressed: () {
+                                  setState(() {
+                                    _isEducation = false;
+                                    updateEducation();
+                                  });
+                                },
+                              ),
+                              border: InputBorder.none),
                         )
                       : TTextButton(
                           iconData: Icons.school,
@@ -577,70 +561,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? user.education
                               : 'Enter Education',
                         ),
-                    const SizedBox(height: 5.0),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Star(
-                                count: (user.numberRating != 0)
-                                    ? ((user.rating / user.numberRating).round())
-                                    : 0,
-                              ),
-                              const SizedBox(width: 5.0),
-                              Text(
-                                (user.numberRating != 0)
-                                    ? (user.rating / user.numberRating)
-                                        .toStringAsFixed(1)
-                                    : '0.0',
-                                style: const TextStyle(fontSize: 20.0),
-                              ),
-                            ],
-                          ),
+                  const SizedBox(height: 5.0),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Star(
+                              count: (user.numberRating != 0)
+                                  ? ((user.rating / user.numberRating).round())
+                                  : 0,
+                            ),
+                            const SizedBox(width: 5.0),
+                            Text(
+                              (user.numberRating != 0)
+                                  ? (user.rating / user.numberRating)
+                                      .toStringAsFixed(1)
+                                  : '0.0',
+                              style: const TextStyle(fontSize: 20.0),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'No of reviews : ${user.numberRating}',
-                            style: const TextStyle(fontSize: 16.0),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Text(
-                        'About',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'No of reviews : ${user.numberRating}',
+                          style: const TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Text(
+                      'About',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    Stack(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          width: double.infinity,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.05),
-                                spreadRadius: 2,
-                                offset: const Offset(1, 1),
-                              ),
-                            ],
-                          ),
-                          child: _isAbout
-                            ? SingleChildScrollView( 
+                  ),
+                  Stack(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        width: double.infinity,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.05),
+                              spreadRadius: 2,
+                              offset: const Offset(1, 1),
+                            ),
+                          ],
+                        ),
+                        child: _isAbout
+                            ? SingleChildScrollView(
                                 child: TextField(
                                   controller: aboutController,
                                   maxLines: null,
@@ -654,11 +638,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     border: InputBorder.none,
                                     alignLabelWithHint: true,
-                                    contentPadding: EdgeInsets.only(top: 4.0, left: 8.0),
+                                    contentPadding:
+                                        EdgeInsets.only(top: 4.0, left: 8.0),
                                   ),
                                 ),
                               )
-                            : SingleChildScrollView( 
+                            : SingleChildScrollView(
                                 child: Text(
                                   user.about.isNotEmpty
                                       ? user.about
@@ -671,110 +656,102 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 ),
                               ),
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: IconButton(
-                            icon: _isAbout
-                                ? const Icon(Icons.check, color: Colors.blue)
-                                : const Icon(Icons.edit, color: Colors.black),
-                            onPressed: () {
-                              setState(() {
-                                if (_isAbout) {
-                                  updateAbout();
-                                }
-                                _isAbout = !_isAbout;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  
-                    const SizedBox(height: 8.0),
-                    Text(
-                      'Reviews',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8.0),                 
-                    FutureBuilder<List<Review>>(
-                      future: _reviewsFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(child: Text('No reviews found.'));
-                        }
-                        final reviews = snapshot.data!;
-                        return ListView.builder(
-                          shrinkWrap: true, 
-                          physics: NeverScrollableScrollPhysics(), 
-                          itemCount: reviews.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: ReviewCard(
-                                      senderId: reviews[index].senderId,
-                                      description: reviews[index].description,
-                                      rating: reviews[index].rating,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
+                      Positioned(
+                        bottom: 10,
+                        right: 10,
+                        child: IconButton(
+                          icon: _isAbout
+                              ? const Icon(Icons.check, color: Colors.blue)
+                              : const Icon(Icons.edit, color: Colors.black),
+                          onPressed: () {
+                            setState(() {
+                              if (_isAbout) {
+                                updateAbout();
+                              }
+                              _isAbout = !_isAbout;
+                            });
                           },
-                        );
-                      },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    'Reviews',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-              );
-            }
-          ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8.0),
+                  FutureBuilder<List<Review>>(
+                    future: _reviewsFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No reviews found.'));
+                      }
+                      final reviews = snapshot.data!;
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: reviews.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: ReviewCard(
+                                    senderId: reviews[index].senderId,
+                                    description: reviews[index].description,
+                                    rating: reviews[index].rating,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            );
+          }),
         ),
       ),
     );
   }
 
-  Widget bottomSheet(){
+  Widget bottomSheet() {
     return Container(
       padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.transparent
-      ),
+      decoration: BoxDecoration(color: Colors.transparent),
       width: MediaQuery.of(context).size.width,
       height: 160,
       child: Card(
         child: Column(
           children: [
             OptionsBottom(
-              text: 'Update Profile Image', 
-              icon: Icons.image, 
-              onTap: updateProfileImage
-            ),
+                text: 'Update Profile Image',
+                icon: Icons.image,
+                onTap: updateProfileImage),
             const SizedBox(height: 20),
             OptionsBottom(
-              text: 'Remove Profile Image', 
-              icon: Icons.delete,
-              color: Colors.red, 
-              onTap: deleteProfileImage
-            ),
+                text: 'Remove Profile Image',
+                icon: Icons.delete,
+                color: Colors.red,
+                onTap: deleteProfileImage),
           ],
         ),
       ),
     );
   }
 }
-
-
