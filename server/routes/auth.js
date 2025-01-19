@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
+const fs = require('fs');
 
 const authRouter = express.Router();
 
@@ -159,8 +160,10 @@ const upload = multer({
 });
 
 
-authRouter.put('/api/updateProfile', auth , upload.single('profileImage'), async (req, res) => {
-    try {      
+authRouter.put('/api/updateProfile', auth, upload.single('profileImage'), async (req, res) => {
+    let oldImagePath = null;
+
+    try {
         if (!req.user) {
             return res.status(401).json({
                 success: false,
@@ -168,39 +171,83 @@ authRouter.put('/api/updateProfile', auth , upload.single('profileImage'), async
             });
         }
 
-        const user = await User.findById(req.user); 
-        console.log('Found user:', user);
-        
+        const user = await User.findById(req.user);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        console.log('Processing update for user:', user._id);
+        console.log('New file received:', req.file);
+        console.log('Current profile image:', user.profileImage);
 
         if (req.file && user.profileImage) {
             try {
-                fs.unlinkSync(user.profileImage); 
+                oldImagePath = path.join(__dirname, '..', user.profileImage);
+                console.log('Attempting to delete old image at:', oldImagePath);
+                
+                const fileExists = await fs.access(oldImagePath)
+                    .then(() => true)
+                    .catch(() => false);
+
+                if (fileExists) {
+                    await fs.unlink(oldImagePath);
+                    console.log('Successfully deleted old image');
+                } else {
+                    console.log('Old image file not found');
+                }
             } catch (error) {
-                console.log('Error deleting old profile image:', error.message);
+                console.error('Error while handling old image:', {
+                    errorMessage: error.message,
+                    errorCode: error.code,
+                    errorPath: error.path,
+                    errorStack: error.stack
+                });
             }
         }
 
         if (req.file) {
-            user.profileImage = req.file.path.replace(/\\/g, '/'); 
+            const normalizedPath = req.file.path.replace(/\\/g, '/');
+        
+            user.profileImage = normalizedPath.split('uploads/')[1] 
+                ? `uploads/${normalizedPath.split('uploads/')[1]}`
+                : normalizedPath;
+            
+            console.log('New profile image path:', user.profileImage);
         }
 
         await user.save();
 
+        const profileImageUrl = req.file 
+            ? `${req.protocol}://${req.get('host')}/${user.profileImage}`
+            : null;
+
         res.status(200).json({
             success: true,
             message: 'Profile image updated successfully',
-            profileImageUrl: `${req.protocol}://${req.get('host')}/${user.profileImage}`
+            profileImageUrl
         });
+
     } catch (error) {
-        console.error('Error updating profile image:', error.message);
+        console.error('Profile update error:', {
+            errorMessage: error.message,
+            errorStack: error.stack,
+            userId: req.user
+        });
+
         if (req.file) {
             try {
-                fs.unlinkSync(req.file.path);
+                await fs.unlink(req.file.path);
+                console.log('Cleaned up new file after error');
             } catch (unlinkError) {
-                console.error('Error cleaning up file:', unlinkError);
+                console.error('Error cleaning up new file:', unlinkError);
             }
         }
-        res.status(500).json({ success: false, message: 'Error updating profile image', error: error.message });
+
+        res.status(500).json({
+            success: false,
+            message: 'Error updating profile image',
+            error: error.message
+        });
     }
 });
 
@@ -222,41 +269,46 @@ authRouter.delete('/deleteProfileImage', auth, async (req, res) => {
             });
         }
 
-        if (user.profileImage) {
-            const imagePath = user.profileImage;
+        if (!user.profileImage) {
+            return res.status(400).json({
+                success: false,
+                message: 'No profile image to delete',
+            });
+        }
+
+        try {
+            const imagePath = path.join(__dirname, '..', user.profileImage);
             console.log('Attempting to delete profile image:', imagePath);
 
             if (fs.existsSync(imagePath)) {
-                try {
-                    fs.unlinkSync(imagePath); 
-                    console.log('Profile image deleted successfully from server.');
-                } catch (error) {
-                    console.error('Error deleting profile image from server:', error.message);
-                    return res.status(500).json({
-                        success: false,
-                        message: 'Error deleting profile image from server',
-                    });
-                }
+                fs.unlinkSync(imagePath);
+                console.log('Profile image deleted successfully from server.');
             } else {
                 console.warn('Profile image file does not exist on server:', imagePath);
             }
 
-            user.profileImage = undefined; 
+            user.profileImage = null;
             await user.save();
 
             return res.status(200).json({
                 success: true,
                 message: 'Profile image deleted successfully',
             });
-        } else {
-            return res.status(400).json({
-                success: false,
-                message: 'No profile image to delete',
+        } catch (fileError) {
+            console.error('Error deleting file:', fileError);
+            
+            user.profileImage = null;
+            await user.save();
+            
+            return res.status(200).json({
+                success: true,
+                message: 'Profile image reference removed, but file deletion may have failed',
+                warning: fileError.message
             });
         }
     } catch (error) {
-        console.error('Error deleting profile image:', error.message);
-        res.status(500).json({
+        console.error('Error in delete profile image route:', error);
+        return res.status(500).json({
             success: false,
             message: 'Error deleting profile image',
             error: error.message,
