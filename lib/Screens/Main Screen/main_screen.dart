@@ -326,7 +326,7 @@ class _MainScreenState extends State<MainScreen>
                 ],
               )
             : const PreferredSize(
-                preferredSize: Size(double.infinity, 20),
+                preferredSize: Size(double.infinity, 24),
                 child: Text('Verified Users Near You'),
               ),
       ),

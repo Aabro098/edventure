@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/constants/variable.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:edventure/Screens/Messenger/individual_chat.dart';
 import 'package:edventure/Screens/Messenger/select_contact.dart';
@@ -17,7 +18,8 @@ class RecentChatScreen extends StatefulWidget {
   State<RecentChatScreen> createState() => _RecentChatScreenState();
 }
 
-class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBindingObserver {
+class _RecentChatScreenState extends State<RecentChatScreen>
+    with WidgetsBindingObserver {
   List<UserWithMessage> recentChats = [];
   bool isLoading = true;
   bool hasError = false;
@@ -92,7 +94,7 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
       });
 
       socket.connect();
-      
+
       socket.onConnect((_) {
         socket.emit('/test', currentUserId);
       });
@@ -108,7 +110,7 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
           _updateChatList(
             data['targetId'],
             data['message'],
-            isLastMessageFromMe: true, 
+            isLastMessageFromMe: true,
           );
         }
       });
@@ -119,7 +121,6 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
           socket.connect();
         }
       });
-
     } catch (e) {
       throw Exception('Failed to initialize socket: $e');
     }
@@ -135,7 +136,7 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
             _updateChatList(
               chat.user.id,
               "New message",
-              isLastMessageFromMe: true, 
+              isLastMessageFromMe: true,
             );
             loadInitialChats();
           },
@@ -148,12 +149,11 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
     }
   }
 
-  void _updateChatList(String otherUserId, String message , {required bool isLastMessageFromMe}) async {
-    
+  void _updateChatList(String otherUserId, String message,
+      {required bool isLastMessageFromMe}) async {
     try {
-      int existingIndex = recentChats.indexWhere(
-        (chat) => chat.user.id == otherUserId
-      );
+      int existingIndex =
+          recentChats.indexWhere((chat) => chat.user.id == otherUserId);
 
       if (existingIndex != -1) {
         if (mounted) {
@@ -162,10 +162,10 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
             UserWithMessage updatedChat = UserWithMessage(
               user: existingChat.user,
               lastMessage: message,
-              lastMessageTime: DateTime.now(), 
+              lastMessageTime: DateTime.now(),
               isLastMessageFromMe: isLastMessageFromMe,
             );
-            
+
             recentChats.removeAt(existingIndex);
             recentChats.insert(0, updatedChat);
           });
@@ -174,12 +174,14 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
         final user = await ApiService().fetchUserData(otherUserId);
         if (mounted) {
           setState(() {
-            recentChats.insert(0, UserWithMessage(
-              user: user,
-              lastMessage: message,
-              lastMessageTime: DateTime.now(), 
-              isLastMessageFromMe: isLastMessageFromMe,
-            ));
+            recentChats.insert(
+                0,
+                UserWithMessage(
+                  user: user,
+                  lastMessage: message,
+                  lastMessageTime: DateTime.now(),
+                  isLastMessageFromMe: isLastMessageFromMe,
+                ));
           });
         }
       }
@@ -210,7 +212,11 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
             await loadInitialChats();
           }
         },
-        child: const Icon(Icons.chat_sharp),
+        child: const Icon(
+          Bootstrap.messenger,
+          size: 26,
+          color: Colors.purpleAccent,
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: loadInitialChats,
@@ -231,11 +237,10 @@ class _RecentChatScreenState extends State<RecentChatScreen> with WidgetsBinding
                 return InkWell(
                   onTap: () => navigateToChat(chat),
                   child: CustomCard(
-                    user: chat.user,
-                    lastMessage: chat.lastMessage,
-                    lastMessageTime: chat.lastMessageTime,
-                    isLastMessageFromMe : chat.isLastMessageFromMe
-                  ),
+                      user: chat.user,
+                      lastMessage: chat.lastMessage,
+                      lastMessageTime: chat.lastMessageTime,
+                      isLastMessageFromMe: chat.isLastMessageFromMe),
                 );
               },
             );

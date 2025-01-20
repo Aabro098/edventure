@@ -22,7 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           Text(
             pagename[selectedIndex],
             style: const TextStyle(
-              letterSpacing: 1.2,
+              letterSpacing: 1.3,
               fontWeight: FontWeight.bold,
               fontSize: 24,
               color: Colors.black45,

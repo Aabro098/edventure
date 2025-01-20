@@ -1,6 +1,7 @@
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import '../utils/profile_avatar.dart';
 
 class FriendCard extends StatefulWidget {
@@ -66,8 +67,9 @@ class _FriendCardState extends State<FriendCard> {
           trailing: InkWell(
             onTap: () {},
             child: Icon(
-              Icons.message,
+              Bootstrap.messenger,
               size: 24.0,
+              color: Colors.deepPurpleAccent,
             ),
           ),
           contentPadding: const EdgeInsets.all(8.0),

@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class TAppColor {
-  static Color secondaryColor = Colors.cyan.shade600;
+  static Color secondaryColor = Colors.blue.shade200;
   static Color backgroundColor = Colors.lightBlue.shade600;
-  static final List<Color> colors =[
+  static final List<Color> colors = [
     Colors.blue.shade50,
     Colors.green.shade50,
     Colors.purple.shade50,
@@ -15,7 +15,7 @@ class TAppColor {
   ];
   static Color getRandomColor() {
     final random = Random();
-    int index = random.nextInt(colors.length); 
-    return colors[index]; 
+    int index = random.nextInt(colors.length);
+    return colors[index];
   }
 }
