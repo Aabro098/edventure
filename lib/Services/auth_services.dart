@@ -158,7 +158,7 @@ class AuthService with ChangeNotifier {
       }
     } catch (e) {
       if (context.mounted) {
-        showSnackBar(context, e.toString());
+        throw Exception(e.toString());
       }
     }
   }

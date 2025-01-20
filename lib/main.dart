@@ -4,6 +4,7 @@ import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Navigation/nav_screen.dart';
 import 'package:edventure/constants/colors.dart';
 import 'package:edventure/routes.dart';
+import 'package:edventure/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,32 +38,27 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AuthService authService = AuthService();
-  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   late Future<void> _userDataFuture;
 
   @override
   void initState() {
     super.initState();
-    _userDataFuture = _initializeUserData(context);
+    _userDataFuture = _initializeUserData();
   }
 
-  Future<void> _initializeUserData(BuildContext context) async {
+  Future<void> _initializeUserData() async {
     try {
+      if (!mounted) return;
       await authService.getUserData(context: context);
     } catch (e) {
-      if (mounted) {
-        _scaffoldKey.currentState?.showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
-      }
-      rethrow;
+      if (!mounted) return;
+      return Future.error(e.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scaffoldMessengerKey: _scaffoldKey,
       title: 'EdVenture',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -72,26 +68,47 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       onGenerateRoute: generateRoute,
-      home: SafeArea(
-        child: Scaffold(
+      builder: (context, child) => Material(
+        child: child!,
+      ),
+      home: Builder(
+        builder: (context) => Scaffold(
           body: Consumer<UserProvider>(
             builder: (context, userProvider, _) {
               return FutureBuilder(
-                // Use the stored future instead of creating a new one
                 future: _userDataFuture,
-                builder: (context, snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
 
                   if (snapshot.hasError) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      showSnackBar(context, snapshot.error.toString());
+                    });
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.error_outline, size: 48),
+                          const Icon(Icons.error_outline,
+                              size: 48, color: Colors.red),
                           const SizedBox(height: 16),
-                          Text('Error: ${snapshot.error}'),
+                          Text(
+                            'Error: ${snapshot.error}',
+                            style: const TextStyle(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _userDataFuture = _initializeUserData();
+                              });
+                            },
+                            child: const Text('Retry'),
+                          ),
                         ],
                       ),
                     );

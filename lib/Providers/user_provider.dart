@@ -63,8 +63,10 @@ class UserProvider extends ChangeNotifier {
   }
 
   void addTeachingAddress(String address) {
-    _user.teachingAddress.add(address);
-    notifyListeners();
+    if (address.isNotEmpty && !_user.teachingAddress.contains(address)) {
+      _user.teachingAddress.add(address);
+      notifyListeners();
+    }
   }
 
   void deleteTeachingAddress(String address) {
@@ -73,8 +75,10 @@ class UserProvider extends ChangeNotifier {
   }
 
   void updateUserAddress(String newAddress) {
-    _user.address = newAddress;
-    notifyListeners();
+    if (newAddress != _user.address) {
+      _user.address = newAddress;
+      notifyListeners();
+    }
   }
 
   Future<void> updateProfileImageAndRefresh(

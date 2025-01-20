@@ -283,12 +283,39 @@ class _MainScreenState extends State<MainScreen>
       appBar: AppBar(
         elevation: 1.0,
         toolbarHeight: 3,
+        backgroundColor: Colors.blue.shade200,
         bottom: user.isVerified
             ? TabBar(
                 controller: _tabController,
+                indicatorColor: Colors.blue,
+                indicatorWeight: 2,
                 tabs: const [
-                  Tab(text: 'Unverified'),
-                  Tab(text: 'Verified'),
+                  Tab(
+                      child: Row(
+                    children: [
+                      SizedBox(width: 4.0),
+                      Text(
+                        'Unverified',
+                      ),
+                      Icon(
+                        Icons.verified_rounded,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  )),
+                  Tab(
+                      child: Row(
+                    children: [
+                      SizedBox(width: 4.0),
+                      Text(
+                        'Verified',
+                      ),
+                      Icon(
+                        Icons.verified_rounded,
+                        color: Colors.blue,
+                      ),
+                    ],
+                  )),
                 ],
               )
             : const PreferredSize(

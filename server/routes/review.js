@@ -8,20 +8,18 @@ const router = express.Router();
 
 router.post('/submit_review', async (req, res) => {
     console.log('Request body:', req.body);
-    const { _id, senderId, description, rating } = req.body;  // Changed from id to _id
+    const { _id, senderId, description, rating } = req.body;
   
     if (!_id || !senderId || !description || !rating) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
   
     try {
-      // Ensure _id and senderId are ObjectIds using mongoose.Types.ObjectId()
-      const userId = mongoose.Types.ObjectId(_id);  // Changed from id to _id
-      const senderIdObj = mongoose.Types.ObjectId(senderId);
+      const userId = new mongoose.Types.ObjectId(_id);
+      const senderIdObj = new mongoose.Types.ObjectId(senderId);
       
-      // Create and save the new review
       const newReview = new Review({
-        id: userId,  // Keep as id since that's how it's defined in your schema
+        id: userId,
         senderId: senderIdObj,
         description,
         rating,
@@ -29,18 +27,18 @@ router.post('/submit_review', async (req, res) => {
   
       await newReview.save();
   
-      // Find the user being reviewed
       const user = await User.findById(userId);
   
       if (!user) {
         return res.status(404).json({ success: false, message: 'User not found' });
       }
   
-      // Rest of your code remains the same...
       user.review.push(newReview._id);
-      user.rating = (user.rating * user.numberRating + rating) / (user.numberRating + 1);
-      user.numberRating += 1;
-  
+      const totalRating = user.rating + rating;
+      const numberRatingCount = user.numberRating + 1;
+
+      user.rating = totalRating;
+      user.numberRating = numberRatingCount;
       await user.save();
   
       res.status(200).json({ success: true, message: 'Review submitted successfully' });
@@ -53,6 +51,7 @@ router.post('/submit_review', async (req, res) => {
 
 router.delete('/delete_review', async (req, res) => {
     const { reviewId, userId, senderId, rating } = req.body;
+    console.log('Request body:', req.body);
 
     if (!reviewId || !userId || !senderId || !rating) {
         return res.status(400).json({ success: false, message: 'All fields are required' });

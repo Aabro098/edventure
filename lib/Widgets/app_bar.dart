@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -8,17 +7,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
     required this.pagename,
-    required this.selectedIndex, 
-
+    required this.selectedIndex,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      height: 60.0, 
+      height: 60.0,
       decoration: BoxDecoration(
-        color: Colors.cyan.shade50, 
+        color: Colors.blue.shade200,
         border: Border(
           bottom: BorderSide(
             color: Colors.black12,
@@ -44,5 +42,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(60.0); 
+  Size get preferredSize => const Size.fromHeight(60.0);
 }
