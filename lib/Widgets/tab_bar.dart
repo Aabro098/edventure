@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
@@ -23,15 +22,15 @@ class CustomCurvedNavigationBar extends StatelessWidget {
         int index = icons.indexOf(icon);
         return Icon(
           icon,
-          color: index == selectedIndex ? Colors.cyan.shade800 : Colors.black54,
-          size: 28.0, 
+          color: index == selectedIndex ? Colors.blue : Colors.black54,
+          size: 28.0,
         );
       }).toList(),
-      color: Colors.cyan.shade100,
+      color: Colors.blue.shade100,
       backgroundColor: Colors.transparent,
-      buttonBackgroundColor: Colors.transparent, 
+      buttonBackgroundColor: Colors.transparent,
       animationCurve: Curves.easeInOut,
-      animationDuration: const Duration(milliseconds: 200), 
+      animationDuration: const Duration(milliseconds: 200),
       onTap: onTap,
     );
   }

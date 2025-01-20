@@ -24,7 +24,7 @@ class UserDetails extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color:Colors.green.shade300 ,
+                  color: Colors.green.shade300,
                   width: 5.0,
                 ),
                 boxShadow: [
@@ -37,11 +37,12 @@ class UserDetails extends StatelessWidget {
                 ],
               ),
               child: user.profileImage.isNotEmpty
-              ? CircleAvatar(
-                radius: 90,
-                backgroundImage: NetworkImage('$uri/${user.profileImage}'),
-              )
-              : const Icon(Icons.person, size: 100),
+                  ? CircleAvatar(
+                      radius: 80,
+                      backgroundImage:
+                          NetworkImage('$uri/${user.profileImage}'),
+                    )
+                  : const Icon(Icons.person, size: 180),
             ),
             const SizedBox(height: 12.0),
             SingleChildScrollView(
@@ -67,76 +68,78 @@ class UserDetails extends StatelessWidget {
                   ),
                   const SizedBox(width: 8.0),
                   Center(
-                    child: user.isVerified
-                        ? const Row(
-                          children: [
-                            Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 8,
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                  Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 10,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 4.0),
-                              Text('Verified',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.blue
+                      child: user.isVerified
+                          ? const Row(
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 8,
+                                      backgroundColor: Colors.blue,
+                                    ),
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 10,
+                                    ),
+                                  ],
                                 ),
-                              )
-                          ],
-                        ) 
+                                SizedBox(width: 4.0),
+                                Text(
+                                  'Verified',
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.blue),
+                                )
+                              ],
+                            )
                           : const Row(
-                            children: [
-                              Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 8,
-                                    backgroundColor: Colors.grey,
-                                  ),
-                                  Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 10,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                  ),
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 8,
+                                      backgroundColor: Colors.grey,
+                                    ),
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 10,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
                 ],
               ),
             ),
-            const SizedBox(width: 10,),
+            const SizedBox(
+              width: 10,
+            ),
             Align(
               alignment: Alignment.center,
               child: user.bio.isNotEmpty
-                ? Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    user.bio,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                )
-                : const SizedBox.shrink(),
-            ), 
+                  ? Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        user.bio,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
             const SizedBox(height: 8.0),
-            ProfileList(text : user.email, icons: Icons.email),  
+            ProfileList(text: user.email, icons: Icons.email),
             const SizedBox(height: 8.0),
-            ProfileList(text: user.phone.isNotEmpty? user.phone : 'Not Available', icons: Icons.phone),
+            ProfileList(
+                text: user.phone.isNotEmpty ? user.phone : 'Not Available',
+                icons: Icons.phone),
             const SizedBox(height: 8.0),
             Row(
               children: [
@@ -148,17 +151,19 @@ class UserDetails extends StatelessWidget {
                 Expanded(
                   child: Text(
                     user.address.isNotEmpty ? user.address : 'Not Available',
-                    style:  const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal
-                    ),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.normal),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 8.0),
-            ProfileList(text: user.education.isNotEmpty ? user.education : 'Not Available', icons: Icons.school),
+            ProfileList(
+                text: user.education.isNotEmpty
+                    ? user.education
+                    : 'Not Available',
+                icons: Icons.school),
             const SizedBox(height: 20.0),
             Column(
               children: [
@@ -174,10 +179,9 @@ class UserDetails extends StatelessWidget {
                     const SizedBox(width: 5.0),
                     Text(
                       (user.numberRating != 0)
-                          ? (user.rating / user.numberRating)
-                              .toStringAsFixed(1)
+                          ? (user.rating / user.numberRating).toStringAsFixed(1)
                           : '0.0',
-                          textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(fontSize: 20.0),
                     ),
                   ],
@@ -201,7 +205,7 @@ class ProfileList extends StatelessWidget {
   final IconData icons;
   const ProfileList({
     super.key,
-    required this.text, 
+    required this.text,
     required this.icons,
   });
 
@@ -216,10 +220,7 @@ class ProfileList extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           text,
-          style:  const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.normal
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
         ),
       ],
     );

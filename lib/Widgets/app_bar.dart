@@ -15,22 +15,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       height: 60.0,
-      decoration: BoxDecoration(
-        color: Colors.blue.shade200,
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.black12,
-            width: 2.0,
-          ),
-        ),
-      ),
+      decoration: BoxDecoration(color: Colors.blue.shade200, border: null),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             pagename[selectedIndex],
             style: const TextStyle(
-              letterSpacing: 0.9,
+              letterSpacing: 1.2,
               fontWeight: FontWeight.bold,
               fontSize: 24,
               color: Colors.black45,

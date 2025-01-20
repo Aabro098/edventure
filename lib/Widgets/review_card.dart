@@ -65,8 +65,18 @@ class _ReviewCardState extends State<ReviewCard> {
             return ListTile(
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
-                backgroundImage: NetworkImage('$uri/${user.profileImage}'),
                 radius: 25,
+                backgroundImage: user.profileImage.isNotEmpty
+                    ? NetworkImage('$uri/${user.profileImage}')
+                    : null,
+                backgroundColor: Colors.grey.shade400,
+                child: user.profileImage.isEmpty
+                    ? const Icon(
+                        Icons.person,
+                        size: 30,
+                        color: Colors.white,
+                      )
+                    : null,
               ),
               title: Text(
                 user.name,

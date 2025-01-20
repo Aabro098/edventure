@@ -281,22 +281,28 @@ class _MainScreenState extends State<MainScreen>
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 1.0,
+        elevation: 0.0,
         toolbarHeight: 3,
         backgroundColor: Colors.blue.shade200,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(16))),
         bottom: user.isVerified
             ? TabBar(
                 controller: _tabController,
                 indicatorColor: Colors.blue,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.black87,
                 indicatorWeight: 2,
+                dividerColor: Colors.transparent,
                 tabs: const [
                   Tab(
                       child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(width: 4.0),
                       Text(
                         'Unverified',
                       ),
+                      SizedBox(width: 12.0),
                       Icon(
                         Icons.verified_rounded,
                         color: Colors.grey,
@@ -305,11 +311,12 @@ class _MainScreenState extends State<MainScreen>
                   )),
                   Tab(
                       child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(width: 4.0),
                       Text(
                         'Verified',
                       ),
+                      SizedBox(width: 12.0),
                       Icon(
                         Icons.verified_rounded,
                         color: Colors.blue,
@@ -324,7 +331,7 @@ class _MainScreenState extends State<MainScreen>
               ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             Row(
@@ -332,11 +339,10 @@ class _MainScreenState extends State<MainScreen>
               children: [
                 IconButton(
                   onPressed: () => _showOptionsDialog(context),
-                  icon: const Icon(Icons.more_vert),
+                  icon: const Icon(Icons.more_horiz),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
             Expanded(
               child: user.teachingAddress.isEmpty
                   ? Center(

@@ -299,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       backgroundImage: NetworkImage(
                                           '$uri/${user.profileImage}'),
                                     )
-                                  : const Icon(Icons.person, size: 100),
+                                  : const Icon(Icons.person, size: 180),
                             ),
                             Positioned(
                               bottom: 0,
