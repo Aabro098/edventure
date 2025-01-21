@@ -58,7 +58,7 @@ class _MoreOptionListState extends State<MoreOptionList> {
                 style: TextStyle(
                     color: Colors.red,
                     fontSize: 20,
-                    fontWeight: FontWeight.w300),
+                    fontWeight: FontWeight.w500),
               ),
             ),
           )

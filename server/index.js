@@ -17,7 +17,7 @@ const messageRouter = require("./routes/messages");
 const addressRouter = require("./routes/teaching");
 
 const PORT = process.env.PORT || 3000;
-const HOST = '192.168.1.7';
+const HOST = '192.168.1.11';
 
 const app = express();
 app.use('/uploads', express.static('uploads'));
