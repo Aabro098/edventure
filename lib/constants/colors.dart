@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class TAppColor {
-  static Color secondaryColor = Colors.blue.shade200;
+  static Color secondaryColor = Colors.blue.shade400;
   static Color backgroundColor = Colors.lightBlue.shade600;
   static final List<Color> colors = [
     Colors.blue.shade50,

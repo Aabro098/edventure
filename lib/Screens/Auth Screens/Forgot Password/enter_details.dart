@@ -1,6 +1,8 @@
 import 'package:edventure/Screens/Auth%20Screens/Forgot%20Password/otp_screen.dart';
+import 'package:edventure/Services/password_services.dart';
 import 'package:edventure/Widgets/app_form.dart';
 import 'package:edventure/utils/elevated_button.dart';
+import 'package:edventure/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 
 class EnterDetails extends StatefulWidget {
@@ -13,6 +15,42 @@ class EnterDetails extends StatefulWidget {
 class _EnterDetailsState extends State<EnterDetails> {
   final TextEditingController emailController = TextEditingController();
   final emailKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+  final PasswordResetService resetService = PasswordResetService();
+
+  Future<void> _handlePasswordReset() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    if (emailKey.currentState!.validate()) {
+      try {
+        final response =
+            await resetService.sendResetCode(emailController.text.trim());
+
+        if (response['success']) {
+          Navigator.push(
+              // ignore: use_build_context_synchronously
+              context,
+              MaterialPageRoute(
+                  builder: (context) => OtpScreen(
+                        email: emailController.text.trim(),
+                      )));
+          emailController.clear();
+        } else {
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, response['message']);
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,10 +65,7 @@ class _EnterDetailsState extends State<EnterDetails> {
               children: [
                 Text(
                   'Reset Password',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 26
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -38,34 +73,26 @@ class _EnterDetailsState extends State<EnterDetails> {
                 Text(
                   'Enter the email associated with your account\nand we will send an email with code\nto reset your password',
                   style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16,
-                    color: Colors.black54
-                  ),
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      color: Colors.black54),
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
                 AppForm(
-                  controller: emailController, 
+                  controller: emailController,
                   hintText: 'Email',
                 ),
                 const SizedBox(
                   height: 10.0,
                 ),
-                AppElevatedButton(
-                  text: 'Next', 
-                  onTap: (){
-                    if (emailKey.currentState!.validate()){
-                      Navigator.push(
-                        context, 
-                        MaterialPageRoute(builder: (context)=>OtpScreen())
-                      );
-                      emailController.clear();
-                    }
-                  }, 
-                  color: Colors.blueAccent.shade400
-                )
+                _isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : AppElevatedButton(
+                        text: 'Next',
+                        onTap: _handlePasswordReset,
+                        color: Colors.blue.shade400)
               ],
             ),
           ),
@@ -73,8 +100,9 @@ class _EnterDetailsState extends State<EnterDetails> {
       ),
     );
   }
+
   @override
-  void dispose(){
+  void dispose() {
     emailController.dispose();
     super.dispose();
   }
@@ -95,28 +123,23 @@ class FirstAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           children: [
             IconButton(
-              onPressed: (){
-                Navigator.pop(context);
-              }, 
-              icon: Icon(
-                Icons.arrow_back
-              )
-            ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back)),
             const SizedBox(
               width: 4.0,
             ),
             Text(
               'Back',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             )
           ],
         ),
       ),
     );
   }
+
   @override
-  Size get preferredSize => const Size.fromHeight(60.0); 
+  Size get preferredSize => const Size.fromHeight(60.0);
 }

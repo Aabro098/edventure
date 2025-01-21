@@ -20,9 +20,12 @@ function generate4DigitCode() {
 }
 
 router.post('/send-reset-code', async (req, res) => {
+    console.log('=== Reset Code Request Received ===');
+    console.log('Request body:', req.body);
+    console.log('Headers:', req.headers);
     try {
         const { email } = req.body;
-        
+        console.log('This is called');
         if (!email) {
             return res.status(400).json({ 
                 success: false, 
