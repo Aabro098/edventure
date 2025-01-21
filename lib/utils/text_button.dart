@@ -5,7 +5,7 @@ class TTextButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String labelText;
   final Color? color;
-  
+
   const TTextButton({
     super.key,
     required this.iconData,
@@ -18,15 +18,10 @@ class TTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton.icon(
       onPressed: onPressed,
-      icon: Icon(
-        iconData,
-        color: color ?? Colors.grey.shade800
-      ),
+      icon: Icon(iconData, color: color ?? Colors.grey.shade800),
       label: Text(
-        labelText ,
-        style: TextStyle(
-          color: color ?? Colors.black
-        ),
+        labelText,
+        style: TextStyle(color: color ?? Colors.black),
       ),
     );
   }

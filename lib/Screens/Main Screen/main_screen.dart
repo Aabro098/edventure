@@ -280,109 +280,112 @@ class _MainScreenState extends State<MainScreen>
     final user = userProvider.user;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        toolbarHeight: 3,
-        backgroundColor: Colors.blue.shade200,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(16))),
-        bottom: user.isVerified
-            ? TabBar(
-                controller: _tabController,
-                indicatorColor: Colors.blue,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.black87,
-                indicatorWeight: 2,
-                dividerColor: Colors.transparent,
-                tabs: const [
-                  Tab(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Unverified',
-                      ),
-                      SizedBox(width: 12.0),
-                      Icon(
-                        Icons.verified_rounded,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  )),
-                  Tab(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Verified',
-                      ),
-                      SizedBox(width: 12.0),
-                      Icon(
-                        Icons.verified_rounded,
-                        color: Colors.blue,
-                      ),
-                    ],
-                  )),
-                ],
-              )
-            : const PreferredSize(
-                preferredSize: Size(double.infinity, 24),
-                child: Text('Verified Users Near You'),
-              ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () => _showOptionsDialog(context),
-                  icon: const Icon(Icons.more_horiz),
-                ),
-              ],
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            elevation: 0.0,
+            toolbarHeight: 3,
+            backgroundColor: Colors.blue.shade200,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
             ),
-            Expanded(
-              child: user.teachingAddress.isEmpty
-                  ? Center(
-                      child: Text('No address available'),
-                    )
-                  : user.isVerified
-                      ? TabBarView(
-                          controller: _tabController,
-                          children: [
-                            _unverified(),
-                            _verified(),
-                          ],
-                        )
-                      : SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+            bottom: user.isVerified
+                ? PreferredSize(
+                    preferredSize: const Size.fromHeight(kTextTabBarHeight),
+                    child: TabBar(
+                      controller: _tabController,
+                      indicatorColor: Colors.blue,
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.black87,
+                      indicatorWeight: 2,
+                      dividerColor: Colors.transparent,
+                      tabs: const [
+                        Tab(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              if (verifiedUsers.isNotEmpty)
-                                ...verifiedUsers.map((user) {
-                                  return FriendCard(
-                                    user: user,
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              ProfileViewScreen(
-                                                  userId: user.id),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }),
+                              Text('Unverified'),
+                              SizedBox(width: 12.0),
+                              Icon(
+                                Icons.verified_rounded,
+                                color: Colors.grey,
+                              ),
                             ],
                           ),
                         ),
+                        Tab(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Verified'),
+                              SizedBox(width: 12.0),
+                              Icon(
+                                Icons.verified_rounded,
+                                color: Colors.blue,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : const PreferredSize(
+                    preferredSize: Size(double.infinity, 24),
+                    child: Text('Verified Users Near You'),
+                  ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(8.0),
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () => _showOptionsDialog(context),
+                    icon: const Icon(Icons.more_horiz),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+          if (user.teachingAddress.isEmpty)
+            const SliverFillRemaining(
+              child: Center(
+                child: Text('No address available'),
+              ),
+            )
+          else if (user.isVerified)
+            SliverFillRemaining(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _unverified(),
+                  _verified(),
+                ],
+              ),
+            )
+          else
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final user = verifiedUsers[index];
+                  return FriendCard(
+                    user: user,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProfileViewScreen(userId: user.id),
+                        ),
+                      );
+                    },
+                  );
+                },
+                childCount: verifiedUsers.length,
+              ),
+            ),
+        ],
       ),
     );
   }

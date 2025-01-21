@@ -212,10 +212,10 @@ class _RecentChatScreenState extends State<RecentChatScreen>
             await loadInitialChats();
           }
         },
-        child: const Icon(
+        child: Icon(
           Bootstrap.messenger,
           size: 26,
-          color: Colors.purpleAccent,
+          color: Colors.teal.shade300,
         ),
       ),
       body: RefreshIndicator(

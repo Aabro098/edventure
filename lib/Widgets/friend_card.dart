@@ -1,3 +1,5 @@
+import 'package:edventure/Screens/Messenger/individual_chat.dart';
+import 'package:edventure/Screens/Profile%20Screen/view_profile.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +27,10 @@ class _FriendCardState extends State<FriendCard> {
       onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(20.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
+              color: Colors.grey.withOpacity(0.07),
               spreadRadius: 3,
               blurRadius: 7,
               offset: const Offset(0, 2),
@@ -37,7 +39,13 @@ class _FriendCardState extends State<FriendCard> {
         ),
         child: ListTile(
           leading: InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ProfileViewScreen(userId: widget.user.id)));
+            },
             child: ProfileAvatar(
               image: widget.user.profileImage.isNotEmpty
                   ? "$uri/${widget.user.profileImage}"
@@ -65,11 +73,16 @@ class _FriendCardState extends State<FriendCard> {
             overflow: TextOverflow.clip,
           ),
           trailing: InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => IndividualChat(user: widget.user)));
+            },
             child: Icon(
               Bootstrap.messenger,
               size: 24.0,
-              color: Colors.deepPurpleAccent,
+              color: Colors.teal.shade300,
             ),
           ),
           contentPadding: const EdgeInsets.all(8.0),
