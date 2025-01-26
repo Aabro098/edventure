@@ -340,6 +340,10 @@ class _MainScreenState extends State<MainScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  IconButton(onPressed: () {}, icon: Icon(Icons.filter)),
+                  const SizedBox(
+                    width: 8,
+                  ),
                   IconButton(
                     onPressed: () => _showOptionsDialog(context),
                     icon: const Icon(Icons.more_horiz),

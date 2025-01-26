@@ -215,7 +215,7 @@ class _RecentChatScreenState extends State<RecentChatScreen>
         child: Icon(
           Bootstrap.messenger,
           size: 26,
-          color: Colors.teal.shade300,
+          color: Colors.deepPurple,
         ),
       ),
       body: RefreshIndicator(

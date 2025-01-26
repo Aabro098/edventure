@@ -5,6 +5,7 @@ import 'package:edventure/Screens/verification_screen.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Services/review_services.dart';
 import 'package:edventure/Widgets/options_bottomsheet.dart';
+import 'package:edventure/constants/colors.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/review.dart';
 import 'package:edventure/utils/snackbar.dart';
@@ -299,7 +300,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       backgroundImage: NetworkImage(
                                           '$uri/${user.profileImage}'),
                                     )
-                                  : const Icon(Icons.person, size: 180),
+                                  : Icon(Icons.person,
+                                      size: 160, color: Colors.grey[300]),
                             ),
                             Positioned(
                               bottom: 0,
@@ -653,6 +655,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 8.0),
+                  user.isVerified
+                      ? Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                          margin: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border:
+                                Border.all(color: TAppColor.getRandomColor()),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Flutter',
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.w300),
+                              ),
+                            ],
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                  const SizedBox(height: 8.0),
+                  user.isVerified
+                      ? TTextButton(
+                          iconData: Icons.edit,
+                          onPressed: () {},
+                          labelText: 'Add Skills')
+                      : SizedBox.shrink(),
                   const SizedBox(height: 8.0),
                   Text(
                     'Reviews',

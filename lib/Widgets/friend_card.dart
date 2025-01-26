@@ -82,7 +82,7 @@ class _FriendCardState extends State<FriendCard> {
             child: Icon(
               Bootstrap.messenger,
               size: 24.0,
-              color: Colors.teal.shade300,
+              color: Colors.teal,
             ),
           ),
           contentPadding: const EdgeInsets.all(8.0),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class AppElevatedButton extends StatelessWidget {
@@ -17,20 +16,14 @@ class AppElevatedButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8)
-        ),
-        minimumSize: const Size(double.infinity ,  28),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        minimumSize: const Size(double.infinity, 28),
         backgroundColor: color,
         foregroundColor: Colors.white,
-      ), 
-      child: Text(text , 
-        style: const TextStyle(
-          color: Colors.white , 
-          fontWeight: FontWeight.w200, 
-          fontSize: 20
-        )
       ),
+      child: Text(text,
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w400, fontSize: 20)),
     );
   }
 }

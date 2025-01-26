@@ -42,7 +42,7 @@ class UserDetails extends StatelessWidget {
                       backgroundImage:
                           NetworkImage('$uri/${user.profileImage}'),
                     )
-                  : const Icon(Icons.person, size: 180),
+                  : const Icon(Icons.person, size: 160),
             ),
             const SizedBox(height: 12.0),
             SingleChildScrollView(
