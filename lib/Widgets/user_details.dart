@@ -42,7 +42,11 @@ class UserDetails extends StatelessWidget {
                       backgroundImage:
                           NetworkImage('$uri/${user.profileImage}'),
                     )
-                  : const Icon(Icons.person, size: 160),
+                  : Icon(
+                      Icons.person,
+                      size: 160,
+                      color: Colors.grey[300],
+                    ),
             ),
             const SizedBox(height: 12.0),
             SingleChildScrollView(
@@ -167,24 +171,26 @@ class UserDetails extends StatelessWidget {
             const SizedBox(height: 20.0),
             Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Star(
-                      count: (user.numberRating != 0)
-                          ? ((user.rating / user.numberRating).round())
-                          : 0,
-                    ),
-                    const SizedBox(width: 5.0),
-                    Text(
-                      (user.numberRating != 0)
-                          ? (user.rating / user.numberRating).toStringAsFixed(1)
-                          : '0.0',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 20.0),
-                    ),
-                  ],
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Star(
+                        count: (user.numberRating != 0)
+                            ? ((user.rating / user.numberRating).round())
+                            : 0,
+                      ),
+                      const SizedBox(width: 5.0),
+                      Text(
+                        (user.numberRating != 0)
+                            ? (user.rating / user.numberRating)
+                                .toStringAsFixed(1)
+                            : '0.0',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 20.0),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 5.0),
                 Text(

@@ -541,49 +541,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               : 'Enter Education',
                         ),
                   const SizedBox(height: 5.0),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Star(
-                              count: (user.numberRating != 0)
-                                  ? ((user.rating / user.numberRating).round())
-                                  : 0,
-                            ),
-                            const SizedBox(width: 5.0),
-                            Text(
-                              (user.numberRating != 0)
-                                  ? (user.rating / user.numberRating)
-                                      .toStringAsFixed(1)
-                                  : '0.0',
-                              style: const TextStyle(fontSize: 20.0),
-                            ),
-                          ],
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Star(
+                                count: (user.numberRating != 0)
+                                    ? ((user.rating / user.numberRating)
+                                        .round())
+                                    : 0,
+                              ),
+                              const SizedBox(width: 5.0),
+                              Text(
+                                (user.numberRating != 0)
+                                    ? (user.rating / user.numberRating)
+                                        .toStringAsFixed(1)
+                                    : '0.0',
+                                style: const TextStyle(fontSize: 20.0),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'No of reviews : ${user.numberRating}',
-                          style: const TextStyle(fontSize: 16.0),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'No of reviews : ${user.numberRating}',
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.grey[200],
                   ),
                   const Padding(
                     padding: EdgeInsets.all(5.0),
-                    child: Text(
-                      'About',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
+                    child: Center(
+                      child: Text(
+                        'About',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
                   Stack(
@@ -656,6 +664,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   const SizedBox(height: 8.0),
+                  const Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Center(
+                      child: Text(
+                        'Skills',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                   user.isVerified
                       ? Container(
                           padding:
@@ -668,11 +690,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 'Flutter',
                                 style: TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.w300),
+                                    fontSize: 18, fontWeight: FontWeight.w300),
                               ),
                             ],
                           ),
@@ -680,20 +703,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       : SizedBox.shrink(),
                   const SizedBox(height: 8.0),
                   user.isVerified
-                      ? TTextButton(
-                          iconData: Icons.edit,
-                          onPressed: () {},
-                          labelText: 'Add Skills')
+                      ? Center(
+                          child: TTextButton(
+                              iconData: Icons.edit,
+                              onPressed: () {},
+                              labelText: 'Add Skills'),
+                        )
                       : SizedBox.shrink(),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    'Reviews',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
+                  Divider(
+                    color: Colors.grey[200],
+                  ),
+                  Center(
+                    child: Text(
+                      'Reviews',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8.0),
                   FutureBuilder<List<Review>>(

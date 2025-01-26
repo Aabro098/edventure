@@ -340,7 +340,7 @@ class _MainScreenState extends State<MainScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(onPressed: () {}, icon: Icon(Icons.filter)),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.filter_list)),
                   const SizedBox(
                     width: 8,
                   ),

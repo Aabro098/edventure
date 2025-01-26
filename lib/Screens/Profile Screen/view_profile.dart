@@ -5,6 +5,7 @@ import 'package:edventure/Services/review_services.dart';
 import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/Widgets/review_card.dart';
 import 'package:edventure/Widgets/user_details.dart';
+import 'package:edventure/constants/colors.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/review.dart';
 import 'package:edventure/utils/elevated_button.dart';
@@ -135,6 +136,9 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                             ],
                           ),
                         ),
+                        Divider(
+                          color: Colors.grey[200],
+                        ),
                         const Padding(
                           padding: EdgeInsets.all(5.0),
                           child: Text(
@@ -173,6 +177,48 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                               ),
                             ),
                           ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Center(
+                            child: Text(
+                              'Skills',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        user.isVerified
+                            ? Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 5),
+                                margin: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                      color: TAppColor.getRandomColor()),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Flutter',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : SizedBox.shrink(),
+                        Divider(
+                          color: Colors.grey[200],
                         ),
                         Row(
                           children: [

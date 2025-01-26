@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ProfileAvatar extends StatelessWidget {
-  final String? image; 
+  final String? image;
 
   const ProfileAvatar({
     super.key,
@@ -12,15 +12,14 @@ class ProfileAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 20,
-      backgroundColor: Colors.grey[300], 
-      backgroundImage: image != null && image!.isNotEmpty
-          ? NetworkImage(image!)
-          : null,
-      child: image == null || image!.isEmpty
+      backgroundColor: Colors.grey[300],
+      backgroundImage:
+          image != null && image!.isNotEmpty ? NetworkImage(image!) : null,
+      child: (image == null || image!.isEmpty)
           ? Icon(
               Icons.person,
-              size: 20,
-              color: Colors.grey[300],
+              size: 24,
+              color: Colors.grey[400],
             )
           : null,
     );

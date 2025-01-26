@@ -97,6 +97,15 @@ const userSchema = mongoose.Schema({
         type: [String],
         default: []
     },
+    skills: {
+        type: [String],
+        validate: {
+        validator: function (arr) {
+            return arr.every((str) => str.length <= 20); 
+        },
+        message: 'Must be 20 characters or less.',
+        },
+    },
 });
 
 userSchema.pre('save', async function (next) {
