@@ -15,7 +15,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       height: 60.0,
-      decoration: BoxDecoration(color: Colors.blue.shade200, border: null),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.blue.shade400,
+            Colors.blue.shade300,
+            Colors.blue.shade200,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -25,7 +35,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               letterSpacing: 1.3,
               fontWeight: FontWeight.bold,
               fontSize: 24,
-              color: Colors.black45,
+              color: Colors.white,
             ),
           ),
         ],

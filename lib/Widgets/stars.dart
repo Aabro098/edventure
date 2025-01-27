@@ -14,9 +14,9 @@ class Star extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: List.generate(
         count.toInt(),
-        (index) => const Icon(
+        (index) => Icon(
           Icons.star,
-          color: Colors.yellow,
+          color: Colors.orangeAccent.shade400,
           size: 20,
         ),
       ),

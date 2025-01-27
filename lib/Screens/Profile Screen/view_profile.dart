@@ -281,7 +281,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                                                 icon: Icon(
                                                   Icons.star,
                                                   color: index < _selectedStars
-                                                      ? Colors.yellow
+                                                      ? Colors
+                                                          .orangeAccent.shade400
                                                       : Colors.grey,
                                                 ),
                                                 onPressed: () =>
