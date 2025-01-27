@@ -1,6 +1,7 @@
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Widgets/app_bar.dart';
 import 'package:edventure/constants/variable.dart';
+import 'package:edventure/models/user.dart';
 import 'package:edventure/utils/friend_card.dart';
 import 'package:edventure/utils/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +24,9 @@ class _FriendScreenState extends State<FriendScreen> {
   bool isLoading = true;
 
   @override
-  void initState() {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     final user = Provider.of<UserProvider>(context).user.id;
-    super.initState();
     fetchContacts(user);
   }
 
@@ -36,8 +37,12 @@ class _FriendScreenState extends State<FriendScreen> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+
         setState(() {
-          contacts = data['contacts'];
+          contacts = (data['contacts'] as List)
+              .map((contactData) => User.fromMap(contactData))
+              .toList();
+
           isLoading = false;
         });
       } else {
@@ -61,40 +66,40 @@ class _FriendScreenState extends State<FriendScreen> {
             ? Center(child: CircularProgressIndicator())
             : CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(
-                    child: Text(
-                      'Recent Contacts',
-                      style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold),
+                  SliverPadding(
+                    padding: const EdgeInsets.all(12.0),
+                    sliver: SliverToBoxAdapter(
+                      child: Text(
+                        'Recent Contacts',
+                        style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                   contacts.isEmpty
                       ? SliverToBoxAdapter(
                           child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'No contacts found',
-                                style:
-                                    TextStyle(fontSize: 16, color: Colors.grey),
-                              ),
+                            child: Text(
+                              'No contacts found',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.grey),
                             ),
                           ),
                         )
-                      : SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              final contact = contacts[index];
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: FriendCard(
+                      : SliverPadding(
+                          padding: EdgeInsets.all(12),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, index) {
+                                final contact = contacts[index];
+                                return FriendCard(
                                   user: contact,
-                                ),
-                              );
-                            },
-                            childCount: contacts.length,
+                                );
+                              },
+                              childCount: contacts.length,
+                            ),
                           ),
                         ),
                 ],

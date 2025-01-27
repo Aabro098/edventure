@@ -1,15 +1,26 @@
+import 'package:edventure/Screens/Mini%20Screens/about_screen.dart';
 import 'package:edventure/Screens/Auth%20Screens/Forgot%20Password/reset_password.dart';
-import 'package:edventure/Screens/Friends/friend_screen.dart';
+import 'package:edventure/Screens/Mini%20Screens/feedback_screen.dart';
+import 'package:edventure/Screens/Mini%20Screens/friend_screen.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Widgets/options.dart';
+import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class MoreOptionList extends StatefulWidget {
   final List<List> moreOptionList = const [
     [Icons.group, Colors.grey, 'Contacts', FriendScreen()],
     [Icons.school, Colors.grey, 'Institution'],
+    [Bootstrap.person, Colors.grey, 'Change Name'],
     [Icons.edit, Colors.grey, 'Change Password', ChangePassword()],
-    [Icons.settings_outlined, Colors.grey, 'Settings'],
+    [
+      Icons.help_center_outlined,
+      Colors.grey,
+      'Give Feedback',
+      FeedbackScreen()
+    ],
+    [AntDesign.group_outline, Colors.grey, 'About', AboutScreen()],
   ];
 
   const MoreOptionList({
@@ -49,17 +60,13 @@ class _MoreOptionListState extends State<MoreOptionList> {
                 }),
           ),
           Center(
-            child: GestureDetector(
-              onTap: () async {
-                await authService.logout(context);
+            child: TTextButton(
+              iconData: AntDesign.close_circle_outline,
+              onPressed: () {
+                authService.logout(context);
               },
-              child: Text(
-                'Logout',
-                style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500),
-              ),
+              labelText: 'Logout',
+              color: Colors.red,
             ),
           )
         ],

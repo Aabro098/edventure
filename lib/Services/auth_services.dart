@@ -92,6 +92,7 @@ class AuthService with ChangeNotifier {
     required String email,
     required String password,
   }) async {
+    final navigator = Navigator.of(context);
     try {
       http.Response res = await http.post(
         Uri.parse('$uri/api/signin'),
@@ -109,11 +110,8 @@ class AuthService with ChangeNotifier {
           // ignore: use_build_context_synchronously
           Provider.of<UserProvider>(context, listen: false).setUser(res.body);
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
-          Navigator.pushNamedAndRemoveUntil(
-              // ignore: use_build_context_synchronously
-              context,
-              NavScreen.routeName,
-              (route) => false);
+          navigator.pushNamedAndRemoveUntil(
+              NavScreen.routeName, (route) => false);
         },
       );
     } catch (e) {
@@ -220,19 +218,23 @@ class AuthService with ChangeNotifier {
   Future<void> logout(BuildContext context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.remove('token');
+
+      await prefs.remove('x-auth-token');
 
       // ignore: use_build_context_synchronously
       Provider.of<UserProvider>(context, listen: false).clearUser();
 
-      Navigator.pushNamedAndRemoveUntil(
-        // ignore: use_build_context_synchronously
-        context,
-        AuthScreen.routeName,
-        (route) => false,
-      );
+      if (context.mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AuthScreen.routeName,
+          (route) => false,
+        );
+      }
     } catch (e) {
-      throw Exception(e.toString());
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 

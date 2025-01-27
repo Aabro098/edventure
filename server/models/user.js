@@ -109,17 +109,12 @@ const userSchema = mongoose.Schema({
     contacts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        validate: {
-            validator: function(value) {
-                return value.length <= 30; 
-            },
-            message: 'You can have a maximum of 30 contacts.'
-        }
+        default:[]
     }],
     gender: {
         type: String,
-        enum: ['Male', 'Female', 'Others', 'Not to Say'],
-        required: true,
+        enum: ['Male', 'Female', 'Others', 'Not to Say','None'],
+        default:'None'
     },
 });
 

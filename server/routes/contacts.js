@@ -36,6 +36,7 @@ router.post('/updateContacts', async (req, res) => {
 
 
 router.get('/getContacts/:userId', async (req, res) => {
+    console.log('Received contact update request:', req.body);
     const { userId } = req.params;
 
     try {

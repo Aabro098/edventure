@@ -5,7 +5,7 @@ class Options extends StatelessWidget {
   final IconData icon;
   final Color color;
   final String label;
-  
+
   const Options({
     super.key,
     this.onTap,
@@ -18,11 +18,10 @@ class Options extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(
-        icon,        
-        color: color, 
+        icon,
+        color: color,
       ),
       title: Text(label),
-      trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
     );
   }
