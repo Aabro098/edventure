@@ -201,7 +201,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                      color: TAppColor.getRandomColor()),
+                                      color: TAppColor.getRandomColor(),
+                                      width: 2.0),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,

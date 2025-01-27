@@ -685,8 +685,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           margin: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16),
-                            border:
-                                Border.all(color: TAppColor.getRandomColor()),
+                            border: Border.all(
+                                color: TAppColor.getRandomColor(), width: 2.0),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,

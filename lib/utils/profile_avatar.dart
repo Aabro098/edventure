@@ -12,14 +12,14 @@ class ProfileAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 20,
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey[500],
       backgroundImage:
           image != null && image!.isNotEmpty ? NetworkImage(image!) : null,
       child: (image == null || image!.isEmpty)
           ? Icon(
               Icons.person,
               size: 24,
-              color: Colors.grey[400],
+              color: Colors.white,
             )
           : null,
     );
