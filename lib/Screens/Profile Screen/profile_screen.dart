@@ -2,15 +2,19 @@ import 'dart:async';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Address/address_selection.dart';
 import 'package:edventure/Screens/verification_screen.dart';
+import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/Services/review_services.dart';
+import 'package:edventure/Widgets/app_form.dart';
 import 'package:edventure/Widgets/options_bottomsheet.dart';
 import 'package:edventure/constants/colors.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/review.dart';
+import 'package:edventure/utils/elevated_button.dart';
 import 'package:edventure/utils/snackbar.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
 import '../../utils/review_card.dart';
 import '../../Widgets/stars.dart';
@@ -32,6 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late bool isAvailable;
   bool isLoading = false;
   final reviewService = ReviewService(baseUrl: uri);
+  final ApiService apiService = ApiService();
 
   late TextEditingController aboutController;
   late TextEditingController educationController;
@@ -39,6 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late TextEditingController emailController;
   late TextEditingController bioController;
   late Future<List<Review>> _reviewsFuture;
+  late TextEditingController skillController;
 
   @override
   void initState() {
@@ -54,6 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     phoneController = TextEditingController(text: user.phone);
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
+    skillController = TextEditingController();
   }
 
   Future<void> updatePhone() async {
@@ -168,6 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     phoneController.dispose();
     emailController.dispose();
     bioController.dispose();
+    skillController.dispose();
     super.dispose();
   }
 
@@ -252,6 +260,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
+    Future<void> addSkill(String skill) async {
+      await apiService.addSkill(user.id, skill, context).then((_) {
+        setState(() {
+          user.skills.add(skill);
+        });
+      }).catchError((error) {
+        // ignore: use_build_context_synchronously
+        showSnackBar(context, error.toString());
+      });
+    }
+
+    Future<void> deleteSkill(String skill) async {
+      apiService.deleteSkill(user.id, skill, context).then((_) {
+        setState(() {
+          user.skills.remove(skill);
+        });
+      }).catchError((error) {
+        // ignore: use_build_context_synchronously
+        showSnackBar(context, error.toString());
+      });
+    }
 
     return Scaffold(
       body: GestureDetector(
@@ -300,7 +329,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       backgroundImage: NetworkImage(
                                           '$uri/${user.profileImage}'),
                                     )
-                                  : Icon(Icons.person,
+                                  : Icon(Bootstrap.person,
                                       size: 160, color: Colors.grey[300]),
                             ),
                             Positioned(
@@ -463,8 +492,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.email,
+                        Icon(
+                          AntDesign.mail_outline,
+                          color: Colors.grey[400],
                           size: 24,
                         ),
                         const SizedBox(width: 8),
@@ -484,8 +514,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               hintText: 'Phone',
                               hintStyle: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.normal),
-                              prefixIcon:
-                                  const Icon(Icons.phone_android_outlined),
+                              prefixIcon: const Icon(Bootstrap.phone),
                               suffixIcon: IconButton(
                                 icon: const Icon(Icons.check),
                                 onPressed: () {
@@ -655,7 +684,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: IconButton(
                           icon: _isAbout
                               ? const Icon(Icons.check, color: Colors.blue)
-                              : const Icon(Icons.edit, color: Colors.black),
+                              : const Icon(AntDesign.edit_outline,
+                                  color: Colors.black38),
                           onPressed: () {
                             setState(() {
                               if (_isAbout) {
@@ -683,30 +713,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  user.isVerified
+                  user.isVerified && user.skills.isNotEmpty
                       ? Center(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 5),
-                            margin: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                  color: TAppColor.getRandomColor(),
-                                  width: 4.0),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Flutter',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w300),
-                                ),
-                              ],
-                            ),
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: user.skills
+                                .map((skill) => Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                            color: TAppColor.getRandomColor()),
+                                      ),
+                                      child: IntrinsicWidth(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              skill,
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 2),
+                                            IconButton(
+                                              icon: const Icon(Icons.close),
+                                              color: Colors.red,
+                                              iconSize: 16,
+                                              padding: EdgeInsets.zero,
+                                              constraints:
+                                                  const BoxConstraints(),
+                                              onPressed: () =>
+                                                  deleteSkill(skill),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ))
+                                .toList(),
                           ),
                         )
                       : SizedBox.shrink(),
@@ -714,9 +762,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   user.isVerified
                       ? Center(
                           child: TTextButton(
-                              iconData: Icons.edit,
-                              onPressed: () {},
-                              labelText: 'Add Skills'),
+                              iconData: AntDesign.edit_outline,
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Add New Skill'),
+                                        content: AppForm(
+                                            controller: skillController,
+                                            hintText: 'e.g. Science'),
+                                        actions: [
+                                          AppElevatedButton(
+                                            text: 'Add Skill',
+                                            color: Colors.green.shade300,
+                                            onTap: () {
+                                              final newskill =
+                                                  skillController.text;
+
+                                              if (newskill.isNotEmpty) {
+                                                addSkill(newskill);
+                                                Navigator.pop(context);
+                                              } else {
+                                                showSnackBar(context,
+                                                    'Skill cannot be empty');
+                                                Navigator.pop(context);
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    });
+                              },
+                              labelText: 'Add Skills',
+                              color: Colors.blue.shade400),
                         )
                       : SizedBox.shrink(),
                   Divider(

@@ -179,42 +179,56 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                           ),
                         ),
                         const SizedBox(height: 8.0),
-                        const Padding(
-                          padding: EdgeInsets.all(5.0),
-                          child: Center(
-                            child: Text(
-                              'Skills',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
                         user.isVerified
-                            ? Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 5),
-                                margin: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                      color: TAppColor.getRandomColor(),
-                                      width: 2.0),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Flutter',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w300),
+                            ? const Padding(
+                                padding: EdgeInsets.all(5.0),
+                                child: Center(
+                                  child: Text(
+                                    'Skills',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            : SizedBox.shrink(),
+                        user.isVerified && user.skills.isNotEmpty
+                            ? Center(
+                                child: Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: 6,
+                                  runSpacing: 6,
+                                  children: user.skills
+                                      .map((skill) => Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 5),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              border: Border.all(
+                                                  color: TAppColor
+                                                      .getRandomColor()),
+                                            ),
+                                            child: IntrinsicWidth(
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    skill,
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
                                 ),
                               )
                             : SizedBox.shrink(),

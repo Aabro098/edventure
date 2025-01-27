@@ -18,11 +18,11 @@ class TTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton.icon(
       onPressed: onPressed,
-      icon: Icon(iconData, color: color ?? Colors.grey.shade800),
       label: Text(
         labelText,
         style: TextStyle(color: color ?? Colors.black),
       ),
+      icon: Icon(iconData, color: color ?? Colors.grey[400]),
     );
   }
 }

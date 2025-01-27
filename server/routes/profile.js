@@ -54,4 +54,63 @@ router.get('/users', async (req, res) => {
 });
 
 
+router.post('/add/skills', async (req, res) => {
+  const { userId, skill } = req.body;
+
+  if (!skill || skill.length > 20) {
+    return res.status(400).send('Skill must be 20 characters or less.');
+  }
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send('User not found.');
+    }
+
+    if (!user.skills.includes(skill)) {
+      user.skills.push(skill);
+      await user.save();
+      res.status(200).send('Skill added successfully.');
+    } else {
+      res.status(400).send('Skill already exists.');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error.');
+  }
+});
+
+
+router.delete('/delete/skills', async (req, res) => {
+  const { userId, skill } = req.body;
+
+  if (!skill || skill.length > 20) {
+    return res.status(400).send('Skill must be 20 characters or less.');
+  }
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send('User not found.');
+    }
+
+    const skillIndex = user.skills.indexOf(skill);
+
+    if (skillIndex === -1) {
+      return res.status(400).send('Skill not found.');
+    }
+
+    user.skills.splice(skillIndex, 1);
+    await user.save();
+
+    res.status(200).send('Skill removed successfully.');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error.');
+  }
+});
+
+
 module.exports = router;

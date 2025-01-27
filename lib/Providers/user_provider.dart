@@ -7,26 +7,26 @@ import 'package:http/http.dart' as http;
 
 class UserProvider extends ChangeNotifier {
   User _user = User(
-    id: '',
-    name: '',
-    email: '',
-    password: '',
-    phone: '',
-    profileImage: '',
-    address: '',
-    bio: '',
-    about: '',
-    rating: 0,
-    numberRating: 0,
-    education: '',
-    type: '',
-    username: '',
-    token: '',
-    isVerified: false,
-    review: [],
-    socketId: '',
-    teachingAddress: [],
-  );
+      id: '',
+      name: '',
+      email: '',
+      password: '',
+      phone: '',
+      profileImage: '',
+      address: '',
+      bio: '',
+      about: '',
+      rating: 0,
+      numberRating: 0,
+      education: '',
+      type: '',
+      username: '',
+      token: '',
+      isVerified: false,
+      review: [],
+      socketId: '',
+      teachingAddress: [],
+      skills: []);
 
   User get user => _user;
 
@@ -119,26 +119,26 @@ class UserProvider extends ChangeNotifier {
 
   void clearUser() {
     _user = User(
-      id: '',
-      name: '',
-      email: '',
-      password: '',
-      phone: '',
-      profileImage: '',
-      address: '',
-      bio: '',
-      about: '',
-      rating: 0,
-      numberRating: 0,
-      education: '',
-      type: '',
-      username: '',
-      token: '',
-      isVerified: false,
-      review: [],
-      socketId: '',
-      teachingAddress: [],
-    );
+        id: '',
+        name: '',
+        email: '',
+        password: '',
+        phone: '',
+        profileImage: '',
+        address: '',
+        bio: '',
+        about: '',
+        rating: 0,
+        numberRating: 0,
+        education: '',
+        type: '',
+        username: '',
+        token: '',
+        isVerified: false,
+        review: [],
+        socketId: '',
+        teachingAddress: [],
+        skills: []);
     notifyListeners();
   }
 }
