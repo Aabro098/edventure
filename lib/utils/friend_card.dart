@@ -25,67 +25,71 @@ class _FriendCardState extends State<FriendCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.07),
-              spreadRadius: 3,
-              blurRadius: 7,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: ListTile(
-          leading: InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProfileViewScreen(userId: widget.user.id)));
-            },
-            child: ProfileAvatar(
-              image: widget.user.profileImage.isNotEmpty
-                  ? "$uri/${widget.user.profileImage}"
-                  : '',
-            ),
-          ),
-          title: InkWell(
-            onTap: () {},
-            child: Text(
-              widget.user.name,
-              style: const TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.07),
+                spreadRadius: 3,
+                blurRadius: 7,
+                offset: const Offset(0, 2),
               ),
-              overflow: TextOverflow.ellipsis,
-            ),
+            ],
           ),
-          subtitle: Text(
-            widget.user.bio,
-            style: const TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.normal,
-              fontStyle: FontStyle.italic,
+          child: ListTile(
+            leading: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ProfileViewScreen(userId: widget.user.id)));
+              },
+              child: ProfileAvatar(
+                image: widget.user.profileImage.isNotEmpty
+                    ? "$uri/${widget.user.profileImage}"
+                    : '',
+              ),
             ),
-            overflow: TextOverflow.clip,
-          ),
-          trailing: InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => IndividualChat(user: widget.user)));
-            },
-            child: Icon(
-              Bootstrap.messenger,
-              size: 24.0,
-              color: Colors.deepPurpleAccent,
+            title: InkWell(
+              onTap: () {},
+              child: Text(
+                widget.user.name,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
+            subtitle: Text(
+              widget.user.bio,
+              style: const TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.normal,
+                fontStyle: FontStyle.italic,
+              ),
+              overflow: TextOverflow.clip,
+            ),
+            trailing: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            IndividualChat(user: widget.user)));
+              },
+              child: Icon(
+                Bootstrap.messenger,
+                size: 24.0,
+                color: Colors.deepPurpleAccent,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(8.0),
           ),
-          contentPadding: const EdgeInsets.all(8.0),
         ),
       ),
     );

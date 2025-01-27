@@ -64,107 +64,111 @@ class AddressSelectionState extends State<AddressSelection> {
         title: const Text('Add Address'),
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Select Province'),
-                value: selectedProvince,
-                items: provincesAndDistricts.keys.map((province) {
-                  return DropdownMenuItem(
-                    value: province,
-                    child: Text(province),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedProvince = value;
-                    selectedDistrict = null;
-                    selectedMunicipality = null;
-                    districtOptions = provincesAndDistricts[value!]!;
-                    municipalityOptions = [];
-                  });
-                },
-              ),
-              const SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Select District'),
-                value: selectedDistrict,
-                items: districtOptions.map((district) {
-                  return DropdownMenuItem(
-                    value: district,
-                    child: Text(district),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedDistrict = value;
-                    selectedMunicipality = null;
-                    municipalityOptions = districtsAndMunicipalities[value!]!;
-                  });
-                },
-                isExpanded: true,
-                disabledHint: const Text('Select Province first'),
-              ),
-              const SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration:
-                    const InputDecoration(labelText: 'Select Municipality'),
-                value: selectedMunicipality,
-                items: municipalityOptions.map((municipality) {
-                  return DropdownMenuItem(
-                    value: municipality,
-                    child: Text(municipality),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedMunicipality = value;
-                  });
-                },
-                isExpanded: true,
-                disabledHint: const Text('Select District first'),
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Ward No'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter ward number';
-                  }
-                  final ward = int.tryParse(value);
-                  if (ward == null || ward < 1 || ward > 32) {
-                    return 'Ward number must be between 1 and 32';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  wardNumber = int.tryParse(value!);
-                },
-              ),
-              const SizedBox(height: 16.0),
-              isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : AppElevatedButton(
-                      text: 'Save',
-                      color: Colors.green.shade400,
-                      onTap: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          final address =
-                              '$selectedProvince, $selectedDistrict, $selectedMunicipality - $wardNumber';
-                          addressController.text = address;
-                          updateAddress();
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-            ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DropdownButtonFormField<String>(
+                  decoration:
+                      const InputDecoration(labelText: 'Select Province'),
+                  value: selectedProvince,
+                  items: provincesAndDistricts.keys.map((province) {
+                    return DropdownMenuItem(
+                      value: province,
+                      child: Text(province),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedProvince = value;
+                      selectedDistrict = null;
+                      selectedMunicipality = null;
+                      districtOptions = provincesAndDistricts[value!]!;
+                      municipalityOptions = [];
+                    });
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                DropdownButtonFormField<String>(
+                  decoration:
+                      const InputDecoration(labelText: 'Select District'),
+                  value: selectedDistrict,
+                  items: districtOptions.map((district) {
+                    return DropdownMenuItem(
+                      value: district,
+                      child: Text(district),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDistrict = value;
+                      selectedMunicipality = null;
+                      municipalityOptions = districtsAndMunicipalities[value!]!;
+                    });
+                  },
+                  isExpanded: true,
+                  disabledHint: const Text('Select Province first'),
+                ),
+                const SizedBox(height: 16.0),
+                DropdownButtonFormField<String>(
+                  decoration:
+                      const InputDecoration(labelText: 'Select Municipality'),
+                  value: selectedMunicipality,
+                  items: municipalityOptions.map((municipality) {
+                    return DropdownMenuItem(
+                      value: municipality,
+                      child: Text(municipality),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedMunicipality = value;
+                    });
+                  },
+                  isExpanded: true,
+                  disabledHint: const Text('Select District first'),
+                ),
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Ward No'),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter ward number';
+                    }
+                    final ward = int.tryParse(value);
+                    if (ward == null || ward < 1 || ward > 32) {
+                      return 'Ward number must be between 1 and 32';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    wardNumber = int.tryParse(value!);
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : AppElevatedButton(
+                        text: 'Save',
+                        color: Colors.green.shade400,
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            final address =
+                                '$selectedProvince, $selectedDistrict, $selectedMunicipality - $wardNumber';
+                            addressController.text = address;
+                            updateAddress();
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+              ],
+            ),
           ),
         ),
       ),
