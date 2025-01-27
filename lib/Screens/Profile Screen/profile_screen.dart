@@ -311,7 +311,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   onTap: () {
                                     showModalBottomSheet(
                                         context: context,
-                                        builder: (context) => bottomSheet());
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20)),
+                                        ),
+                                        builder: (context) =>
+                                            bottomSheet(context));
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(4),
@@ -771,27 +776,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget bottomSheet() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.transparent),
-      width: MediaQuery.of(context).size.width,
-      height: 160,
-      child: Card(
-        child: Column(
-          children: [
-            OptionsBottom(
-                text: 'Update Profile Image',
-                icon: Icons.image,
-                onTap: updateProfileImage),
-            const SizedBox(height: 20),
-            OptionsBottom(
-                text: 'Remove Profile Image',
-                icon: Icons.delete,
-                color: Colors.red,
-                onTap: deleteProfileImage),
-          ],
-        ),
+  Widget bottomSheet(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: OptionsBottom(
+        options: [
+          {
+            "text": "Update Profile Image",
+            "icon": Icons.image,
+            "onTap": updateProfileImage,
+          },
+          {
+            "text": "Remove Profile Image",
+            "icon": Icons.delete,
+            "color": Colors.red,
+            "onTap": deleteProfileImage,
+          },
+        ],
+        option: 'Options',
       ),
     );
   }

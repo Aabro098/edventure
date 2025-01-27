@@ -1,45 +1,53 @@
 import 'package:flutter/material.dart';
 
 class OptionsBottom extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
+  final List<Map<String, dynamic>> options;
+  final String option;
+
   const OptionsBottom({
     super.key,
-    required this.text,
-    required this.icon,
-    this.color = Colors.black54,
-    required this.onTap,
+    required this.options,
+    required this.option,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Row(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 40,
-            color: color,
+          Text(
+            option,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          SizedBox(
-            width: 20,
+          Divider(
+            color: Colors.grey[200],
           ),
-          Column(
-            children: [
-              Text(
-                text,
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 20
+          ...options.map((option) {
+            return GestureDetector(
+              onTap: option['onTap'],
+              child: ListTile(
+                leading: Icon(
+                  option['icon'],
+                  size: 24,
+                  color: option['color'] ?? Colors.black54,
+                ),
+                title: Text(
+                  option['text'],
+                  style: TextStyle(
+                    color: option['color'] ?? Colors.black54,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-            ],
-          )
+            );
+          }),
         ],
       ),
     );

@@ -2,8 +2,10 @@ import 'package:edventure/Address/teaching_address.dart';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/teaching_services.dart';
 import 'package:edventure/Widgets/friend_card.dart';
+import 'package:edventure/Widgets/options_bottomsheet.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../Profile Screen/view_profile.dart';
@@ -340,7 +342,19 @@ class _MainScreenState extends State<MainScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(onPressed: () {}, icon: Icon(Icons.filter_list)),
+                  IconButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20)),
+                            ),
+                            builder: (context) {
+                              return _buildFilterOptions();
+                            });
+                      },
+                      icon: Icon(Icons.filter_list)),
                   const SizedBox(
                     width: 8,
                   ),
@@ -391,6 +405,29 @@ class _MainScreenState extends State<MainScreen>
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFilterOptions() {
+    return Padding(
+      padding: EdgeInsets.all(12),
+      child: OptionsBottom(options: [
+        {
+          "text": "Gender",
+          "icon": Bootstrap.person,
+          "onTap": () {},
+        },
+        {
+          "text": "Time",
+          "icon": Bootstrap.clock,
+          "onTap": () {},
+        },
+        {
+          "text": "Specialities",
+          "icon": Bootstrap.star,
+          "onTap": () {},
+        },
+      ], option: 'Filter Options'),
     );
   }
 }

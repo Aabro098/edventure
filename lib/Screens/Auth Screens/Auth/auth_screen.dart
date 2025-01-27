@@ -8,6 +8,7 @@ import 'package:edventure/Widgets/app_form.dart';
 import 'package:edventure/constants/colors.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/utils/elevated_button.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class AuthScreen extends StatefulWidget {
   static const String routeName = 'auth';
@@ -27,7 +28,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isSignUp = false;
-  bool _isLoading = false; 
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -41,7 +42,7 @@ class _AuthScreenState extends State<AuthScreen> {
     if (_isSignUp) {
       if (_signUpFormKey.currentState!.validate()) {
         setState(() {
-          _isLoading = true; 
+          _isLoading = true;
         });
         await authService.signUpUser(
           context: context,
@@ -50,7 +51,7 @@ class _AuthScreenState extends State<AuthScreen> {
           password: _passwordController.text,
         );
         setState(() {
-          _isLoading = false; 
+          _isLoading = false;
         });
       }
     } else {
@@ -64,7 +65,7 @@ class _AuthScreenState extends State<AuthScreen> {
           password: _passwordController.text,
         );
         setState(() {
-          _isLoading = false; 
+          _isLoading = false;
         });
       }
     }
@@ -77,7 +78,7 @@ class _AuthScreenState extends State<AuthScreen> {
         children: [
           Center(
             child: Container(
-              width: MediaQuery.of(context).size.width / 1.2,              
+              width: MediaQuery.of(context).size.width / 1.2,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               child: SizedBox(
@@ -132,7 +133,13 @@ class _AuthScreenState extends State<AuthScreen> {
                       if (!_isSignUp)
                         GestureDetector(
                           onTap: () {
-                            showModalBottomSheet(context: context, builder: (context)=>bottomSheet());
+                            showModalBottomSheet(
+                                context: context,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20)),
+                                ),
+                                builder: (context) => bottomSheet(context));
                           },
                           child: Align(
                             alignment: Alignment.centerRight,
@@ -141,7 +148,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               style: TextStyle(
                                 fontSize: 14,
                                 color: TAppColor.backgroundColor,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
@@ -185,7 +192,7 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ),
           ),
-          if (_isLoading) 
+          if (_isLoading)
             const Center(
               child: CircularProgressIndicator(),
             ),
@@ -194,41 +201,26 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget bottomSheet(){
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.transparent
-      ),
-      width: MediaQuery.of(context).size.width,
-      height: 160,
-      child: Card(
-        child: Column(
-          children: [
-            OptionsBottom(
-              text: 'Change via Email', 
-              icon: Icons.email, 
-              onTap: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(
-                    builder: (context)=>EnterDetails()
-                  )
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            OptionsBottom(
-              text: 'Change via Phone', 
-              icon: Icons.phone, 
-              onTap: () {
-                showSnackBar(context, 'Service currently unavailable');
-              },
-            ),
-          ],
-        ),
-      ),
+  Widget bottomSheet(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: OptionsBottom(options: [
+        {
+          "text": "Change via Email",
+          "icon": AntDesign.mail_outline,
+          "onTap": () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => EnterDetails()));
+          },
+        },
+        {
+          "text": "Change via Phone",
+          "icon": AntDesign.phone_outline,
+          "onTap": () {
+            showSnackBar(context, 'Feature yet to come !!!');
+          }
+        },
+      ], option: 'Reset Password'),
     );
   }
 }
-
