@@ -4,7 +4,7 @@ import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import '../utils/profile_avatar.dart';
+import 'profile_avatar.dart';
 
 class FriendCard extends StatefulWidget {
   final User user;

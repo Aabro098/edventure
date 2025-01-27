@@ -1,6 +1,6 @@
 import 'package:edventure/Screens/Messenger/individual_chat.dart';
 import 'package:edventure/Services/api_services.dart';
-import 'package:edventure/Widgets/friend_card.dart';
+import 'package:edventure/utils/friend_card.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +12,7 @@ class SelectContact extends StatefulWidget {
 }
 
 class _SelectContactState extends State<SelectContact> {
-
-    final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List<User> _searchResults = [];
   bool _isSearching = false;
 
@@ -40,7 +39,7 @@ class _SelectContactState extends State<SelectContact> {
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -50,23 +49,17 @@ class _SelectContactState extends State<SelectContact> {
           elevation: 0.0,
           leadingWidth: 240,
           leading: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              'Select Contact',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold
-              ),
-            )
-          ),
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                'Select Contact',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              )),
           actions: [
             IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon : Icon(
-                Icons.arrow_back
-              ),
+              icon: Icon(Icons.arrow_back),
             ),
           ],
         ),
@@ -78,28 +71,23 @@ class _SelectContactState extends State<SelectContact> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search users...',
-                  hintStyle: TextStyle(
-                    color: Colors.grey
-                  ),
+                  hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(
-                      color: Colors.lightBlue,
-                      width: 2.0
-                    )
-                  ),
+                      borderRadius: BorderRadius.circular(12.0),
+                      borderSide: const BorderSide(
+                          color: Colors.lightBlue, width: 2.0)),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
-                      color: Colors.blue, 
-                      width: 2.0,        
+                      color: Colors.blue,
+                      width: 2.0,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
                       color: Colors.cyan,
-                      width: 1.0,        
+                      width: 1.0,
                     ),
                   ),
                   suffixIcon: _isSearching
@@ -115,41 +103,41 @@ class _SelectContactState extends State<SelectContact> {
                         ),
                 ),
                 onChanged: (query) {
-                  _searchUsers(query); 
+                  _searchUsers(query);
                 },
               ),
               const SizedBox(height: 16.0),
-              
               Expanded(
                 child: _searchResults.isEmpty
-                ? Center(
-                    child: _isSearching
-                        ? CircularProgressIndicator()
-                        : const Text(
-                            'No results found',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                  )
-                : ListView.builder(
-                    itemCount: _searchResults.length,
-                    itemBuilder: (context, index) {
-                      final user = _searchResults[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: FriendCard(
-                          user: user,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => IndividualChat(user: user),
+                    ? Center(
+                        child: _isSearching
+                            ? CircularProgressIndicator()
+                            : const Text(
+                                'No results found',
+                                style: TextStyle(color: Colors.grey),
                               ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
+                      )
+                    : ListView.builder(
+                        itemCount: _searchResults.length,
+                        itemBuilder: (context, index) {
+                          final user = _searchResults[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: FriendCard(
+                              user: user,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        IndividualChat(user: user),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
               ),
             ],
           ),

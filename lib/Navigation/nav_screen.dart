@@ -1,7 +1,7 @@
 import 'package:edventure/Screens/Main%20Screen/main_screen.dart';
 import 'package:edventure/Screens/Messenger/chat_screen.dart';
 import 'package:edventure/Widgets/app_bar.dart';
-import 'package:edventure/utils/more_options.dart';
+import 'package:edventure/Widgets/more_options.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import '../Screens/Profile Screen/profile_screen.dart';

@@ -12,7 +12,7 @@ import 'package:edventure/utils/snackbar.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../Widgets/review_card.dart';
+import '../../utils/review_card.dart';
 import '../../Widgets/stars.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -684,25 +684,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   user.isVerified
-                      ? Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                          margin: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                                color: TAppColor.getRandomColor(), width: 2.0),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Flutter',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w300),
-                              ),
-                            ],
+                      ? Center(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 5),
+                            margin: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                  color: TAppColor.getRandomColor(),
+                                  width: 4.0),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Flutter',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ],
+                            ),
                           ),
                         )
                       : SizedBox.shrink(),

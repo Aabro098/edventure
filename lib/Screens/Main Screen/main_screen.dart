@@ -1,7 +1,7 @@
 import 'package:edventure/Address/teaching_address.dart';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/teaching_services.dart';
-import 'package:edventure/Widgets/friend_card.dart';
+import 'package:edventure/utils/friend_card.dart';
 import 'package:edventure/Widgets/options_bottomsheet.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';

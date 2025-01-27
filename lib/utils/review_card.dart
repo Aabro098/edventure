@@ -43,7 +43,7 @@ class _ReviewCardState extends State<ReviewCard> {
     return Container(
       decoration: BoxDecoration(
         color: TAppColor.getRandomColor(),
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),

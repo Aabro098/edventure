@@ -3,7 +3,7 @@ import 'package:edventure/Screens/Messenger/individual_chat.dart';
 import 'package:edventure/Services/api_services.dart';
 import 'package:edventure/Services/review_services.dart';
 import 'package:edventure/Widgets/app_bar.dart';
-import 'package:edventure/Widgets/review_card.dart';
+import 'package:edventure/utils/review_card.dart';
 import 'package:edventure/Widgets/user_details.dart';
 import 'package:edventure/constants/colors.dart';
 import 'package:edventure/constants/variable.dart';

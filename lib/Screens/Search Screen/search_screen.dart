@@ -1,6 +1,6 @@
 import 'package:edventure/Services/api_services.dart';
 import 'package:flutter/material.dart';
-import 'package:edventure/Widgets/friend_card.dart';
+import 'package:edventure/utils/friend_card.dart';
 import '../../models/user.dart';
 import '../Profile Screen/view_profile.dart';
 
@@ -52,28 +52,23 @@ class _SearchScreenState extends State<SearchScreen> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search users...',
-                  hintStyle: TextStyle(
-                    color: Colors.grey
-                  ),
+                  hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(
-                      color: Colors.lightBlue,
-                      width: 2.0
-                    )
-                  ),
+                      borderRadius: BorderRadius.circular(12.0),
+                      borderSide: const BorderSide(
+                          color: Colors.lightBlue, width: 2.0)),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
-                      color: Colors.blue, 
-                      width: 2.0,        
+                      color: Colors.blue,
+                      width: 2.0,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
                       color: Colors.cyan,
-                      width: 1.0,        
+                      width: 1.0,
                     ),
                   ),
                   suffixIcon: _isSearching
@@ -89,11 +84,10 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                 ),
                 onChanged: (query) {
-                  _searchUsers(query); 
+                  _searchUsers(query);
                 },
               ),
               const SizedBox(height: 16.0),
-              
               Expanded(
                 child: _searchResults.isEmpty
                     ? Center(
@@ -116,7 +110,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ProfileViewScreen(userId: user.id),
+                                    builder: (context) =>
+                                        ProfileViewScreen(userId: user.id),
                                   ),
                                 );
                               },
