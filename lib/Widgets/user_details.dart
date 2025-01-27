@@ -147,9 +147,10 @@ class UserDetails extends StatelessWidget {
             const SizedBox(height: 8.0),
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.home,
                   size: 28,
+                  color: Colors.grey[400],
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -158,6 +159,7 @@ class UserDetails extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.normal),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                 ),
               ],
@@ -222,6 +224,7 @@ class ProfileList extends StatelessWidget {
         Icon(
           icons,
           size: 28,
+          color: Colors.grey.shade400,
         ),
         const SizedBox(width: 8),
         Text(

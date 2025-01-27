@@ -240,7 +240,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                             const Padding(
                               padding: EdgeInsets.all(8.0),
                               child: Text(
-                                'Recent Reviews',
+                                'Reviews',
                                 style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.grey,

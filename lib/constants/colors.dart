@@ -6,12 +6,12 @@ class TAppColor {
   static Color secondaryColor = Colors.blue.shade400;
   static Color backgroundColor = Colors.lightBlue.shade600;
   static final List<Color> colors = [
-    Colors.blue.shade50,
-    Colors.green.shade50,
-    Colors.purple.shade50,
-    Colors.orange.shade50,
-    Colors.yellow.shade50,
-    Colors.red.shade50
+    Colors.lightBlue.shade100,
+    Colors.lightGreen.shade100,
+    Colors.purpleAccent.shade100,
+    Colors.orangeAccent.shade100,
+    Colors.yellow.shade100,
+    Colors.redAccent.shade100
   ];
   static Color getRandomColor() {
     final random = Random();

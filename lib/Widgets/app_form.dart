@@ -28,7 +28,7 @@ class _AppFormState extends State<AppForm> {
       obscureText: widget.icon != null ? _obscureText : false,
       decoration: InputDecoration(
         hintText: widget.hintText,
-        hintStyle: TextStyle(color: Colors.grey.shade200),
+        hintStyle: TextStyle(color: Colors.grey.shade400),
         suffixIcon: widget.icon != null
             ? IconButton(
                 icon: Icon(

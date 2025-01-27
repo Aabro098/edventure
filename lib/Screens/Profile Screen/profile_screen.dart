@@ -699,20 +699,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   const SizedBox(height: 8.0),
-                  const Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: Center(
-                      child: Text(
-                        'Skills',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                  user.isVerified
+                      ? const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Center(
+                            child: Text(
+                              'Skills',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
                   user.isVerified && user.skills.isNotEmpty
                       ? Center(
                           child: Wrap(
@@ -782,10 +784,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                                               if (newskill.isNotEmpty) {
                                                 addSkill(newskill);
+                                                skillController.clear();
                                                 Navigator.pop(context);
                                               } else {
                                                 showSnackBar(context,
                                                     'Skill cannot be empty');
+                                                skillController.clear();
                                                 Navigator.pop(context);
                                               }
                                             },
