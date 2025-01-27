@@ -1,3 +1,4 @@
+import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/auth_services.dart';
 import 'package:edventure/utils/elevated_button.dart';
 import 'package:edventure/utils/snackbar.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/sub_divisons.dart';
-import '../providers/user_provider.dart';
 
 class AddressSelection extends StatefulWidget {
   const AddressSelection({super.key});
@@ -28,58 +28,31 @@ class AddressSelectionState extends State<AddressSelection> {
   final TextEditingController addressController = TextEditingController();
 
   Future<void> updateAddress() async {
-    if (!mounted) return;
-
-    print('1. Starting update process');
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     setState(() {
       isLoading = true;
     });
 
     try {
-      // Store context in local variable to ensure it's valid
-      final currentContext = context;
-
-      print('2. About to call AuthService.updateUser');
       final authService = AuthService();
-      await authService.updateUser(
-        context: currentContext,
+      await authService
+          .updateUser(
+        context: context,
         address: addressController.text,
-      );
-      print('3. AuthService.updateUser completed');
-
-      if (!mounted) return;
-
-      print('4. Adding delay');
-      await Future.delayed(const Duration(milliseconds: 500));
-      print('5. Delay completed');
-
-      if (!mounted) return;
-
-      print('6. Widget is still mounted');
-      // Get provider without using context
-      final userProvider =
-          Provider.of<UserProvider>(currentContext, listen: false);
-      print('7. Got userProvider');
-
-      print('8. About to call refreshUser');
-      await userProvider.refreshUser(currentContext);
-      print('9. refreshUser completed');
-
-      if (!mounted) return;
+      )
+          .then((_) {
+        userProvider.updateUserAddress(addressController.text);
+        setState(() {});
+      });
 
       setState(() {
         isLoading = false;
       });
-      print('10. setState completed');
-
-      print('11. Updated address: ${userProvider.user.address}');
     } catch (e) {
-      print('Error occurred: $e');
-      if (!mounted) return;
-
       setState(() {
         isLoading = false;
       });
+      // ignore: use_build_context_synchronously
       showSnackBar(context, e.toString());
     }
   }

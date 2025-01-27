@@ -21,6 +21,8 @@ class User {
   final String token;
   final List<String> teachingAddress;
   final List<String> skills;
+  final List<String> contacts;
+  final String gender;
 
   User({
     required this.id,
@@ -43,6 +45,8 @@ class User {
     required this.token,
     required this.teachingAddress,
     required this.skills,
+    required this.contacts,
+    required this.gender,
   });
 
   factory User.fromMap(Map<String, dynamic> map) {
@@ -67,6 +71,8 @@ class User {
       token: map['token'] ?? '',
       teachingAddress: List<String>.from(map['teachingAddress'] ?? []),
       skills: List<String>.from(map['skills'] ?? []),
+      contacts: List<String>.from(map['skills'] ?? []),
+      gender: map['gender'] ?? '',
     );
   }
 
@@ -92,6 +98,8 @@ class User {
       'token': token,
       'teachingAddress': teachingAddress,
       'skills': skills,
+      'contacts': contacts,
+      'gender': gender,
     };
   }
 

@@ -26,7 +26,9 @@ class UserProvider extends ChangeNotifier {
       review: [],
       socketId: '',
       teachingAddress: [],
-      skills: []);
+      skills: [],
+      contacts: [],
+      gender: '');
 
   User get user => _user;
 
@@ -138,7 +140,9 @@ class UserProvider extends ChangeNotifier {
         review: [],
         socketId: '',
         teachingAddress: [],
-        skills: []);
+        skills: [],
+        contacts: [],
+        gender: '');
     notifyListeners();
   }
 }

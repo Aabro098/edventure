@@ -52,7 +52,9 @@ class AuthService with ChangeNotifier {
           review: [],
           socketId: '',
           teachingAddress: [],
-          skills: []);
+          skills: [],
+          contacts: [],
+          gender: '');
 
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),

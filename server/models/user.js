@@ -106,6 +106,21 @@ const userSchema = mongoose.Schema({
         message: 'Must be 20 characters or less.',
         },
     },
+    contacts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        validate: {
+            validator: function(value) {
+                return value.length <= 30; 
+            },
+            message: 'You can have a maximum of 30 contacts.'
+        }
+    }],
+    gender: {
+        type: String,
+        enum: ['Male', 'Female', 'Others', 'Not to Say'],
+        required: true,
+    },
 });
 
 userSchema.pre('save', async function (next) {

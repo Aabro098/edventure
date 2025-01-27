@@ -31,6 +31,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   int _selectedStars = 0;
   final reviewService = ReviewService(baseUrl: uri);
   final TextEditingController _reviewController = TextEditingController();
+  final ApiService apiService = ApiService();
 
   void _submitReview(String userId, String senderId) async {
     final review = Review(
@@ -82,6 +83,12 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     super.initState();
     _userData = ApiService().fetchUserData(widget.userId);
     _reviewsFuture = reviewService.fetchReviewsByUserId(widget.userId);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final currentUser =
+          Provider.of<UserProvider>(context, listen: false).user;
+      apiService.updateContacts(currentUser.id, widget.userId);
+    });
   }
 
   @override

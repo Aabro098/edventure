@@ -15,6 +15,7 @@ const resetPassword = require("./routes/resetPassword");
 const review = require("./routes/review");
 const messageRouter = require("./routes/messages");
 const addressRouter = require("./routes/teaching");
+const contacts = require("./routes/contacts");
 
 const PORT = process.env.PORT || 3000;
 const HOST = '192.168.1.11';
@@ -37,7 +38,7 @@ app.use(review);
 app.use(messageRouter);  
 app.use(resetPassword);
 app.use(addressRouter);
-
+app.use(contacts);
 
 
 mongoose

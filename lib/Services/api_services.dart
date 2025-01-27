@@ -116,4 +116,19 @@ class ApiService {
       showSnackBar(context, error.toString());
     }
   }
+
+  Future<void> updateContacts(String userId, String newContactId) async {
+    final url = '$uri/updateContacts';
+
+    await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'userId': userId,
+        'newContactId': newContactId,
+      }),
+    );
+  }
 }
