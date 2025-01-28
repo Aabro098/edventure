@@ -113,4 +113,30 @@ router.delete('/delete/skills', async (req, res) => {
 });
 
 
+router.put('/updateGender', async (req, res) => {
+  const { userId, gender } = req.body;
+
+  try {
+    if (!['Male', 'Female', 'Others', 'None'].includes(gender)) {
+      return res.status(400).json({ error: 'Invalid gender value' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { gender },
+      { new: true } 
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('Error in /updateGender:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 module.exports = router;

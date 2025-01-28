@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Address/address_selection.dart';
 import 'package:edventure/Screens/verification_screen.dart';
@@ -18,6 +19,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
 import '../../utils/review_card.dart';
 import '../../Widgets/stars.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileScreen extends StatefulWidget {
   static const String routeName = 'profile-screen';
@@ -33,10 +35,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isPhone = false;
   bool _isEducation = false;
   bool _isBio = false;
+  bool _isDropdownVisible = false;
   late bool isAvailable;
   bool isLoading = false;
   final reviewService = ReviewService(baseUrl: uri);
   final ApiService apiService = ApiService();
+  final List<String> _genderOptions = ['Male', 'Female', 'Others', 'None'];
 
   late TextEditingController aboutController;
   late TextEditingController educationController;
@@ -45,6 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late TextEditingController bioController;
   late Future<List<Review>> _reviewsFuture;
   late TextEditingController skillController;
+  String? _selectedGender;
 
   @override
   void initState() {
@@ -61,6 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     emailController = TextEditingController(text: user.email);
     bioController = TextEditingController(text: user.bio);
     skillController = TextEditingController();
+    _selectedGender = user.gender;
   }
 
   Future<void> updatePhone() async {
@@ -257,6 +263,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> updateGender(String userId, String newGender) async {
+    final response = await http.put(
+      Uri.parse('$uri/updateGender'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'userId': userId,
+        'gender': newGender,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, 'Profile Updated Successfully!!!');
+    } else {
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, 'Profile Could not be Updated !!!');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
@@ -290,6 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _isPhone = false;
             _isAbout = false;
             _isEducation = false;
+            _isDropdownVisible = false;
           });
         },
         child: SingleChildScrollView(
@@ -574,6 +600,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? user.education
                               : 'Enter Education',
                         ),
+                  const SizedBox(height: 5.0),
+                  TTextButton(
+                      iconData: Bootstrap.person,
+                      onPressed: () {
+                        setState(() {
+                          _isDropdownVisible = !_isDropdownVisible;
+                        });
+                      },
+                      labelText: user.gender),
+                  if (_isDropdownVisible)
+                    Center(
+                      child: DropdownButton<String>(
+                        value: _selectedGender,
+                        onChanged: (String? newGender) {
+                          setState(() {
+                            if (newGender != null) {
+                              _selectedGender = newGender;
+                              _isDropdownVisible = false;
+                              userProvider.updateGender(newGender);
+                              updateGender(userProvider.user.id, newGender);
+                            }
+                          });
+                        },
+                        items: _genderOptions.map((String gender) {
+                          return DropdownMenuItem<String>(
+                            value: gender,
+                            child: Text(gender),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   const SizedBox(height: 5.0),
                   Center(
                     child: Column(

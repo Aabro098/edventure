@@ -83,6 +83,11 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  void updateGender(String newGender) {
+    _user.gender = newGender;
+    notifyListeners();
+  }
+
   Future<void> updateProfileImageAndRefresh(
       String newProfileImage, BuildContext context) async {
     _user.profileImage = newProfileImage;

@@ -22,7 +22,7 @@ class User {
   final List<String> teachingAddress;
   final List<String> skills;
   final List<String> contacts;
-  final String gender;
+  String gender;
 
   User({
     required this.id,
