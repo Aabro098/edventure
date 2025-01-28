@@ -1,3 +1,4 @@
+import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Screens/Mini%20Screens/about_screen.dart';
 import 'package:edventure/Screens/Auth%20Screens/Forgot%20Password/reset_password.dart';
 import 'package:edventure/Screens/Mini%20Screens/feedback_screen.dart';
@@ -7,13 +8,13 @@ import 'package:edventure/Widgets/options.dart';
 import 'package:edventure/utils/text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:provider/provider.dart';
 
 class MoreOptionList extends StatefulWidget {
   final List<List> moreOptionList = const [
     [Icons.group, Colors.grey, 'Contacts', FriendScreen()],
     [Icons.school, Colors.grey, 'Institution'],
-    [Bootstrap.person, Colors.grey, 'Change Name'],
-    [Icons.edit, Colors.grey, 'Change Password', ChangePassword()],
+    [Icons.edit, Colors.grey, 'Change Password'],
     [
       Icons.help_center_outlined,
       Colors.grey,
@@ -36,6 +37,7 @@ class _MoreOptionListState extends State<MoreOptionList> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     return Container(
       padding: EdgeInsets.all(12.0),
       child: Column(
@@ -47,12 +49,23 @@ class _MoreOptionListState extends State<MoreOptionList> {
                   final List option = widget.moreOptionList[index];
                   return Options(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => option[3],
-                          ),
-                        );
+                        if (option[2] == 'Change Password') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChangePassword(
+                                email: user.email,
+                              ),
+                            ),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => option[3],
+                            ),
+                          );
+                        }
                       },
                       icon: option[0],
                       color: option[1],

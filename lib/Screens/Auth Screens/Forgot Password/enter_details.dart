@@ -19,27 +19,45 @@ class _EnterDetailsState extends State<EnterDetails> {
   final PasswordResetService resetService = PasswordResetService();
 
   Future<void> _handlePasswordReset() async {
+    final email = emailController.text.trim();
+
+    if (email.isEmpty) {
+      showSnackBar(context, 'Please enter an email address');
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
 
     if (emailKey.currentState!.validate()) {
       try {
-        final response =
-            await resetService.sendResetCode(emailController.text.trim());
+        debugPrint('Sending reset code to email: $email');
 
-        if (response['success']) {
-          Navigator.push(
-              // ignore: use_build_context_synchronously
+        final response = await resetService.sendResetCode(email);
+
+        if (mounted) {
+          if (response['success']) {
+            debugPrint('Reset code sent successfully to: $email');
+
+            Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => OtpScreen(
-                        email: emailController.text.trim(),
-                      )));
-          emailController.clear();
-        } else {
-          // ignore: use_build_context_synchronously
-          showSnackBar(context, response['message']);
+                builder: (context) => OtpScreen(
+                  email: email,
+                ),
+              ),
+            );
+            emailController.clear();
+          } else {
+            debugPrint('Failed to send reset code: ${response['message']}');
+            showSnackBar(context, response['message']);
+          }
+        }
+      } catch (e) {
+        debugPrint('Error during password reset: $e');
+        if (mounted) {
+          showSnackBar(context, 'An error occurred. Please try again.');
         }
       } finally {
         if (mounted) {
@@ -63,36 +81,42 @@ class _EnterDetailsState extends State<EnterDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Reset Password',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                 ),
-                const SizedBox(
-                  height: 20.0,
-                ),
-                Text(
+                const SizedBox(height: 20.0),
+                const Text(
                   'Enter the email associated with your account\nand we will send an email with code\nto reset your password',
                   style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 16,
-                      color: Colors.black54),
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
                 ),
-                const SizedBox(
-                  height: 20.0,
-                ),
+                const SizedBox(height: 20.0),
                 AppForm(
                   controller: emailController,
                   hintText: 'Email',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an email address';
+                    }
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        .hasMatch(value)) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(
-                  height: 10.0,
-                ),
+                const SizedBox(height: 10.0),
                 _isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator())
                     : AppElevatedButton(
                         text: 'Next',
                         onTap: _handlePasswordReset,
-                        color: Colors.blue.shade400)
+                        color: Colors.blue.shade400,
+                      )
               ],
             ),
           ),

@@ -317,4 +317,30 @@ authRouter.delete('/deleteProfileImage', auth, async (req, res) => {
 });
 
 
+authRouter.post('/change-password', async (req, res) => {  
+    const { email, newPassword } = req.body;
+    console.log(req.body);
+    try {
+  
+      if (!email || !newPassword) {
+        return res.status(400).json({ msg: 'Please provide both email and new password' });
+      }
+  
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(400).json({ msg: 'User not found' });
+      }
+  
+      const hashedPassword = await bcryptjs.hash(newPassword, 8);
+      user.password = hashedPassword;
+  
+      await user.save();
+  
+      res.status(200).json({ msg: 'Password updated successfully' });
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+});
+
+
 module.exports = authRouter;
