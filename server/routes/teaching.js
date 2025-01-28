@@ -73,7 +73,6 @@ router.post('/getUnverifiedUsers', async (req, res) => {
           return res.status(400).json({ message: 'Invalid user ID format' });
       }
 
-      console.log('ObjectId for userId:', objectIdUserId);
       const users = await User.find({
           isVerified: false,
           _id: { $ne: objectIdUserId }, 
@@ -136,7 +135,6 @@ router.post('/filterUsers', async (req, res) => {
     const baseQuery = { teachingAddress: address };
 
     if (filters.gender) {
-      // Use $eq for exact match, to avoid partial matching with $regex
       baseQuery.gender = { $eq: filters.gender };
     }
 
@@ -145,8 +143,8 @@ router.post('/filterUsers', async (req, res) => {
     }
 
     const [verifiedUsers, unverifiedUsers] = await Promise.all([
-      User.find({ ...baseQuery, isVerified: true }).select('-password'),
-      User.find({ ...baseQuery, isVerified: false }).select('-password'),
+      User.find({ ...baseQuery, _id: { $ne: objectIdUserId },isVerified: true }).select('-password'),
+      User.find({ ...baseQuery,_id: { $ne: objectIdUserId },  isVerified: false }).select('-password'),
     ]);
 
     res.json({

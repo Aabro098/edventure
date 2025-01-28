@@ -286,6 +286,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
     Future<void> addSkill(String skill) async {
+      if (user.skills.contains(skill)) {
+        showSnackBar(context, 'Skill already Exist!');
+        return;
+      }
+
       await apiService.addSkill(user.id, skill, context).then((_) {
         setState(() {
           user.skills.add(skill);

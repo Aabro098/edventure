@@ -106,7 +106,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ),
                 AppForm(
                   controller: changePasswordController,
-                  hintText: 'Password',
+                  hintText: 'New Password',
                   icon: Icons.visibility,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
