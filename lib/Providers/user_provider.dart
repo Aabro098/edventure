@@ -77,10 +77,8 @@ class UserProvider extends ChangeNotifier {
   }
 
   void updateUserAddress(String newAddress) {
-    if (newAddress != _user.address) {
-      _user.address = newAddress;
-      notifyListeners();
-    }
+    _user.address = newAddress;
+    notifyListeners();
   }
 
   void updateGender(String newGender) {

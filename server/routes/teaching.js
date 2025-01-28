@@ -136,7 +136,8 @@ router.post('/filterUsers', async (req, res) => {
     const baseQuery = { teachingAddress: address };
 
     if (filters.gender) {
-      baseQuery.gender = { $regex: new RegExp(filters.gender, 'i') };
+      // Use $eq for exact match, to avoid partial matching with $regex
+      baseQuery.gender = { $eq: filters.gender };
     }
 
     if (filters.skills && Array.isArray(filters.skills)) {

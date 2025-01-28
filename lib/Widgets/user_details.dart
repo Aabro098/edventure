@@ -2,6 +2,7 @@ import 'package:edventure/Widgets/stars.dart';
 import 'package:edventure/constants/variable.dart';
 import 'package:edventure/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class UserDetails extends StatelessWidget {
   const UserDetails({
@@ -170,6 +171,8 @@ class UserDetails extends StatelessWidget {
                     ? user.education
                     : 'Not Available',
                 icons: Icons.school),
+            const SizedBox(height: 8.0),
+            ProfileList(text: user.gender, icons: Bootstrap.person),
             const SizedBox(height: 20.0),
             Column(
               children: [

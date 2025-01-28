@@ -29,12 +29,16 @@ class AddressSelectionState extends State<AddressSelection> {
 
   Future<void> updateAddress() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    if (!mounted) return;
+
     setState(() {
       isLoading = true;
     });
 
     try {
-      final authService = AuthService();
+      final AuthService authService = AuthService();
+
       await authService
           .updateUser(
         context: context,
@@ -42,18 +46,22 @@ class AddressSelectionState extends State<AddressSelection> {
       )
           .then((_) {
         userProvider.updateUserAddress(addressController.text);
-        setState(() {});
       });
 
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      // ignore: use_build_context_synchronously
-      showSnackBar(context, e.toString());
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      if (mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 
@@ -61,7 +69,7 @@ class AddressSelectionState extends State<AddressSelection> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Address'),
+        title: const Text('Edit Address'),
         elevation: 0,
       ),
       body: SingleChildScrollView(

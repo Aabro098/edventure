@@ -568,6 +568,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         MaterialPageRoute(
                             builder: (context) => AddressSelection()),
                       );
+                      setState(() {});
                     },
                     labelText: user.address.isNotEmpty
                         ? user.address
