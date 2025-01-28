@@ -1,6 +1,7 @@
 import 'package:edventure/Address/teaching_address.dart';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/teaching_services.dart';
+import 'package:edventure/models/user_filter.dart';
 import 'package:edventure/utils/friend_card.dart';
 import 'package:edventure/Widgets/options_bottomsheet.dart';
 import 'package:edventure/models/user.dart';
@@ -20,10 +21,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final TextEditingController _skillController = TextEditingController();
   List<User> verifiedUsers = [];
   List<User> unverifiedUsers = [];
   bool _isFirstBuild = true;
   String? _currentAddress;
+  final UserFilter _filter = UserFilter();
 
   @override
   void initState() {
@@ -51,6 +54,7 @@ class _MainScreenState extends State<MainScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _skillController.dispose();
     super.dispose();
   }
 
@@ -408,26 +412,211 @@ class _MainScreenState extends State<MainScreen>
     );
   }
 
+  Future<void> _applyFilters() async {
+    if (!mounted) return;
+
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+      final response = await TeachingService.filterUsers(
+        userId: userProvider.user.id,
+        address: _currentAddress!,
+        filters: _filter.toJson(),
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        verifiedUsers = (response['verifiedUsers'] ?? [])
+            .map<User>((userData) => User.fromMap(userData))
+            .toList();
+        unverifiedUsers = (response['unverifiedUsers'] ?? [])
+            .map<User>((userData) => User.fromMap(userData))
+            .toList();
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to apply filters')),
+        );
+      }
+    }
+  }
+
+  void _showGenderFilter(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Select Gender',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            ...['Male', 'Female', 'Others', 'Prefer not to say'].map(
+              (gender) => ListTile(
+                title: Text(gender),
+                onTap: () {
+                  setState(() {
+                    _filter.gender = gender;
+                  });
+                  Navigator.pop(context);
+                  _applyFilters();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showSkillsFilter(BuildContext context) {
+    final List<String> selectedSkills = _filter.skills ?? [];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => Container(
+          padding: EdgeInsets.fromLTRB(
+              16, 16, 16, MediaQuery.of(context).viewInsets.bottom + 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Add Skills',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _skillController,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter a skill...',
+                        border: OutlineInputBorder(),
+                      ),
+                      onSubmitted: (value) {
+                        if (value.isNotEmpty) {
+                          setState(() {
+                            if (!selectedSkills.contains(value.trim())) {
+                              selectedSkills.add(value.trim());
+                            }
+                            _skillController.clear();
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      if (_skillController.text.isNotEmpty) {
+                        setState(() {
+                          if (!selectedSkills
+                              .contains(_skillController.text.trim())) {
+                            selectedSkills.add(_skillController.text.trim());
+                          }
+                          _skillController.clear();
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              if (selectedSkills.isNotEmpty)
+                Flexible(
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: selectedSkills
+                        .map((skill) => Chip(
+                              label: Text(skill),
+                              deleteIcon: const Icon(Icons.close, size: 18),
+                              onDeleted: () {
+                                setState(() {
+                                  selectedSkills.remove(skill);
+                                });
+                              },
+                            ))
+                        .toList(),
+                  ),
+                ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _filter.skills = selectedSkills;
+                      });
+                      Navigator.pop(context);
+                      _applyFilters();
+                    },
+                    child: const Text('Apply Filters'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildFilterOptions() {
     return Padding(
-      padding: EdgeInsets.all(12),
-      child: OptionsBottom(options: [
-        {
-          "text": "Gender",
-          "icon": Bootstrap.person,
-          "onTap": () {},
-        },
-        {
-          "text": "Time",
-          "icon": Bootstrap.clock,
-          "onTap": () {},
-        },
-        {
-          "text": "Specialities",
-          "icon": Bootstrap.star,
-          "onTap": () {},
-        },
-      ], option: 'Filter Options'),
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          OptionsBottom(
+            options: [
+              {
+                "text":
+                    "Gender${_filter.gender != null ? ' (${_filter.gender})' : ''}",
+                "icon": Bootstrap.person,
+                "onTap": () => _showGenderFilter(context),
+              },
+              {
+                "text":
+                    "Skills${_filter.skills?.isNotEmpty == true ? ' (${_filter.skills!.length})' : ''}",
+                "icon": Bootstrap.star,
+                "onTap": () => _showSkillsFilter(context),
+              },
+            ],
+            option: 'Filter Options',
+          ),
+          if (_filter.gender != null || _filter.skills?.isNotEmpty == true)
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _filter.gender = null;
+                  _filter.skills = null;
+                });
+                _fetchVerifiedUsers(_currentAddress!);
+                _fetchUnverifiedUsers(_currentAddress!);
+              },
+              child: const Text('Clear All Filters'),
+            ),
+        ],
+      ),
     );
   }
 }

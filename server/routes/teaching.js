@@ -126,4 +126,53 @@ router.post('/getVerifiedUsers', async (req, res) => {
 });
 
 
+router.post('/filterUsers', auth, async (req, res) => {
+  try {
+    const { userId, address, filters } = req.body;
+
+    if (!filters || typeof filters !== 'object') {
+      return res.status(400).json({ error: 'Invalid filter parameters' });
+    }
+
+    const baseQuery = { teachingAddress: address };
+
+    if (filters.gender) {
+      baseQuery.gender = filters.gender;
+    }
+
+    if (filters.skills && Array.isArray(filters.skills)) {
+      baseQuery.skills = { $in: filters.skills };
+    }
+
+    if (filters.availability) {
+      const availabilityConditions = [];
+      for (const [day, timeSlots] of Object.entries(filters.availability)) {
+        timeSlots.forEach((timeSlot) => {
+          availabilityConditions.push({
+            'availability.day': day,
+            'availability.timeSlot': timeSlot,
+          });
+        });
+      }
+      if (availabilityConditions.length > 0) {
+        baseQuery.$or = availabilityConditions;
+      }
+    }
+
+    const [verifiedUsers, unverifiedUsers] = await Promise.all([
+      User.find({ ...baseQuery, isVerified: true }).select('-password'),
+      User.find({ ...baseQuery, isVerified: false }).select('-password'),
+    ]);
+
+    res.json({
+      verifiedUsers,
+      unverifiedUsers,
+    });
+  } catch (error) {
+    console.error('Error in /filterUsers:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 module.exports = router;
