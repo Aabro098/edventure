@@ -6,13 +6,15 @@ class AppForm extends StatefulWidget {
   final String hintText;
   final IconData? icon;
   final String? Function(String?)? validator;
+  final void Function(String)? onSubmitted;
 
   const AppForm(
       {super.key,
       required this.controller,
       required this.hintText,
       this.icon,
-      this.validator});
+      this.validator,
+      this.onSubmitted});
 
   @override
   State<AppForm> createState() => _AppFormState();

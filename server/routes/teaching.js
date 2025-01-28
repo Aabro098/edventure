@@ -105,7 +105,6 @@ router.post('/getVerifiedUsers', async (req, res) => {
             return res.status(400).json({ message: 'Invalid user ID format' });
         }
 
-        console.log('ObjectId for userId:', objectIdUserId);
         const users = await User.find({
             isVerified: true,
             _id: { $ne: objectIdUserId }, 
@@ -126,7 +125,7 @@ router.post('/getVerifiedUsers', async (req, res) => {
 });
 
 
-router.post('/filterUsers', auth, async (req, res) => {
+router.post('/filterUsers', async (req, res) => {
   try {
     const { userId, address, filters } = req.body;
 
@@ -137,26 +136,11 @@ router.post('/filterUsers', auth, async (req, res) => {
     const baseQuery = { teachingAddress: address };
 
     if (filters.gender) {
-      baseQuery.gender = filters.gender;
+      baseQuery.gender = { $regex: new RegExp(filters.gender, 'i') };
     }
 
     if (filters.skills && Array.isArray(filters.skills)) {
-      baseQuery.skills = { $in: filters.skills };
-    }
-
-    if (filters.availability) {
-      const availabilityConditions = [];
-      for (const [day, timeSlots] of Object.entries(filters.availability)) {
-        timeSlots.forEach((timeSlot) => {
-          availabilityConditions.push({
-            'availability.day': day,
-            'availability.timeSlot': timeSlot,
-          });
-        });
-      }
-      if (availabilityConditions.length > 0) {
-        baseQuery.$or = availabilityConditions;
-      }
+      baseQuery.skills = { $in: filters.skills.map(skill => new RegExp(skill, 'i')) };
     }
 
     const [verifiedUsers, unverifiedUsers] = await Promise.all([

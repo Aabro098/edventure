@@ -1,7 +1,8 @@
 import 'package:edventure/Address/teaching_address.dart';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Services/teaching_services.dart';
-import 'package:edventure/models/user_filter.dart';
+import 'package:edventure/Widgets/app_form.dart';
+import 'package:edventure/constants/colors.dart';
 import 'package:edventure/utils/friend_card.dart';
 import 'package:edventure/Widgets/options_bottomsheet.dart';
 import 'package:edventure/models/user.dart';
@@ -26,7 +27,8 @@ class _MainScreenState extends State<MainScreen>
   List<User> unverifiedUsers = [];
   bool _isFirstBuild = true;
   String? _currentAddress;
-  final UserFilter _filter = UserFilter();
+  String? _selectedGender;
+  List<String> _selectedSkills = [];
 
   @override
   void initState() {
@@ -414,14 +416,20 @@ class _MainScreenState extends State<MainScreen>
 
   Future<void> _applyFilters() async {
     if (!mounted) return;
+    Navigator.pop(context);
 
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
 
+      final Map<String, dynamic> filters = {
+        if (_selectedGender != null) 'gender': _selectedGender,
+        if (_selectedSkills.isNotEmpty) 'skills': _selectedSkills,
+      };
+
       final response = await TeachingService.filterUsers(
         userId: userProvider.user.id,
         address: _currentAddress!,
-        filters: _filter.toJson(),
+        filters: filters,
       );
 
       if (!mounted) return;
@@ -457,12 +465,12 @@ class _MainScreenState extends State<MainScreen>
             const Text('Select Gender',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            ...['Male', 'Female', 'Others', 'Prefer not to say'].map(
+            ...['Male', 'Female', 'Others', 'None'].map(
               (gender) => ListTile(
                 title: Text(gender),
                 onTap: () {
                   setState(() {
-                    _filter.gender = gender;
+                    _selectedGender = gender;
                   });
                   Navigator.pop(context);
                   _applyFilters();
@@ -476,7 +484,7 @@ class _MainScreenState extends State<MainScreen>
   }
 
   void _showSkillsFilter(BuildContext context) {
-    final List<String> selectedSkills = _filter.skills ?? [];
+    List<String> tempSelectedSkills = List.from(_selectedSkills);
 
     showModalBottomSheet(
       context: context,
@@ -497,17 +505,14 @@ class _MainScreenState extends State<MainScreen>
               Row(
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: AppForm(
                       controller: _skillController,
-                      decoration: const InputDecoration(
-                        hintText: 'Enter a skill...',
-                        border: OutlineInputBorder(),
-                      ),
+                      hintText: 'Enter a skill',
                       onSubmitted: (value) {
                         if (value.isNotEmpty) {
                           setState(() {
-                            if (!selectedSkills.contains(value.trim())) {
-                              selectedSkills.add(value.trim());
+                            if (!tempSelectedSkills.contains(value.trim())) {
+                              tempSelectedSkills.add(value.trim());
                             }
                             _skillController.clear();
                           });
@@ -521,9 +526,10 @@ class _MainScreenState extends State<MainScreen>
                     onPressed: () {
                       if (_skillController.text.isNotEmpty) {
                         setState(() {
-                          if (!selectedSkills
+                          if (!tempSelectedSkills
                               .contains(_skillController.text.trim())) {
-                            selectedSkills.add(_skillController.text.trim());
+                            tempSelectedSkills
+                                .add(_skillController.text.trim());
                           }
                           _skillController.clear();
                         });
@@ -533,18 +539,26 @@ class _MainScreenState extends State<MainScreen>
                 ],
               ),
               const SizedBox(height: 16),
-              if (selectedSkills.isNotEmpty)
+              if (tempSelectedSkills.isNotEmpty)
                 Flexible(
                   child: Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: selectedSkills
+                    children: tempSelectedSkills
                         .map((skill) => Chip(
                               label: Text(skill),
-                              deleteIcon: const Icon(Icons.close, size: 18),
+                              deleteIcon: const Icon(
+                                Icons.close,
+                                size: 18,
+                                color: Colors.red,
+                              ),
+                              side: BorderSide(
+                                color: TAppColor.getRandomColor(),
+                                width: 2,
+                              ),
                               onDeleted: () {
                                 setState(() {
-                                  selectedSkills.remove(skill);
+                                  tempSelectedSkills.remove(skill);
                                 });
                               },
                             ))
@@ -564,7 +578,9 @@ class _MainScreenState extends State<MainScreen>
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _filter.skills = selectedSkills;
+                        this.setState(() {
+                          _selectedSkills = tempSelectedSkills;
+                        });
                       });
                       Navigator.pop(context);
                       _applyFilters();
@@ -590,28 +606,29 @@ class _MainScreenState extends State<MainScreen>
             options: [
               {
                 "text":
-                    "Gender${_filter.gender != null ? ' (${_filter.gender})' : ''}",
+                    "Gender${_selectedGender != null ? ' ($_selectedGender)' : ''}",
                 "icon": Bootstrap.person,
                 "onTap": () => _showGenderFilter(context),
               },
               {
                 "text":
-                    "Skills${_filter.skills?.isNotEmpty == true ? ' (${_filter.skills!.length})' : ''}",
+                    "Skills${_selectedSkills.isNotEmpty ? ' (${_selectedSkills.length})' : ''}",
                 "icon": Bootstrap.star,
                 "onTap": () => _showSkillsFilter(context),
               },
             ],
             option: 'Filter Options',
           ),
-          if (_filter.gender != null || _filter.skills?.isNotEmpty == true)
+          if (_selectedGender != null || _selectedSkills.isNotEmpty)
             TextButton(
               onPressed: () {
                 setState(() {
-                  _filter.gender = null;
-                  _filter.skills = null;
+                  _selectedGender = null;
+                  _selectedSkills = [];
                 });
                 _fetchVerifiedUsers(_currentAddress!);
                 _fetchUnverifiedUsers(_currentAddress!);
+                Navigator.pop(context);
               },
               child: const Text('Clear All Filters'),
             ),
