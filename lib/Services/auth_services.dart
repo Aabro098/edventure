@@ -55,6 +55,7 @@ class AuthService with ChangeNotifier {
           teachingAddress: [],
           skills: [],
           contacts: [],
+          enrolledClasses: [],
           gender: '');
 
       http.Response res = await http.post(

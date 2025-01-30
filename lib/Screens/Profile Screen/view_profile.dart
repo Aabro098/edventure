@@ -242,32 +242,34 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                         Divider(
                           color: Colors.grey[200],
                         ),
-                        Row(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                'Reviews',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            TTextButton(
-                              iconData: Icons.edit,
-                              onPressed: () {
-                                setState(() {
-                                  isAddReview = true;
-                                });
-                              },
-                              labelText: 'Add Review',
-                              color: Colors.blue,
-                            ),
-                          ],
-                        ),
+                        user.isVerified
+                            ? Row(
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Reviews',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  TTextButton(
+                                    iconData: Icons.edit,
+                                    onPressed: () {
+                                      setState(() {
+                                        isAddReview = true;
+                                      });
+                                    },
+                                    labelText: 'Add Review',
+                                    color: Colors.blue,
+                                  ),
+                                ],
+                              )
+                            : SizedBox.shrink(),
                         isAddReview
                             ? SingleChildScrollView(
                                 child: Padding(

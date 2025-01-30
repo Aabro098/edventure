@@ -22,6 +22,7 @@ class User {
   final List<String> teachingAddress;
   final List<String> skills;
   final List<String> contacts;
+  List<String> enrolledClasses;
   bool progress;
   String gender;
 
@@ -49,6 +50,7 @@ class User {
     required this.contacts,
     required this.gender,
     required this.progress,
+    required this.enrolledClasses,
   });
 
   factory User.fromMap(Map<String, dynamic> map) {
@@ -76,6 +78,7 @@ class User {
       contacts: List<String>.from(map['skills'] ?? []),
       gender: map['gender'] ?? '',
       progress: map['progress'] ?? false,
+      enrolledClasses: List<String>.from(map['enrolledClasses'] ?? []),
     );
   }
 
@@ -104,6 +107,7 @@ class User {
       'contacts': contacts,
       'gender': gender,
       'progress': progress,
+      'enrolledClasses': enrolledClasses,
     };
   }
 

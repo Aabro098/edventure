@@ -120,6 +120,10 @@ const userSchema = mongoose.Schema({
         enum: ['Male', 'Female', 'Others', 'Not to Say','None'],
         default:'None'
     },
+    enrolledClasses: {
+        type: [String], 
+        default: []
+      }
 });
 
 userSchema.pre('save', async function (next) {

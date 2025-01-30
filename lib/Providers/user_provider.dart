@@ -28,6 +28,7 @@ class UserProvider extends ChangeNotifier {
       teachingAddress: [],
       skills: [],
       contacts: [],
+      enrolledClasses: [],
       gender: '',
       progress: false);
 
@@ -70,6 +71,11 @@ class UserProvider extends ChangeNotifier {
       _user.teachingAddress.add(address);
       notifyListeners();
     }
+  }
+
+  void addEnrollClass(String classId, BuildContext context) {
+    _user.enrolledClasses.add(classId);
+    notifyListeners();
   }
 
   void deleteTeachingAddress(String address) {
@@ -152,6 +158,7 @@ class UserProvider extends ChangeNotifier {
         teachingAddress: [],
         skills: [],
         contacts: [],
+        enrolledClasses: [],
         gender: '');
     notifyListeners();
   }

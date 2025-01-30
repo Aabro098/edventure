@@ -168,4 +168,30 @@ router.post('/filterUsers', async (req, res) => {
 });
 
 
+router.post('/enroll', async (req, res) => {
+  const { userId, classId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.enrolledClasses.includes(classId)) {
+      return res.status(400).json({ message: 'User is already enrolled in this class' });
+    }
+
+    user.enrolledClasses.push(classId);
+
+    await user.save();
+
+    res.status(200).json({ message: 'Successfully enrolled in the class' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'An error occurred while enrolling the user' });
+  }
+});
+
+
 module.exports = router;

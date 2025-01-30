@@ -1,3 +1,4 @@
+import 'package:edventure/Institution/subject_details.dart';
 import 'package:edventure/Providers/user_provider.dart';
 import 'package:edventure/Screens/Mini%20Screens/about_screen.dart';
 import 'package:edventure/Screens/Auth%20Screens/Forgot%20Password/reset_password.dart';
@@ -13,7 +14,7 @@ import 'package:provider/provider.dart';
 class MoreOptionList extends StatefulWidget {
   final List<List> moreOptionList = const [
     [Icons.group, Colors.grey, 'Contacts', FriendScreen()],
-    [Icons.school, Colors.grey, 'Institution'],
+    [Icons.school, Colors.grey, 'Institutional Classes', ClassScreen()],
     [Icons.edit, Colors.grey, 'Change Password'],
     [
       Icons.help_center_outlined,

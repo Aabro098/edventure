@@ -878,55 +878,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Divider(
                     color: Colors.grey[200],
                   ),
-                  Center(
-                    child: Text(
-                      'Reviews',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  FutureBuilder<List<Review>>(
-                    future: _reviewsFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(child: Text('No reviews found.'));
-                      }
-                      final reviews = snapshot.data!;
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: reviews.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: ReviewCard(
-                                    senderId: reviews[index].senderId,
-                                    description: reviews[index].description,
-                                    rating: reviews[index].rating,
-                                    currentUser: user.id,
-                                    reviewId: reviews[index].id,
-                                    profileUser: user.id,
-                                  ),
-                                ),
-                              ],
+                  user.isVerified
+                      ? Center(
+                          child: Text(
+                            'Reviews',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                  const SizedBox(height: 8.0),
+                  user.isVerified
+                      ? FutureBuilder<List<Review>>(
+                          future: _reviewsFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.isEmpty) {
+                              return const Center(
+                                  child: Text('No reviews found.'));
+                            }
+                            final reviews = snapshot.data!;
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: reviews.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: ReviewCard(
+                                          senderId: reviews[index].senderId,
+                                          description:
+                                              reviews[index].description,
+                                          rating: reviews[index].rating,
+                                          currentUser: user.id,
+                                          reviewId: reviews[index].id,
+                                          profileUser: user.id,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        )
+                      : SizedBox.shrink(),
                 ],
               ),
             );
