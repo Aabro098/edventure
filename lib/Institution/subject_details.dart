@@ -91,9 +91,6 @@ class ClassScreenState extends State<ClassScreen> {
         // ignore: use_build_context_synchronously
         showSnackBar(context, 'Enrollment Failed!!!');
       }
-    }).catchError((error) {
-      // ignore: use_build_context_synchronously
-      showSnackBar(context, error.toString());
     });
   }
 

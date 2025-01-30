@@ -46,7 +46,6 @@ class InstitutionService {
         },
         body: json.encode(requestBody),
       );
-
       if (response.statusCode == 200) {
         // ignore: use_build_context_synchronously
         final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -54,11 +53,33 @@ class InstitutionService {
         userProvider.addEnrollClass(classId, context);
         return {'success': true};
       } else {
-        throw Exception(
-            'Failed to enroll user. Server responded with: ${response.statusCode}');
+        throw Exception('Failed to enroll user.');
       }
     } catch (e) {
-      throw Exception('Failed to enroll user: $e');
+      throw Exception('Failed to enroll user');
+    }
+  }
+
+  Future<List<Institution>> searchClassesById(List<String> classIds) async {
+    final String classIdQuery = classIds.join(',');
+    final url = Uri.parse('$baseUrl/api/ins/searchByClassId/$classIdQuery');
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      if (data['success']) {
+        List<Institution> institutions = (data['data'] as List)
+            .map((json) => Institution.fromJson(json))
+            .toList();
+        return institutions;
+      } else {
+        throw Exception('Failed to load data: ${data['message']}');
+      }
+    } else {
+      throw Exception(
+          'Failed to load data with status code: ${response.statusCode}');
     }
   }
 }

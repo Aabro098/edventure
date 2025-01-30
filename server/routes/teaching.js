@@ -170,10 +170,11 @@ router.post('/filterUsers', async (req, res) => {
 
 router.post('/enroll', async (req, res) => {
   const { userId, classId } = req.body;
+  console.log(req.body);
 
   try {
     const user = await User.findById(userId);
-    
+    console.log(user);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -185,7 +186,7 @@ router.post('/enroll', async (req, res) => {
     user.enrolledClasses.push(classId);
 
     await user.save();
-
+    console.log(res.statusCode);
     res.status(200).json({ message: 'Successfully enrolled in the class' });
   } catch (err) {
     console.error(err);
