@@ -49,6 +49,7 @@ class AuthService with ChangeNotifier {
           username: '',
           token: '',
           isVerified: false,
+          progress: false,
           review: [],
           socketId: '',
           teachingAddress: [],

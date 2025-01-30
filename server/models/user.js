@@ -84,6 +84,10 @@ const userSchema = mongoose.Schema({
         type : Boolean,
         default : false
     },
+    progress : {
+        type : Boolean,
+        default : false
+    },
     review: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Review'

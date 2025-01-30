@@ -28,7 +28,8 @@ class UserProvider extends ChangeNotifier {
       teachingAddress: [],
       skills: [],
       contacts: [],
-      gender: '');
+      gender: '',
+      progress: false);
 
   User get user => _user;
 
@@ -73,6 +74,11 @@ class UserProvider extends ChangeNotifier {
 
   void deleteTeachingAddress(String address) {
     _user.teachingAddress.remove(address);
+    notifyListeners();
+  }
+
+  void setProgress(bool progress) {
+    _user.progress = progress;
     notifyListeners();
   }
 
@@ -140,6 +146,7 @@ class UserProvider extends ChangeNotifier {
         username: '',
         token: '',
         isVerified: false,
+        progress: false,
         review: [],
         socketId: '',
         teachingAddress: [],

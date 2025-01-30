@@ -1,11 +1,17 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:edventure/models/user.dart';
+import 'package:edventure/providers/user_provider.dart';
 import 'package:edventure/utils/elevated_button.dart';
+import 'package:edventure/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({super.key});
+  final User user;
+  const VerificationScreen({super.key, required this.user});
 
   @override
   VerificationScreenState createState() => VerificationScreenState();
@@ -36,16 +42,51 @@ class VerificationScreenState extends State<VerificationScreen> {
     });
   }
 
-  void _onSubmit() {
+  Future<void> _uploadDocuments() async {
     bool allUploaded = _documents.every((doc) => doc != null);
-    if (allUploaded) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("All documents uploaded successfully!")),
-      );
-    } else {
+    if (!allUploaded) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please upload all documents.")),
       );
+      return;
+    }
+
+    var uri = Uri.parse('https://your-api-endpoint.com/verify');
+    var request = http.MultipartRequest('POST', uri);
+
+    request.fields['name'] = widget.user.name;
+    request.fields['email'] = widget.user.email;
+    request.fields['phone'] = widget.user.phone;
+    request.fields['address'] = widget.user.address;
+
+    for (var i = 0; i < _documents.length; i++) {
+      if (_documents[i] != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'document_$i',
+            _documents[i]!.path,
+          ),
+        );
+      }
+    }
+
+    try {
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        // ignore: use_build_context_synchronously
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.setProgress(true);
+
+        // ignore: use_build_context_synchronously
+        showSnackBar(context, "Documents uploaded successfully!");
+      } else {
+        // ignore: use_build_context_synchronously
+        showSnackBar(context, "Failed to upload documents. Please try again.");
+      }
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, e.toString());
     }
   }
 
@@ -135,7 +176,11 @@ class VerificationScreenState extends State<VerificationScreen> {
                 );
               }),
               const SizedBox(height: 8),
-              AppElevatedButton(text: 'Submit', color: Colors.green.shade400, onTap: _onSubmit)
+              AppElevatedButton(
+                text: 'Submit',
+                color: Colors.green.shade400,
+                onTap: _uploadDocuments,
+              ),
             ],
           ),
         ),

@@ -17,15 +17,10 @@ class NavScreen extends StatefulWidget {
 }
 
 class _NavScreenState extends State<NavScreen> {
+  final GlobalKey<SearchScreenStateful> _searchScreenKey = GlobalKey();
   int selectedIndex = 2;
 
-  final List<Widget> _screens = [
-    const RecentChatScreen(),
-    const ProfileScreen(),
-    const MainScreen(),
-    const SearchScreen(),
-    const MoreOptionList(),
-  ];
+  late final List<Widget> _screens;
 
   final List<IconData> _icons = [
     Bootstrap.messenger,
@@ -44,9 +39,30 @@ class _NavScreenState extends State<NavScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+
+    _screens = [
+      const RecentChatScreen(),
+      const ProfileScreen(),
+      const MainScreen(),
+      SearchScreen(key: _searchScreenKey),
+      const MoreOptionList(),
+    ];
+  }
+
+  void _onTabChanged(int index) {
+    if (selectedIndex == 3 && index != 3) {
+      _searchScreenKey.currentState?.resetState();
+    }
+    setState(() => selectedIndex = index);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(
           pagename: pagename,
           selectedIndex: selectedIndex,
@@ -58,7 +74,7 @@ class _NavScreenState extends State<NavScreen> {
         bottomNavigationBar: CustomCurvedNavigationBar(
           icons: _icons,
           selectedIndex: selectedIndex,
-          onTap: (index) => setState(() => selectedIndex = index),
+          onTap: _onTabChanged,
         ),
       ),
     );

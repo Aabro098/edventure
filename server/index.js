@@ -18,7 +18,7 @@ const addressRouter = require("./routes/teaching");
 const contacts = require("./routes/contacts");
 
 const PORT = process.env.PORT || 3000;
-const HOST = '192.168.1.9';
+const HOST = '192.168.61.104';
 
 const app = express();
 app.use('/uploads', express.static('uploads'));

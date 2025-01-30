@@ -132,6 +132,8 @@ router.post('/filterUsers', async (req, res) => {
       return res.status(400).json({ error: 'Invalid filter parameters' });
     }
 
+    const objectIdUserId = new mongoose.Types.ObjectId(userId);
+
     const baseQuery = { teachingAddress: address };
 
     if (filters.gender) {
@@ -143,8 +145,16 @@ router.post('/filterUsers', async (req, res) => {
     }
 
     const [verifiedUsers, unverifiedUsers] = await Promise.all([
-      User.find({ ...baseQuery, _id: { $ne: objectIdUserId },isVerified: true }).select('-password'),
-      User.find({ ...baseQuery,_id: { $ne: objectIdUserId },  isVerified: false }).select('-password'),
+      User.find({ 
+        ...baseQuery, 
+        _id: { $ne: objectIdUserId },
+        isVerified: true 
+      }).select('-password'),
+      User.find({ 
+        ...baseQuery,
+        _id: { $ne: objectIdUserId }, 
+        isVerified: false 
+      }).select('-password'),
     ]);
 
     res.json({

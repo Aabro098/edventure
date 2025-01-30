@@ -411,66 +411,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         const SizedBox(width: 8.0),
-                        Center(
-                            child: user.isVerified
-                                ? Row(
-                                    children: [
-                                      Stack(
-                                        alignment: Alignment.center,
+                        user.progress
+                            ? Center(
+                                child: const Text(
+                                'Verification In Progress...',
+                                style:
+                                    TextStyle(fontSize: 12, color: Colors.blue),
+                              ))
+                            : Center(
+                                child: user.isVerified
+                                    ? Row(
                                         children: [
-                                          const CircleAvatar(
-                                            radius: 8,
-                                            backgroundColor: Colors.blue,
+                                          Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              const CircleAvatar(
+                                                radius: 8,
+                                                backgroundColor: Colors.blue,
+                                              ),
+                                              const Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                                size: 10,
+                                              ),
+                                            ],
                                           ),
-                                          const Icon(
-                                            Icons.check,
-                                            color: Colors.white,
-                                            size: 10,
-                                          ),
+                                          const SizedBox(width: 4.0),
+                                          const Text(
+                                            'Verified',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.blue),
+                                          )
                                         ],
-                                      ),
-                                      const SizedBox(width: 4.0),
-                                      const Text(
-                                        'Verified',
-                                        style: TextStyle(
-                                            fontSize: 12, color: Colors.blue),
                                       )
-                                    ],
-                                  )
-                                : Row(
-                                    children: [
-                                      const Stack(
-                                        alignment: Alignment.center,
+                                    : Row(
                                         children: [
-                                          CircleAvatar(
-                                            radius: 8,
-                                            backgroundColor: Colors.grey,
+                                          const Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 8,
+                                                backgroundColor: Colors.grey,
+                                              ),
+                                              Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                                size: 10,
+                                              ),
+                                            ],
                                           ),
-                                          Icon(
-                                            Icons.check,
-                                            color: Colors.white,
-                                            size: 10,
-                                          ),
+                                          const SizedBox(width: 4.0),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        VerificationScreen(
+                                                            user: user)),
+                                              );
+                                            },
+                                            child: const Text(
+                                              'Verify Now',
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.blue),
+                                            ),
+                                          )
                                         ],
-                                      ),
-                                      const SizedBox(width: 4.0),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    VerificationScreen()),
-                                          );
-                                        },
-                                        child: const Text(
-                                          'Verify Now',
-                                          style: TextStyle(
-                                              fontSize: 12, color: Colors.blue),
-                                        ),
-                                      )
-                                    ],
-                                  )),
+                                      )),
                       ],
                     ),
                   ),
